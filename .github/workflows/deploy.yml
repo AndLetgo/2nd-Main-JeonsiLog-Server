@@ -36,6 +36,15 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
+      ## create application-rds.yml && application-s3.yml
+    - name: create application.properties file
+      run: |
+        touch ./src/main/resources/application-rds.yml
+        echo "${{ secrets.DATABASE_YML }}" | base64 --decode > src/main/resources/application-rds.yml
+        
+        touch ./src/main/resources/application-s3.yml
+        echo "${{ secrets.S3_YML }}" | base64 --decode > src/main/resources/application-s3.yml
+
     #추가
     - name: Make Gradle Wrapper script executable
       run: chmod +x /home/runner/work/2nd-Main-JeonsiLog-Server/2nd-Main-JeonsiLog-Server/gradlew
