@@ -38,7 +38,7 @@ jobs:
 
     #추가
     - name: Make Gradle Wrapper script executable
-      run: chmod +x /home/runner/work/kkeujeok-server/kkeujeok-server/gradlew
+      run: chmod +x /home/runner/work/2nd-Main-JeonsiLog-Server/2nd-Main-JeonsiLog-Server/gradlew
 
     # (3) Gradle build (Test 제외)
     - name: Build with Gradle
