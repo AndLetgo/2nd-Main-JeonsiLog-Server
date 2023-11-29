@@ -14,6 +14,11 @@ import java.net.URL;
 @RequiredArgsConstructor
 public class S3Controller {
 
+    /**
+     * TODO : s3 controller, service 는 image의 repository, entity와 연결될 필요가 있다
+     * TODO : Image 테이블과 연결
+     */
+
     private final S3Service s3Service;
 
     // client -> s3 upload (s3에 저장)
