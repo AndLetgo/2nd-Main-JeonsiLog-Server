@@ -27,11 +27,15 @@ public class Report extends BaseEntity {
     // 타입별 아이디를 부여하는 것 !!
     private Long reportedId;
 
+    private boolean isChecked = false;
+
     @Builder
-    public Report(Long id, User user, ReportType reportType, Long reportedId) {
+    public Report(Long id, User user, ReportType reportType, Long reportedId, boolean isChecked) {
         this.id = id;
         this.user = user;
         this.reportType = reportType;
         this.reportedId = reportedId;
+        this.isChecked = isChecked;
     }
+
 }
