@@ -9,5 +9,4 @@ public class JeonsiLogServerApplication {
     public static void main(String[] args) {
         SpringApplication.run(JeonsiLogServerApplication.class, args);
     }
-
 }
