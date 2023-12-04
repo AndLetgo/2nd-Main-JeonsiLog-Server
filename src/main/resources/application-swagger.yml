@@ -14,3 +14,9 @@ springdoc:
     doc-expansion: none # tag, operation 펼치는 방식
   paths-to-match:
     - /**
+#    - /swagger
+#    - /swagger-ui.html
+#    - /swagger-ui/**
+#    - /api-docs
+#    - /api-docs/**
+#    - /v3/api-docs/**
