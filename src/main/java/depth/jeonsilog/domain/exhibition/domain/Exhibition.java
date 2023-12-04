@@ -41,7 +41,7 @@ public class Exhibition extends BaseEntity {
 
     private double rate;
 
-    private int order;
+    private int sequence;
 
     @Builder
     public Exhibition(Long id, Place place, String name, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, double rate) {
@@ -55,6 +55,6 @@ public class Exhibition extends BaseEntity {
         this.endDate = endDate;
         this.information = information;
         this.rate = rate;
-        this.order = 0; // default = 0
+        this.sequence = 0; // default = 0
     }
 }

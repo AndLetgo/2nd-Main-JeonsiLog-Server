@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Authorization", description = "Authorization API")
+@Tag(name = "Auth API", description = "Authorization 관련 API입니다.")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
@@ -83,7 +83,7 @@ public class AuthController {
 
     @Operation(summary = "닉네임 중복 체크", description = "닉네임이 중복인지 검사합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "중복 체크 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "200", description = "중복 체크 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponseDto.AuthRes.class))}),
             @ApiResponse(responseCode = "400", description = "중복 체크 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/nickname/{nickname}")
