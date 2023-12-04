@@ -18,36 +18,43 @@ public class User extends BaseEntity {
     @Column(name = "user_id")
     private Long id;
 
+    private String password;
+
     @Column(unique = true)
     private String nickname;
 
     @Email(message = "이메일 형식이어야 합니다.")
     private String email;
 
-    private String password;
-
     private String profileImg;
 
     // 포토 캘린더 공개 여부
-    private boolean isOpen = true;
+    private boolean isOpen;
 
-    private boolean isRecvFollowing = true;
+    private boolean isRecvFollowing;
 
-    private boolean isRecvActive = true;
+    private boolean isRecvActive;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
+    // 카카오 고유 ID
+    private String providerId;
+
     @Builder
-    public User(Long id, String nickname, String email, String password, String profileImg, boolean isOpen, boolean isRecvFollowing, boolean isRecvActive, Role role) {
+    public User(Long id, String password, String nickname, String email, String providerId, String profileImg, boolean isOpen, boolean isRecvFollowing, boolean isRecvActive, Role role, Provider provider) {
         this.id = id;
+        this.password = password;
+        this.providerId = providerId;
         this.nickname = nickname;
         this.email = email;
-        this.password = password;
         this.profileImg = profileImg;
         this.isOpen = isOpen;
         this.isRecvFollowing = isRecvFollowing;
         this.isRecvActive = isRecvActive;
         this.role = role;
+        this.provider = provider;
     }
 }

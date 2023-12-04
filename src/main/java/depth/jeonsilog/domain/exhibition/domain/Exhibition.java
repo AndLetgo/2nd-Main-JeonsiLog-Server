@@ -2,13 +2,12 @@ package depth.jeonsilog.domain.exhibition.domain;
 
 import depth.jeonsilog.domain.common.BaseEntity;
 import depth.jeonsilog.domain.place.domain.Place;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -42,6 +41,8 @@ public class Exhibition extends BaseEntity {
 
     private double rate;
 
+    private int order;
+
     @Builder
     public Exhibition(Long id, Place place, String name, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, double rate) {
         this.id = id;
@@ -54,5 +55,6 @@ public class Exhibition extends BaseEntity {
         this.endDate = endDate;
         this.information = information;
         this.rate = rate;
+        this.order = 0; // default = 0
     }
 }
