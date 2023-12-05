@@ -7,8 +7,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "status = 'ACTIVE'")
 @Entity
 @Getter
 public class User extends BaseEntity {
@@ -43,6 +45,7 @@ public class User extends BaseEntity {
     // 카카오 고유 ID
     private String providerId;
 
+    // update 메서드
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }

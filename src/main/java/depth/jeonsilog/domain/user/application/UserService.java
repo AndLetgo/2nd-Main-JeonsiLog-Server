@@ -1,5 +1,6 @@
 package depth.jeonsilog.domain.user.application;
 
+import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.user.converter.UserConverter;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.domain.user.domain.repository.UserRepository;
@@ -77,6 +78,18 @@ public class UserService {
                 .check(true)
                 .information(searchUsersResList)
                 .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // 회원 탈퇴
+    @Transactional
+    public ResponseEntity<?> deleteUser(UserPrincipal userPrincipal) {
+
+        User findUser = validateUserByToken(userPrincipal);
+        findUser.updateStatus(Status.DELETE);  // soft delete
+
+        ApiResponse apiResponse = ApiResponse.builder().check(true).information(Message.builder().message("회원이 탈퇴되었습니다.").build()).build();
 
         return ResponseEntity.ok(apiResponse);
     }

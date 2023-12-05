@@ -6,6 +6,7 @@ import depth.jeonsilog.domain.user.dto.UserResponseDto;
 import depth.jeonsilog.global.config.security.token.CurrentUser;
 import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ErrorResponse;
+import depth.jeonsilog.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,16 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
-
-    //-✅ (토큰을 이용한) (본인)유저 정보 조회 : GET /users findUser
-    //-✅ 타유저 정보 조회 : GET /users/{user-id}
-    //-✅ 닉네임 변경 : PATCH /users/nickname
-    //- 프로필 사진 변경 : PATCH /users/profile
-    //-✅ 검색어를 포함한 사용자 목록 조회 : GET /users/search/{search-word}
-    //- 포토 캘린더 공개/비공개 변경 : PATCH /users/calendar
-    //- 팔로잉 알림 수신 여부 변경 : PATCH /users/alarm-following
-    //- 나의 활동 알림 수신 여부 변경 : PATCH /users/alarm-activity
-    //- (토큰) 회원 탈퇴 : DELETE /users
 
     @Operation(summary = "유저 정보 조회", description = "AccessToken을 이용하여 본인 정보를 조회합니다.")
     @ApiResponses(value = {
@@ -68,7 +60,7 @@ public class UserController {
 
     @Operation(summary = "닉네임 변경", description = "본인의 닉네임을 변경합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "변경 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.UserRes.class))}),
+            @ApiResponse(responseCode = "200", description = "변경 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "변경 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @PatchMapping("/nickname")
@@ -126,5 +118,17 @@ public class UserController {
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
         return userService.switchIsRecvActive(userPrincipal);
+    }
+
+    @Operation(summary = "회원 탈퇴", description = "회원이 탈퇴합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "탈퇴 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "400", description = "탈퇴 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @DeleteMapping
+    public ResponseEntity<?> deleteUser(
+            @CurrentUser UserPrincipal userPrincipal
+    ) {
+        return userService.deleteUser(userPrincipal);
     }
 }
