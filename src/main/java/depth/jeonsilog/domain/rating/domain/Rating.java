@@ -26,10 +26,10 @@ public class Rating extends BaseEntity {
     @JoinColumn(name = "exhibition_id")
     private Exhibition exhibition;
 
-    private double rate;
+    private Double rate;
 
     @Builder
-    public Rating(Long id, User user, Exhibition exhibition, double rate) {
+    public Rating(Long id, User user, Exhibition exhibition, Double rate) {
         this.id = id;
         this.user = user;
         this.exhibition = exhibition;

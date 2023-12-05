@@ -43,6 +43,10 @@ public class User extends BaseEntity {
     // 카카오 고유 ID
     private String providerId;
 
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     @Builder
     public User(Long id, String password, String nickname, String email, String providerId, String profileImg, boolean isOpen, boolean isRecvFollowing, boolean isRecvActive, Role role, Provider provider) {
         this.id = id;
