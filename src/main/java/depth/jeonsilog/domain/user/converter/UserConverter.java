@@ -17,7 +17,7 @@ public class UserConverter {
                 .build();
     }
 
-    // Users -> SearchUsersDTO
+    // Users -> SearchUsersRes
     public static List<UserResponseDto.SearchUsersRes> toSearchUsersRes(List<User> users) {
 
         List<UserResponseDto.SearchUsersRes> usersResList = new ArrayList<>();
@@ -32,5 +32,29 @@ public class UserConverter {
             usersResList.add(usersRes);
         }
         return usersResList;
+    }
+
+    // USER -> SwitchIsOpenRes
+    public static UserResponseDto.SwitchIsOpenRes toSwitchIsOpenRes(User user) {
+        return UserResponseDto.SwitchIsOpenRes.builder()
+                .userId(user.getId())
+                .isOpen(user.isOpen())
+                .build();
+    }
+
+    // USER -> SwitchIsRecvFollowingRes
+    public static UserResponseDto.SwitchIsRecvFollowingRes toSwitchIsRecvFollowingRes(User user) {
+        return UserResponseDto.SwitchIsRecvFollowingRes.builder()
+                .userId(user.getId())
+                .isRecvFollowing(user.isRecvFollowing())
+                .build();
+    }
+
+    // USER -> SwitchIsRecvActiveRes
+    public static UserResponseDto.SwitchIsRecvActiveRes toSwitchIsRecvActive(User user) {
+        return UserResponseDto.SwitchIsRecvActiveRes.builder()
+                .userId(user.getId())
+                .isRecvActive(user.isRecvActive())
+                .build();
     }
 }

@@ -36,4 +36,37 @@ public class UserResponseDto {
         @Schema(type = "string", example = "http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg", description = "프로필 이미지 url을 출력합니다.")
         private String profileImgUrl;
     }
+
+    @Data
+    @Builder
+    public static class SwitchIsOpenRes {
+
+        @Schema(type = "long", example = "1", description = "유저의 ID를 출력합니다.")
+        private Long userId;
+
+        @Schema(type = "boolean", example = "true", description = "유저의 포토캘린더 공개/비공개 여부를 출력합니다.")
+        private boolean isOpen;
+    }
+
+    @Data
+    @Builder
+    public static class SwitchIsRecvFollowingRes {
+
+        @Schema(type = "long", example = "1", description = "유저의 ID를 출력합니다.")
+        private Long userId;
+
+        @Schema(type = "boolean", example = "true", description = "유저의 팔로잉 알림 수신 여부를 출력합니다.")
+        private boolean isRecvFollowing;
+    }
+
+    @Data
+    @Builder
+    public static class SwitchIsRecvActiveRes {
+
+        @Schema(type = "long", example = "1", description = "유저의 ID를 출력합니다.")
+        private Long userId;
+
+        @Schema(type = "boolean", example = "true", description = "유저의 나의 활동 알림 수신 여부를 출력합니다.")
+        private boolean isRecvActive;
+    }
 }

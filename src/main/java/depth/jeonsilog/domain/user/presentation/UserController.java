@@ -79,11 +79,10 @@ public class UserController {
         return userService.changeNickname(userPrincipal, changeNicknameReq);
     }
 
-    // 검색어를 포함한 사용자 목록 조회 : GET /users/search/{search-word}
-    @Operation(summary = "유저 검색", description = "본인의 닉네임을 변경합니다.")
+    @Operation(summary = "유저 검색", description = "검색어로 유저를 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "변경 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.UserRes.class))}),
-            @ApiResponse(responseCode = "400", description = "변경 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.SearchUsersRes.class))}),
+            @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/search/{searchWord}")
     public ResponseEntity<?> searchUsers(
@@ -91,5 +90,41 @@ public class UserController {
             @Parameter(description = "Schemas의 를 참고해주세요", required = true) @PathVariable(value = "searchWord") String keyword
     ) {
         return userService.searchUsers(userPrincipal, keyword);
+    }
+
+    @Operation(summary = "포토 캘린더 공개/비공개 변경", description = "포토 캘린더 공개/비공개 여부를 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "변경 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.SwitchIsOpenRes.class))}),
+            @ApiResponse(responseCode = "400", description = "변경 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @PatchMapping("/calendar")
+    public ResponseEntity<?> switchIsOpen(
+            @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
+    ) {
+        return userService.switchIsOpen(userPrincipal);
+    }
+
+    @Operation(summary = "팔로잉 알림 수신 여부 변경", description = "팔로잉 알림 수신 여부를 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "변경 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.SwitchIsRecvFollowingRes.class))}),
+            @ApiResponse(responseCode = "400", description = "변경 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @PatchMapping("/alarm-following")
+    public ResponseEntity<?> switchIsRecvFollowing(
+            @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
+    ) {
+        return userService.switchIsRecvFollowing(userPrincipal);
+    }
+
+    @Operation(summary = "나의 활동 알림 수신 여부 변경", description = "나의 활동 알림 수신 여부를 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "변경 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.SwitchIsRecvActiveRes.class))}),
+            @ApiResponse(responseCode = "400", description = "변경 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @PatchMapping("/alarm-active")
+    public ResponseEntity<?> switchIsRecvActive(
+            @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
+    ) {
+        return userService.switchIsRecvActive(userPrincipal);
     }
 }

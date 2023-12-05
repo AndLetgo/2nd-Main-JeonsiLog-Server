@@ -81,6 +81,60 @@ public class UserService {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // 포토 캘린더 공개/비공개 변경
+    @Transactional
+    public ResponseEntity<?> switchIsOpen(UserPrincipal userPrincipal) {
+
+        User findUser = validateUserByToken(userPrincipal);
+
+        findUser.updateIsOpen(!findUser.isOpen());
+
+        UserResponseDto.SwitchIsOpenRes switchIsOpenRes = UserConverter.toSwitchIsOpenRes(findUser);
+
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(switchIsOpenRes)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // 팔로잉 알림 수신 여부 변경
+    @Transactional
+    public ResponseEntity<?> switchIsRecvFollowing(UserPrincipal userPrincipal) {
+
+        User findUser = validateUserByToken(userPrincipal);
+
+        findUser.updateIsRecvFollowing(!findUser.isRecvFollowing());
+
+        UserResponseDto.SwitchIsRecvFollowingRes switchIsRecvFollowingRes = UserConverter.toSwitchIsRecvFollowingRes(findUser);
+
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(switchIsRecvFollowingRes)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // 나의 활동 알림 수신 여부 변경
+    @Transactional
+    public ResponseEntity<?> switchIsRecvActive(UserPrincipal userPrincipal) {
+
+        User findUser = validateUserByToken(userPrincipal);
+
+        findUser.updateIsRecvActive(!findUser.isRecvActive());
+
+        UserResponseDto.SwitchIsRecvActiveRes switchIsRecvActiveRes = UserConverter.toSwitchIsRecvActive(findUser);
+
+        ApiResponse apiResponse = ApiResponse.builder()
+                .check(true)
+                .information(switchIsRecvActiveRes)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
 
     public User validateUserByToken(UserPrincipal userPrincipal) {
         Optional<User> user = userRepository.findByEmail(userPrincipal.getEmail());

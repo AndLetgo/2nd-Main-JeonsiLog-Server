@@ -47,6 +47,18 @@ public class User extends BaseEntity {
         this.nickname = nickname;
     }
 
+    public void updateIsOpen(boolean isOpen) {
+        this.isOpen = isOpen;
+    }
+
+    public void updateIsRecvFollowing(boolean isRecvFollowing) {
+        this.isRecvFollowing = isRecvFollowing;
+    }
+
+    public void updateIsRecvActive(boolean isRecvActive) {
+        this.isRecvActive = isRecvActive;
+    }
+
     @Builder
     public User(Long id, String password, String nickname, String email, String providerId, String profileImg, boolean isOpen, boolean isRecvFollowing, boolean isRecvActive, Role role, Provider provider) {
         this.id = id;
