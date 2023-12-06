@@ -44,13 +44,9 @@ public class AuthService {
         User user = AuthConverter.toUser(signUpReq, passwordEncoder);
         userRepository.save(user);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/auth/")
-                .buildAndExpand(user.getId()).toUri();
-
         ApiResponse apiResponse = ApiResponse.builder().check(true).information(Message.builder().message("회원가입에 성공하였습니다.").build()).build();
 
-        return ResponseEntity.created(location).body(apiResponse);
+        return ResponseEntity.ok(apiResponse);
     }
 
     @Transactional

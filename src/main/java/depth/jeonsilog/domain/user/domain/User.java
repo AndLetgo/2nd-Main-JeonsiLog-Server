@@ -7,8 +7,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "status = 'ACTIVE'")
 @Entity
 @Getter
 public class User extends BaseEntity {
@@ -42,6 +44,23 @@ public class User extends BaseEntity {
     private Provider provider;
     // 카카오 고유 ID
     private String providerId;
+
+    // update 메서드
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateIsOpen(boolean isOpen) {
+        this.isOpen = isOpen;
+    }
+
+    public void updateIsRecvFollowing(boolean isRecvFollowing) {
+        this.isRecvFollowing = isRecvFollowing;
+    }
+
+    public void updateIsRecvActive(boolean isRecvActive) {
+        this.isRecvActive = isRecvActive;
+    }
 
     @Builder
     public User(Long id, String password, String nickname, String email, String providerId, String profileImg, boolean isOpen, boolean isRecvFollowing, boolean isRecvActive, Role role, Provider provider) {

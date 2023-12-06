@@ -3,7 +3,7 @@ package depth.jeonsilog.domain.auth.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 public class AuthRequestDto {
@@ -14,7 +14,9 @@ public class AuthRequestDto {
         @Schema( type = "string", example = "123123", description="카카오 고유 유저 ID 입니다.")
         private String providerId;
 
-        @Schema( type = "string", example = "string", description="카카오톡 닉네임 입니다.")
+        @Schema( type = "string", example = "string", description="닉네임 입니다.")
+        @NotBlank(message = "닉네임을 입력해야 합니다.")
+        @Pattern(regexp = "^(?=.*[가-힣a-zA-Z0-9])[가-힣a-zA-Z0-9]{2,10}", message = "한글, 영어, 숫자 가능, 2~10자, 특수기호 불가")
         private String nickname;
 
         @Schema( type = "string", example = "string@aa.bb", description="계정 이메일 입니다.")
@@ -32,7 +34,8 @@ public class AuthRequestDto {
         @Email
         private String email;
 
-        @Schema( type = "string", example = "string", description="계정 비밀번호 입니다.")
+        @Schema( type = "string", example = "string", description="providerId 입니다.")
+        @NotBlank(message = "providerId를 입력해야합니다.")
         private String providerId;
     }
 
@@ -40,25 +43,7 @@ public class AuthRequestDto {
     public static class RefreshTokenReq {
 
         @Schema( type = "string", example = "eyJhbGciOiJIUzUxMiJ9.eyJleHAiOjE2NTI3OTgxOTh9.6CoxHB_siOuz6PxsxHYQCgUT1_QbdyKTUwStQDutEd1-cIIARbQ0cyrnAmpIgi3IBoLRaqK7N1vXO42nYy4g5g", description="refresh token 입니다." )
+        @NotBlank(message = "refreshTokend을 입력해야합니다.")
         private String refreshToken;
-    }
-
-    @Data
-    public static class ChangePasswordReq {
-
-        @Schema( type = "string", example = "string", description="기존 비밀번호 입니다.")
-        @NotBlank
-        @NotNull
-        private String oldPassword;
-
-        @Schema( type = "string", example = "string123", description="신규 비밀번호 입니다.")
-        @NotBlank
-        @NotNull
-        private String newPassword;
-
-        @Schema( type = "string", example = "string123", description="신규 비밀번호 확인란 입니다.")
-        @NotBlank
-        @NotNull
-        private String reNewPassword;
     }
 }

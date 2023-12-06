@@ -2,8 +2,8 @@ package depth.jeonsilog.domain.exhibition.domain;
 
 import depth.jeonsilog.domain.common.BaseEntity;
 import depth.jeonsilog.domain.place.domain.Place;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,12 +39,13 @@ public class Exhibition extends BaseEntity {
     @Lob
     private String information;
 
-    private double rate;
+    private Double rate;
 
-    private int sequence;
+    @Size(max = 10)
+    private Integer sequence;
 
     @Builder
-    public Exhibition(Long id, Place place, String name, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, double rate) {
+    public Exhibition(Long id, Place place, String name, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, Double rate) {
         this.id = id;
         this.place = place;
         this.name = name;
