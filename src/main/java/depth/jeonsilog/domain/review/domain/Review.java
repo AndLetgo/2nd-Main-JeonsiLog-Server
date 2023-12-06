@@ -29,7 +29,7 @@ public class Review extends BaseEntity {
     @Lob
     private String contents;
 
-    private int numReply;
+    private Integer numReply;
 
     @Builder
     public Review(Long id, User user, Exhibition exhibition, String contents, int numReply) {

@@ -83,7 +83,7 @@ public class AuthController {
 
     @Operation(summary = "닉네임 중복 체크", description = "닉네임이 중복인지 검사합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "중복 체크 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponseDto.AuthRes.class))}),
+            @ApiResponse(responseCode = "200", description = "중복 체크 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponseDto.NicknameCheckRes.class))}),
             @ApiResponse(responseCode = "400", description = "중복 체크 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/nickname/{nickname}")

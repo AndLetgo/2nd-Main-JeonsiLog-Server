@@ -1,7 +1,6 @@
 package depth.jeonsilog.global.config.security;
 
 import depth.jeonsilog.domain.auth.application.CustomUserDetailsService;
-import depth.jeonsilog.domain.auth.domain.repository.CustomAuthorizationRequestRepository;
 import depth.jeonsilog.global.config.security.token.CustomAuthenticationEntryPoint;
 import depth.jeonsilog.global.config.security.token.CustomOncePerRequestFilter;
 import lombok.RequiredArgsConstructor;
@@ -64,11 +63,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**")
-                        .permitAll()
-                        .requestMatchers("/login/**","/auth/**", "/oauth2/**")
-                        .permitAll()
-                        .requestMatchers("/", "/error", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg", "/**/*.html", "/**/*.css", "/**/*.js")
+                        .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**", "/auth/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated());
