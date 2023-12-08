@@ -127,7 +127,7 @@ public class UserController {
     })
     @DeleteMapping
     public ResponseEntity<?> deleteUser(
-            @CurrentUser UserPrincipal userPrincipal
+            @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
         return userService.deleteUser(userPrincipal);
     }

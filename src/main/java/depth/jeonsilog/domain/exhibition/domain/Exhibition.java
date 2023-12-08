@@ -3,7 +3,8 @@ package depth.jeonsilog.domain.exhibition.domain;
 import depth.jeonsilog.domain.common.BaseEntity;
 import depth.jeonsilog.domain.place.domain.Place;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,7 +42,8 @@ public class Exhibition extends BaseEntity {
 
     private Double rate;
 
-    @Size(max = 10)
+    @Min(value = 0)
+    @Max(value = 10)
     private Integer sequence;
 
     @Builder

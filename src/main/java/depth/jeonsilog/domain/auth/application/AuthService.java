@@ -4,6 +4,7 @@ import depth.jeonsilog.domain.auth.converter.AuthConverter;
 import depth.jeonsilog.domain.auth.domain.Token;
 import depth.jeonsilog.domain.auth.domain.repository.TokenRepository;
 import depth.jeonsilog.domain.auth.dto.*;
+import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.domain.user.domain.repository.UserRepository;
 import depth.jeonsilog.global.DefaultAssert;
@@ -19,9 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -39,12 +38,13 @@ public class AuthService {
     @Transactional
     public ResponseEntity<?> signUp(AuthRequestDto.SignUpReq signUpReq){
 
-        DefaultAssert.isTrue(!userRepository.existsByEmail(signUpReq.getEmail()), "해당 이메일이 존재합니다.");
+        DefaultAssert.isTrue(!userRepository.existsByEmailAndStatus(signUpReq.getEmail(), Status.ACTIVE), "해당 이메일이 존재합니다.");
 
         User user = AuthConverter.toUser(signUpReq, passwordEncoder);
         userRepository.save(user);
 
-        ApiResponse apiResponse = ApiResponse.builder().check(true).information(Message.builder().message("회원가입에 성공하였습니다.").build()).build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(
+                Message.builder().message("회원가입에 성공하였습니다.").build());
 
         return ResponseEntity.ok(apiResponse);
     }
@@ -68,10 +68,7 @@ public class AuthService {
 
         AuthResponseDto.AuthRes authResponse = AuthConverter.toAuthRes(token, tokenMapping);
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(authResponse)
-                .build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(authResponse);
         
         return ResponseEntity.ok(apiResponse);
     }
@@ -101,10 +98,7 @@ public class AuthService {
 
         AuthResponseDto.AuthRes authResponse = AuthConverter.toAuthRes(updateToken, tokenMapping);
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(authResponse)
-                .build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(authResponse);
 
         return ResponseEntity.ok(apiResponse);
     }
@@ -116,7 +110,9 @@ public class AuthService {
         DefaultAssert.isTrue(token.isPresent(), "이미 로그아웃 되었습니다");
 
         tokenRepository.delete(token.get());
-        ApiResponse apiResponse = ApiResponse.builder().check(true).information(Message.builder().message("로그아웃 되었습니다.").build()).build();
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(
+                Message.builder().message("로그아웃 되었습니다.").build());
 
         return ResponseEntity.ok(apiResponse);
     }
@@ -127,10 +123,7 @@ public class AuthService {
                 .isAvailable(!userRepository.existsByNickname(nickname))
                 .build();
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(nicknameCheckRes)
-                .build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(nicknameCheckRes);
 
         return ResponseEntity.ok(apiResponse);
     }
