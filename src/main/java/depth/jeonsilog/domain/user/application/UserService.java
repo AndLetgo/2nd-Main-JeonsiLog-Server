@@ -1,6 +1,7 @@
 package depth.jeonsilog.domain.user.application;
 
 import depth.jeonsilog.domain.common.Status;
+import depth.jeonsilog.domain.follow.domain.repository.FollowRepository;
 import depth.jeonsilog.domain.user.converter.UserConverter;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.domain.user.domain.repository.UserRepository;
@@ -24,18 +25,15 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final FollowRepository followRepository;
 
     // 토큰으로 본인 정보 조회
     public ResponseEntity<?> findUserByToken(UserPrincipal userPrincipal) {
 
         User findUser = validateUserByToken(userPrincipal);
-        System.out.println(findUser.getEmail());
-        UserResponseDto.UserRes userRes = UserConverter.toUserRes(findUser);
+        UserResponseDto.UserRes userRes = UserConverter.toUserRes(findUser, followRepository);
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(userRes)
-                .build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(userRes);
 
         return ResponseEntity.ok(apiResponse);
     }
@@ -46,12 +44,10 @@ public class UserService {
         validateUserByToken(userPrincipal);
 
         User findUser = validateUserById(userId);
-        UserResponseDto.UserRes userRes = UserConverter.toUserRes(findUser);
+        UserResponseDto.UserRes userRes = UserConverter.toUserRes(findUser, followRepository);
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(userRes)
-                .build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(userRes);
+
         return ResponseEntity.ok(apiResponse);
     }
 
@@ -63,7 +59,9 @@ public class UserService {
 
         findUser.updateNickname(changeNicknameReq.getNickname());
 
-        ApiResponse apiResponse = ApiResponse.builder().check(true).information(Message.builder().message("닉네임을 변경했습니다.").build()).build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(
+                Message.builder().message("닉네임을 변경했습니다.").build());
+
         return ResponseEntity.ok(apiResponse);
     }
 
@@ -74,10 +72,7 @@ public class UserService {
         List<User> findUsers = userRepository.findAllByNicknameContaining(searchWord);
         List<UserResponseDto.SearchUsersRes> searchUsersResList = UserConverter.toSearchUsersRes(findUsers);
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(searchUsersResList)
-                .build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(searchUsersResList);
 
         return ResponseEntity.ok(apiResponse);
     }
@@ -89,7 +84,8 @@ public class UserService {
         User findUser = validateUserByToken(userPrincipal);
         findUser.updateStatus(Status.DELETE);  // soft delete
 
-        ApiResponse apiResponse = ApiResponse.builder().check(true).information(Message.builder().message("회원이 탈퇴되었습니다.").build()).build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(
+                Message.builder().message("회원이 탈퇴되었습니다.").build());
 
         return ResponseEntity.ok(apiResponse);
     }
@@ -104,10 +100,7 @@ public class UserService {
 
         UserResponseDto.SwitchIsOpenRes switchIsOpenRes = UserConverter.toSwitchIsOpenRes(findUser);
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(switchIsOpenRes)
-                .build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(switchIsOpenRes);
 
         return ResponseEntity.ok(apiResponse);
     }
@@ -122,10 +115,7 @@ public class UserService {
 
         UserResponseDto.SwitchIsRecvFollowingRes switchIsRecvFollowingRes = UserConverter.toSwitchIsRecvFollowingRes(findUser);
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(switchIsRecvFollowingRes)
-                .build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(switchIsRecvFollowingRes);
 
         return ResponseEntity.ok(apiResponse);
     }
@@ -140,10 +130,7 @@ public class UserService {
 
         UserResponseDto.SwitchIsRecvActiveRes switchIsRecvActiveRes = UserConverter.toSwitchIsRecvActive(findUser);
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(switchIsRecvActiveRes)
-                .build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(switchIsRecvActiveRes);
 
         return ResponseEntity.ok(apiResponse);
     }

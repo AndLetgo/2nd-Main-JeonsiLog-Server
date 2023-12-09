@@ -1,5 +1,6 @@
 package depth.jeonsilog.domain.user.converter;
 
+import depth.jeonsilog.domain.follow.domain.repository.FollowRepository;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.domain.user.dto.UserResponseDto;
 
@@ -9,11 +10,13 @@ import java.util.List;
 public class UserConverter {
 
     // USER -> UserResDTO
-    public static UserResponseDto.UserRes toUserRes(User user) {
+    public static UserResponseDto.UserRes toUserRes(User user, FollowRepository followRepository) {
         return UserResponseDto.UserRes.builder()
                 .userId(user.getId())
                 .nickname(user.getNickname())
                 .profileImgUrl(user.getProfileImg())
+                .numFollowing(followRepository.countByUser(user))
+                .numFollower(followRepository.countByFollow(user))
                 .build();
     }
 
