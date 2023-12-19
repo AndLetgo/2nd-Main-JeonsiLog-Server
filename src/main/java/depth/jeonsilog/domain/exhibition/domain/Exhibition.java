@@ -3,6 +3,8 @@ package depth.jeonsilog.domain.exhibition.domain;
 import depth.jeonsilog.domain.common.BaseEntity;
 import depth.jeonsilog.domain.place.domain.Place;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -41,11 +43,14 @@ public class Exhibition extends BaseEntity {
 
     private Double rate;
 
-    @Size(max = 10)
+    @Min(value = 0)
+    @Max(value = 10)
     private Integer sequence;
 
+    private String imageUrl;
+
     @Builder
-    public Exhibition(Long id, Place place, String name, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, Double rate) {
+    public Exhibition(Long id, Place place, String name, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, Double rate, String imageUrl) {
         this.id = id;
         this.place = place;
         this.name = name;
@@ -57,5 +62,6 @@ public class Exhibition extends BaseEntity {
         this.information = information;
         this.rate = rate;
         this.sequence = 0; // default = 0
+        this.imageUrl = imageUrl;
     }
 }
