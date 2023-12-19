@@ -20,7 +20,11 @@ public class UserResponseDto {
         @Schema(type = "string", example = "http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg", description = "프로필 이미지 url을 출력합니다.")
         private String profileImgUrl;
 
-        // 팔로우 정보는 추후 추가 예정 //
+        @Schema(type = "int", example = "13", description = "유저의 팔로잉 숫자를 출력합니다.")
+        private Integer numFollowing;
+
+        @Schema(type = "int", example = "20", description = "유저의 팔로워 숫자를 출력합니다.")
+        private Integer numFollower;
     }
 
     @Data

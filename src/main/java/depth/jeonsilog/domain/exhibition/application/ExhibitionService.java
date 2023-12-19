@@ -25,9 +25,6 @@ public class ExhibitionService {
 
     private final ExhibitionRepository exhibitionRepository;
 
-    // TODO : 전체적으로 이미지에 대한 부분은 다시 처리해야 함
-    // TODO : 이미지 테이블 없애고 이미지 url만 전시회 테이블에 넣기
-    
     // Description : 전시회 목록 조회
     // TODO : 페이징
     public ResponseEntity<?> findExhibitionList() {
@@ -35,7 +32,7 @@ public class ExhibitionService {
         // TODO : sequence != 0 등으로 구하면 될 듯
         // TODO : 이미지, 전시회 이름, 전시공간 이름, 전시공간 주소, 키워드
 
-        // TODO : 페이징 구현 필요
+        // TODO : 페이징 처리 필요 !!
         return ResponseEntity.badRequest().body("구현해라");
     }
 

@@ -56,6 +56,7 @@ public class SaveService {
         Integer count = 1;
 
         while (true) {
+            System.out.println("=============================== num :" + count + " ===============================");
 
             // TODO : Exhibition
             // String 타입 XML 받아오기
@@ -234,6 +235,8 @@ public class SaveService {
 
                 exhibitionRepository.save(exhibition);
 
+                System.out.println("------------------------- " + exhibitionDetail.getResponse().getMsgBody().getPerforInfo().getSeq()  + " -------------------------");
+
             } // Exhibition Detail  for loop
 
             // TODO : while문 종료조건 : 마지막 page까지 호출
@@ -242,7 +245,7 @@ public class SaveService {
             Integer rows = exhibitionList.getResponse().getMsgBody().getRows();
             Integer numOfPages = (totalCount / rows) + 1;
 
-            if (count == 3) { // count로 페이지 조절
+            if (count == 6) { // count로 페이지 조절
                 ApiResponse apiResponse = ApiResponse.builder()
                         .check(true)
                         .information(exhibitionList)
@@ -263,8 +266,8 @@ public class SaveService {
         StringBuilder urlBuilder = new StringBuilder("http://www.culture.go.kr/openapi/rest/publicperformancedisplays/period");
 
         // 파라미터 추가 : 서비스 키, 날짜 범위 (from, to), 현재 페이지, 페이지 당 가져올 개수
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
-//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
+//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("from","UTF-8") + "=" + URLEncoder.encode("20230918", "UTF-8")); /**/
         urlBuilder.append("&" + URLEncoder.encode("to","UTF-8") + "=" + URLEncoder.encode("20240118", "UTF-8")); /**/
 
@@ -307,8 +310,8 @@ public class SaveService {
     // Description : 전시회 상세 정보 조회 OPEN API  /  파라미터로 seq
     public String callExhibitionDetailApi(Integer seq) throws IOException {
         StringBuilder urlBuilder = new StringBuilder("http://www.culture.go.kr/openapi/rest/publicperformancedisplays/d/"); /*URL*/
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
-//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
+//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("seq","UTF-8") + "=" + URLEncoder.encode(seq.toString(), "UTF-8")); // 전시회 번호 261752, 246264 ...
 
         // URL 생성 후 연결
@@ -348,8 +351,8 @@ public class SaveService {
 
         StringBuilder urlBuilder = new StringBuilder("http://www.culture.go.kr/openapi/rest/cultureartspaces/d/"); /*URL*/
 
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
-//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
+//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("seq","UTF-8") + "=" + URLEncoder.encode(seq.toString(), "UTF-8")); // 전시공간 seq
 
         // URL 생성 후 연결
