@@ -25,6 +25,8 @@ public class Exhibition extends BaseEntity {
 
     private String name;
 
+    private String imageUrl;
+
     @Enumerated(EnumType.STRING)
     private OperatingKeyword operatingKeyword;
 
@@ -47,10 +49,11 @@ public class Exhibition extends BaseEntity {
     private Integer sequence;
 
     @Builder
-    public Exhibition(Long id, Place place, String name, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, Double rate) {
+    public Exhibition(Long id, Place place, String name, String imageUrl, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, Double rate) {
         this.id = id;
         this.place = place;
         this.name = name;
+        this.imageUrl = imageUrl;
         this.operatingKeyword = operatingKeyword;
         this.priceKeyword = priceKeyword;
         this.price = price;
