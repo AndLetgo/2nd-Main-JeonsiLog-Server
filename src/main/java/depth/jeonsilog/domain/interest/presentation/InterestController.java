@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "User API", description = "User 관련 API입니다.")
+@Tag(name = "Interest API", description = "Interest 관련 API입니다.")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/interest")

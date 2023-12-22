@@ -48,6 +48,10 @@ public class Exhibition extends BaseEntity {
     @Max(value = 10)
     private Integer sequence;
 
+    public void updateRate(Double rate) {
+        this.rate = rate;
+    }
+
     @Builder
     public Exhibition(Long id, Place place, String name, String imageUrl, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, Double rate) {
         this.id = id;

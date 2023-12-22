@@ -8,7 +8,6 @@ import depth.jeonsilog.domain.interest.domain.repository.InterestRepository;
 import depth.jeonsilog.domain.interest.dto.InterestResponseDto;
 import depth.jeonsilog.domain.user.application.UserService;
 import depth.jeonsilog.domain.user.domain.User;
-import depth.jeonsilog.domain.user.domain.repository.UserRepository;
 import depth.jeonsilog.global.DefaultAssert;
 import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
@@ -27,7 +26,6 @@ import java.util.Optional;
 public class InterestService {
 
     private final InterestRepository interestRepository;
-    private final UserRepository userRepository;
     private final ExhibitionRepository exhibitionRepository;
     private final UserService userService;
 
