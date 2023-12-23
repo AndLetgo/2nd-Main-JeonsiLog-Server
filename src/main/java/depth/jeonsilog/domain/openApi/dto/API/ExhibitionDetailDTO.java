@@ -1,4 +1,4 @@
-package depth.jeonsilog.domain.exhibition.dto.API;
+package depth.jeonsilog.domain.openApi.dto.API;
 
 import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;

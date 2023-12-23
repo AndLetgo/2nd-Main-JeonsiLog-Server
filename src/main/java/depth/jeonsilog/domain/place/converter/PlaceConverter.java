@@ -30,6 +30,7 @@ public class PlaceConverter {
             PlaceResponseDto.PlaceInfoRes placeInfoRes = PlaceResponseDto.PlaceInfoRes.builder()
                     .placeId(place.getId())
                     .placeName(place.getName())
+                    .placeAddress(place.getAddress())
                     .build();
 
             placeInfoResList.add(placeInfoRes);

@@ -3,20 +3,24 @@ package depth.jeonsilog.domain.exhibition.application;
 import depth.jeonsilog.domain.exhibition.converter.ExhibitionConverter;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
+import depth.jeonsilog.domain.exhibition.dto.ExhibitionRequestDto;
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
 import depth.jeonsilog.domain.place.converter.PlaceConverter;
 import depth.jeonsilog.domain.place.domain.Place;
 import depth.jeonsilog.domain.place.dto.PlaceResponseDto;
 import depth.jeonsilog.global.DefaultAssert;
 import depth.jeonsilog.global.payload.ApiResponse;
+import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -26,17 +30,36 @@ public class ExhibitionService {
     private final ExhibitionRepository exhibitionRepository;
 
     // Description : 전시회 목록 조회
-    // TODO : 페이징
-    public ResponseEntity<?> findExhibitionList() {
+    // TODO : OK
+    public ResponseEntity<?> findExhibitionList(Integer page) {
 
-        // TODO : sequence != 0 등으로 구하면 될 듯
-        // TODO : 이미지, 전시회 이름, 전시공간 이름, 전시공간 주소, 키워드
+        PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(
+                Sort.Order.asc("sequence"),
+                Sort.Order.asc("createdDate")
+        ));
 
-        // TODO : 페이징 처리 필요 !!
-        return ResponseEntity.badRequest().body("구현해라");
+        Page<Exhibition> exhibitionPage = exhibitionRepository.findAll(pageRequest);
+
+        List<Exhibition> exhibitions = exhibitionPage.getContent();
+
+        List<Place> places = new ArrayList<>();
+
+        for (Exhibition exhibition : exhibitions) {
+            Place place = exhibition.getPlace();
+            places.add(place);
+        }
+
+        List<PlaceResponseDto.PlaceInfoRes> placeInfoResList = PlaceConverter.toPlaceInfoListRes(places);
+
+        List<ExhibitionResponseDto.ExhibitionRes> exhibitionResList = ExhibitionConverter.toExhibitionListRes(exhibitions, placeInfoResList);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionResList);
+
+        return ResponseEntity.ok(apiResponse);
     }
 
-    // Description : 전시회 상세 정보 조회 (feat. id)
+    // Description : 전시회 상세 정보 조회
+    // TODO : OK
     public ResponseEntity<?> findExhibition(Long exhibitionId) {
 
         Exhibition exhibition = validateExhibitionById(exhibitionId);
@@ -44,26 +67,21 @@ public class ExhibitionService {
         Place place = exhibition.getPlace();
         PlaceResponseDto.PlaceRes placeRes = PlaceConverter.toPlaceRes(place);
 
-        ExhibitionResponseDto.ExhibitionRes exhibitionRes = ExhibitionConverter.toExhibitionRes(exhibition, placeRes);
+        ExhibitionResponseDto.ExhibitionDetailRes exhibitionDetailRes = ExhibitionConverter.toExhibitionDetailRes(exhibition, placeRes);
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(exhibitionRes)
-                .build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionDetailRes);
 
         return ResponseEntity.ok(apiResponse);
     }
 
     // Description : 랜덤 전시회 2개 조회
-    // TODO : 이건 전체 중 2개만 조회하면 되는 것으로 일단 생각했음
+    // TODO : OK
     public ResponseEntity<?> randomTwoExhibitions() {
 
-        List<Exhibition> exhibitions = exhibitionRepository.findAll();
-        // IF jpa count가 있음 !!
+        long size = exhibitionRepository.count();
 
-        int size = exhibitions.size();
-        Integer randomId1 = (int) (Math.random() * size + 1);
-        Integer randomId2 = (int) (Math.random() * size + 1);
+        int randomId1 = (int) (Math.random() * size + 1);
+        int randomId2 = (int) (Math.random() * size + 1);
 
         // 같으면 숫자 다시 뽑기
         while (randomId1 == randomId2)
@@ -82,15 +100,13 @@ public class ExhibitionService {
         randomExhibitionRes = ExhibitionConverter.toRandomExhibitionRes(randomExhibition2);
         randomExhibitionResList.add(randomExhibitionRes);
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(randomExhibitionResList)
-                .build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(randomExhibitionResList);
 
         return ResponseEntity.ok(apiResponse);
     }
 
     // Description : 검색어를 포함한 전시회 목록 조회
+    // TODO : 논의 후 페이징 처리 필요
     public ResponseEntity<?> searchExhibitions(String searchWord) {
 
         List<Exhibition> exhibitions = exhibitionRepository.findByNameContaining(searchWord);
@@ -106,38 +122,43 @@ public class ExhibitionService {
 
         List<PlaceResponseDto.PlaceInfoRes> placeInfoResList = PlaceConverter.toPlaceInfoListRes(places);
 
-        List<ExhibitionResponseDto.SearchExhibitionRes> searchExhibitionListRes = ExhibitionConverter.toSearchExhibitionListRes(exhibitions, placeInfoResList);
+        List<ExhibitionResponseDto.ExhibitionRes> exhibitionResList = ExhibitionConverter.toExhibitionListRes(exhibitions, placeInfoResList);
 
-        ApiResponse apiResponse = ApiResponse.builder()
-                .check(true)
-                .information(searchExhibitionListRes)
-                .build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionResList);
 
-        return ResponseEntity.ok(searchExhibitionListRes);
+        return ResponseEntity.ok(apiResponse);
 
     }
 
     // Description : 전시회 상세 정보 수정
-    // TODO : 전시회 이미지 필요
-//    public ResponseEntity<?> updateExhibitionDetail(Long exhibitionId) {
-//
-//        Exhibition exhibition = validateExhibitionById(exhibitionId);
-//
-//        /**
-//         * 이름
-//         * 키워드
-//         * 키워드 추가
-//         * 세부정보
-//         * - 전시공간 주소
-//         * - 전시공간 운영시간
-//         * - 전시공간 휴관일
-//         * - 전시공간 전화번호
-//         * - 전시공간 홈페이지 링크
-//         * 전시회 정보
-//         */
-//
-//
-//    }
+    // TODO : OK
+    @Transactional
+    public ResponseEntity<?> updateExhibitionDetail(ExhibitionRequestDto.UpdateExhibitionDetailReq updateExhibitionDetailReq) {
+
+        Exhibition exhibition = validateExhibitionById(updateExhibitionDetailReq.getExhibitionId());
+        exhibition.updateExhibitionDetail(updateExhibitionDetailReq);
+
+        Place place = exhibition.getPlace();
+        place.updatePlaceWithExhibitionDetail(updateExhibitionDetailReq.getUpdatePlaceInfo());
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(
+                Message.builder().message("전시회 및 전시공간 정보를 수정했습니다.").build());
+
+        return ResponseEntity.ok(apiResponse);
+
+    }
+
+    // Description : 전시회 ID로 전시회 포스터 조회
+    public ResponseEntity<?> findPoster(Long exhibitionId) {
+
+        Exhibition exhibition = validateExhibitionById(exhibitionId);
+
+        ExhibitionResponseDto.PosterRes posterRes = ExhibitionConverter.toPosterRes(exhibition);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(posterRes);
+
+        return ResponseEntity.ok(apiResponse);
+    }
 
     public Exhibition validateExhibitionById(Long exhibitionId) {
         Optional<Exhibition> exhibition = exhibitionRepository.findById(exhibitionId);

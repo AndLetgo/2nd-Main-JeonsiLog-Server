@@ -1,6 +1,7 @@
 package depth.jeonsilog.domain.exhibition.domain;
 
 import depth.jeonsilog.domain.common.BaseEntity;
+import depth.jeonsilog.domain.exhibition.dto.ExhibitionRequestDto;
 import depth.jeonsilog.domain.place.domain.Place;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -42,11 +43,19 @@ public class Exhibition extends BaseEntity {
 
     private Double rate;
 
-    @Min(value = 0)
-    @Max(value = 10)
+    @Min(value = 1)
+    @Max(value = 11)
     private Integer sequence;
 
     private String imageUrl;
+
+    // update 메소드
+    public void updateExhibitionDetail(ExhibitionRequestDto.UpdateExhibitionDetailReq updateExhibitionDetailReq) {
+        this.name = updateExhibitionDetailReq.getExhibitionName();
+        this.operatingKeyword = updateExhibitionDetailReq.getOperatingKeyword();
+        this.priceKeyword = updateExhibitionDetailReq.getPriceKeyword();
+        this.information = updateExhibitionDetailReq.getInformation();
+    }
 
     @Builder
     public Exhibition(Long id, Place place, String name, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, Double rate, String imageUrl) {
@@ -60,7 +69,7 @@ public class Exhibition extends BaseEntity {
         this.endDate = endDate;
         this.information = information;
         this.rate = rate;
-        this.sequence = 0; // default = 0
+        this.sequence = 11; // default = 11
         this.imageUrl = imageUrl;
     }
 }

@@ -8,9 +8,9 @@ import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.exhibition.domain.OperatingKeyword;
 import depth.jeonsilog.domain.exhibition.domain.PriceKeyword;
 import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
-import depth.jeonsilog.domain.exhibition.dto.API.ExhibitionDetailDTO;
-import depth.jeonsilog.domain.exhibition.dto.API.ExhibitionListDTO;
-import depth.jeonsilog.domain.exhibition.dto.API.PlaceDetailDTO;
+import depth.jeonsilog.domain.openApi.dto.API.ExhibitionDetailDTO;
+import depth.jeonsilog.domain.openApi.dto.API.ExhibitionListDTO;
+import depth.jeonsilog.domain.openApi.dto.API.PlaceDetailDTO;
 import depth.jeonsilog.domain.place.domain.Place;
 import depth.jeonsilog.domain.place.domain.repository.PlaceRepository;
 import depth.jeonsilog.global.payload.ApiResponse;
@@ -53,7 +53,7 @@ public class SaveService {
          */
 
         // page
-        Integer count = 1;
+        Integer count = 15;
 
         while (true) {
             System.out.println("=============================== num :" + count + " ===============================");
@@ -245,7 +245,7 @@ public class SaveService {
             Integer rows = exhibitionList.getResponse().getMsgBody().getRows();
             Integer numOfPages = (totalCount / rows) + 1;
 
-            if (count == 6) { // count로 페이지 조절
+            if (count == 23) { // count로 페이지 조절
                 ApiResponse apiResponse = ApiResponse.builder()
                         .check(true)
                         .information(exhibitionList)
@@ -266,8 +266,8 @@ public class SaveService {
         StringBuilder urlBuilder = new StringBuilder("http://www.culture.go.kr/openapi/rest/publicperformancedisplays/period");
 
         // 파라미터 추가 : 서비스 키, 날짜 범위 (from, to), 현재 페이지, 페이지 당 가져올 개수
-//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
+//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("from","UTF-8") + "=" + URLEncoder.encode("20230918", "UTF-8")); /**/
         urlBuilder.append("&" + URLEncoder.encode("to","UTF-8") + "=" + URLEncoder.encode("20240118", "UTF-8")); /**/
 
@@ -310,8 +310,8 @@ public class SaveService {
     // Description : 전시회 상세 정보 조회 OPEN API  /  파라미터로 seq
     public String callExhibitionDetailApi(Integer seq) throws IOException {
         StringBuilder urlBuilder = new StringBuilder("http://www.culture.go.kr/openapi/rest/publicperformancedisplays/d/"); /*URL*/
-//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
+//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("seq","UTF-8") + "=" + URLEncoder.encode(seq.toString(), "UTF-8")); // 전시회 번호 261752, 246264 ...
 
         // URL 생성 후 연결
@@ -351,8 +351,8 @@ public class SaveService {
 
         StringBuilder urlBuilder = new StringBuilder("http://www.culture.go.kr/openapi/rest/cultureartspaces/d/"); /*URL*/
 
-//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
+//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("seq","UTF-8") + "=" + URLEncoder.encode(seq.toString(), "UTF-8")); // 전시공간 seq
 
         // URL 생성 후 연결

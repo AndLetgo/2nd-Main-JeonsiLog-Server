@@ -1,6 +1,7 @@
 package depth.jeonsilog.domain.place.domain;
 
 import depth.jeonsilog.domain.common.BaseEntity;
+import depth.jeonsilog.domain.place.dto.PlaceRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -14,7 +15,7 @@ public class Place extends BaseEntity {
 
     /**
      * TODO : address 나눠야 하나 ?
-     * TODO : OPEN API 응답 보고, 우리 피그마 보고 --> 시/군/구 등 나눌 필요 있다면 ... !!!
+     * TODO : OPEN API 응답 보고, 우리 피그마 보고 --> 시/군/구 등 나눌 필요 있다면 나누는 것으로 !
      */
 
     @Id
@@ -33,6 +34,15 @@ public class Place extends BaseEntity {
     private String tel;
 
     private String homePage;
+
+    // update 메소드
+    public void updatePlaceWithExhibitionDetail(PlaceRequestDto.UpdatePlaceWithExhibitionDetailReq updatePlaceWithExhibitionDetailReq) {
+        this.address = updatePlaceWithExhibitionDetailReq.getPlaceAddress();
+        this.operatingTime = updatePlaceWithExhibitionDetailReq.getOperatingTime();
+        this.closedDays = updatePlaceWithExhibitionDetailReq.getClosedDays();
+        this.tel = updatePlaceWithExhibitionDetailReq.getPlaceTel();
+        this.homePage = updatePlaceWithExhibitionDetailReq.getPlaceHomePage();
+    }
 
     @Builder
     public Place(Long id, String name, String address, String operatingTime, ClosedDays closedDays, String tel, String homePage) {
