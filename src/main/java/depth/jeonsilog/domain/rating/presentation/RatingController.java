@@ -34,12 +34,6 @@ public class RatingController {
 
     private final RatingService ratingService;
 
-    //- 유저 별점 목록 조회 : GET /ratings
-    //- 타 유저 별점 목록 조회 : GET /ratings/{user-id}
-    //- ✅ 별점 등록 : POST /ratings
-    //- ✅ 별점 수정 : PATCH /ratings
-    //- ✅ 별점 삭제 : DELETE /ratings
-
     @Operation(summary = "별점 등록", description = "전시회 id를 이용하여 별점을 등록합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "등록 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),

@@ -32,14 +32,6 @@ public class RatingResponseDto {
         @Schema(type = "integer", example = "15", description = "내가 남긴 별점 개수를 출력합니다.")
         private Integer numRating;
 
-        @Schema(type = "object", example = "[\n" +
-                "            {\n" +
-                "                \"ratingId\": 1,\n" +
-                "                \"exhibitionId\": 1,\n" +
-                "                \"exhibitionName\": \"뎁스 단체전\",\n" +
-                "                \"rate\": 4.5\n" +
-                "            }\n" +
-                "        ]", description = "별점 정보 리스트를 출력합니다.")
         private List<RatingRes> data;
     }
 }

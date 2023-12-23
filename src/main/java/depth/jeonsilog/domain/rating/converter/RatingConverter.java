@@ -18,7 +18,7 @@ public class RatingConverter {
                 .build();
     }
 
-    public static List<RatingResponseDto.RatingRes>toRatingRes(List<Rating> ratingList) {
+    public static List<RatingResponseDto.RatingRes> toRatingRes(List<Rating> ratingList) {
         List<RatingResponseDto.RatingRes> ratingResList = new ArrayList<>();
         for (Rating rating : ratingList) {
             Exhibition exhibition = rating.getExhibition();
