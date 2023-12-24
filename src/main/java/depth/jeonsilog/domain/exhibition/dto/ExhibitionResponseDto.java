@@ -97,4 +97,24 @@ public class ExhibitionResponseDto {
         private String imageUrl;
     }
 
+    @Data
+    @Builder
+    public static class ExhibitionInPlaceRes {
+
+        @Schema(type = "Long", example = "1", description = "전시회 ID를 출력합니다.")
+        private Long exhibitionId;
+
+        @Schema(type = "String", example = "한국필묵그룹 선흔 창립20주년 기념전", description = "전시회 이름을 출력합니다.")
+        private String exhibitionName;
+
+        @Schema(type = "OperatingKeyword", example = "ON_DISPLAY", description = "전시회 운영 키워드를 출력합니다.")
+        private OperatingKeyword operatingKeyword;
+
+        @Schema(type = "PriceKeyword", example = "FREE", description = "전시회 가격 키워드를 출력합니다.")
+        private PriceKeyword priceKeyword;
+
+        @Schema(type = "String", example = "http://www.culture.go.kr/upload/rdf/23/11/rdf_2023112721202875517.jpg", description = "전시회 이미지 포스터를 출력합니다.")
+        private String imageUrl;
+    }
+
 }

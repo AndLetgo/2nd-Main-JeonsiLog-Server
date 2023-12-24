@@ -107,9 +107,13 @@ public class ExhibitionService {
 
     // Description : 검색어를 포함한 전시회 목록 조회
     // TODO : 논의 후 페이징 처리 필요
-    public ResponseEntity<?> searchExhibitions(String searchWord) {
+    public ResponseEntity<?> searchExhibitions(Integer page, String searchWord) {
 
-        List<Exhibition> exhibitions = exhibitionRepository.findByNameContaining(searchWord);
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "createdDate"));
+
+        Page<Exhibition> exhibitionPage = exhibitionRepository.findByNameContaining(pageRequest, searchWord);
+
+        List<Exhibition> exhibitions = exhibitionPage.getContent();
         // 이렇게 써도 될지 .. ?
         DefaultAssert.isTrue(!exhibitions.isEmpty(), "해당 검색어를 포함한 전시회가 존재하지 않습니다.");
 

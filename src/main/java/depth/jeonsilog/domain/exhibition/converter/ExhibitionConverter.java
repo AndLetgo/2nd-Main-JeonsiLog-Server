@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ExhibitionConverter {
 
-    // EXHIBITION -> exhibitionResList
+    // Exhibitions & placeInfoResList -> exhibitionResList
     public static List<ExhibitionResponseDto.ExhibitionRes> toExhibitionListRes(List<Exhibition> exhibitions, List<PlaceResponseDto.PlaceInfoRes> placeInfoListRes) {
 
         DefaultAssert.isTrue(exhibitions.size() == placeInfoListRes.size(), "올바르지 않은 정보입니다.");
@@ -68,5 +68,24 @@ public class ExhibitionConverter {
                 .build();
     }
 
+    // Exhibitions -> ExhibitionListInPlaceResList
+    public static List<ExhibitionResponseDto.ExhibitionInPlaceRes> toExhibitionListInPlaceRes(List<Exhibition> exhibitions) {
+
+        List<ExhibitionResponseDto.ExhibitionInPlaceRes> exhibitionInPlaceResList = new ArrayList<>();
+
+        for (Exhibition exhibition : exhibitions) {
+            ExhibitionResponseDto.ExhibitionInPlaceRes exhibitionInPlaceRes = ExhibitionResponseDto.ExhibitionInPlaceRes.builder()
+                    .exhibitionId(exhibition.getId())
+                    .exhibitionName(exhibition.getName())
+                    .operatingKeyword(exhibition.getOperatingKeyword())
+                    .priceKeyword(exhibition.getPriceKeyword())
+                    .imageUrl(exhibition.getImageUrl())
+                    .build();
+
+            exhibitionInPlaceResList.add(exhibitionInPlaceRes);
+        }
+
+        return exhibitionInPlaceResList;
+    }
 
 }

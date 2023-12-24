@@ -1,10 +1,8 @@
 package depth.jeonsilog.domain.exhibition.presentation;
 
 import depth.jeonsilog.domain.exhibition.application.ExhibitionService;
-import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionRequestDto;
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
-import depth.jeonsilog.domain.place.domain.repository.PlaceRepository;
 import depth.jeonsilog.global.payload.ErrorResponse;
 import depth.jeonsilog.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,9 +70,10 @@ public class ExhibitionController {
     })
     @GetMapping("/search/{searchWord}")
     public ResponseEntity<?> searchExhibitions(
+            @Parameter(description = "검색한 전시회 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "검색어를 입력해주세요.", required = true) @PathVariable(value = "searchWord") String searchWord
     ) {
-        return exhibitionService.searchExhibitions(searchWord);
+        return exhibitionService.searchExhibitions(page, searchWord);
     }
 
     // Description : 전시회 상세 정보 수정
@@ -90,7 +89,6 @@ public class ExhibitionController {
         return exhibitionService.updateExhibitionDetail(updateExhibitionDetailReq);
     }
 
-
     // Description : 전시회 id로 전시회 포스터 조회
     // 전시회 포스터는 하나라서.. 그 화면의 필요 여부 확인이 필요하긴 하나..
     @Operation(summary = "전시회 포스터 조회", description = "전시회 포스터를 조회합니다.")
@@ -104,7 +102,4 @@ public class ExhibitionController {
     ) {
         return exhibitionService.findPoster(exhibitionId);
     }
-
-    // TODO : Description : 키워드 추가 입력 - 보류로 되어있긴 함 - 전시회 상세 정보 수정에서 가능하므로 필요 없을 듯 ?
-
 }
