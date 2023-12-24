@@ -28,6 +28,10 @@ public class Rating extends BaseEntity {
 
     private Double rate;
 
+    public void updateRate(Double rate) {
+        this.rate = rate;
+    }
+
     @Builder
     public Rating(Long id, User user, Exhibition exhibition, Double rate) {
         this.id = id;
