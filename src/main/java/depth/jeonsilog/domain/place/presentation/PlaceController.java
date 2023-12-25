@@ -37,4 +37,14 @@ public class PlaceController {
         return placeService.findExhibitionListInPlace(page, placeId);
     }
 
+    // Description : 검색어를 포함한 전시공간 목록 조회
+    // TODO : 논의 후 페이징 처리
+    @GetMapping("/search/{searchWord}")
+    public ResponseEntity<?> searchPlaces(
+            @Parameter(description = "검색한 전시 공간 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
+            @Parameter(description = "검색어를 입력해주세요.", required = true) @PathVariable(value = "searchWord") String searchWord
+    ) {
+        return placeService.searchPlaces(page, searchWord);
+    }
+
 }

@@ -50,4 +50,17 @@ public class PlaceResponseDto {
         private String placeAddress;
     }
 
+    // 검색어를 포함한 전시 공간 목록 조회
+    @Data
+    @Builder
+    public static class SearchPlaceRes {
+
+        @Schema(type = "Long", example = "1", description = "전시 공간 ID입니다.")
+        private Long placeId;
+
+        @Schema(type = "String", example = "롯데콘서트홀", description = "전시 공간 이름입니다.")
+        private String placeName;
+
+    }
+
 }

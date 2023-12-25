@@ -39,4 +39,21 @@ public class PlaceConverter {
         return placeInfoResList;
     }
 
+    // Places -> SearchPlaceResList
+    public static List<PlaceResponseDto.SearchPlaceRes> toSearchPlaceListRes(List<Place> places) {
+
+        List<PlaceResponseDto.SearchPlaceRes> searchPlaceResList = new ArrayList<>();
+
+        for (Place place : places) {
+            PlaceResponseDto.SearchPlaceRes searchPlaceRes = PlaceResponseDto.SearchPlaceRes.builder()
+                    .placeId(place.getId())
+                    .placeName(place.getName())
+                    .build();
+
+            searchPlaceResList.add(searchPlaceRes);
+        }
+
+        return searchPlaceResList;
+    }
+
 }
