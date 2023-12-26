@@ -1,6 +1,7 @@
 package depth.jeonsilog.domain.exhibition.domain;
 
 import depth.jeonsilog.domain.common.BaseEntity;
+import depth.jeonsilog.domain.exhibition.dto.ExhibitionRequestDto;
 import depth.jeonsilog.domain.place.domain.Place;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -25,6 +26,8 @@ public class Exhibition extends BaseEntity {
 
     private String name;
 
+    private String imageUrl;
+
     @Enumerated(EnumType.STRING)
     private OperatingKeyword operatingKeyword;
 
@@ -42,15 +45,28 @@ public class Exhibition extends BaseEntity {
 
     private Double rate;
 
-    @Min(value = 0)
-    @Max(value = 10)
+    @Min(value = 1)
+    @Max(value = 11)
     private Integer sequence;
 
+    // update 메소드
+    public void updateExhibitionDetail(ExhibitionRequestDto.UpdateExhibitionDetailReq updateExhibitionDetailReq) {
+        this.name = updateExhibitionDetailReq.getExhibitionName();
+        this.operatingKeyword = updateExhibitionDetailReq.getOperatingKeyword();
+        this.priceKeyword = updateExhibitionDetailReq.getPriceKeyword();
+        this.information = updateExhibitionDetailReq.getInformation();
+    }
+
+    public void updateRate(Double rate) {
+        this.rate = rate;
+    }
+
     @Builder
-    public Exhibition(Long id, Place place, String name, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, Double rate) {
+    public Exhibition(Long id, Place place, String name, String imageUrl, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, Double rate) {
         this.id = id;
         this.place = place;
         this.name = name;
+        this.imageUrl = imageUrl;
         this.operatingKeyword = operatingKeyword;
         this.priceKeyword = priceKeyword;
         this.price = price;
@@ -58,6 +74,7 @@ public class Exhibition extends BaseEntity {
         this.endDate = endDate;
         this.information = information;
         this.rate = rate;
-        this.sequence = 0; // default = 0
+        this.sequence = 11; // default = 11
+        this.imageUrl = imageUrl;
     }
 }

@@ -8,8 +8,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "status = 'ACTIVE'")
 @Entity
 @Getter
 public class Review extends BaseEntity {
@@ -31,12 +33,16 @@ public class Review extends BaseEntity {
 
     private Integer numReply;
 
+    public void updateNumReply(Integer numReply) {
+        this.numReply = numReply;
+    }
+
     @Builder
-    public Review(Long id, User user, Exhibition exhibition, String contents, int numReply) {
+    public Review(Long id, User user, Exhibition exhibition, String contents) {
         this.id = id;
         this.user = user;
         this.exhibition = exhibition;
         this.contents = contents;
-        this.numReply = numReply;
+        this.numReply = 0;
     }
 }

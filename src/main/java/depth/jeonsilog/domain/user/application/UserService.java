@@ -1,5 +1,7 @@
 package depth.jeonsilog.domain.user.application;
 
+import depth.jeonsilog.domain.auth.domain.Token;
+import depth.jeonsilog.domain.auth.domain.repository.TokenRepository;
 import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.follow.domain.repository.FollowRepository;
 import depth.jeonsilog.domain.user.converter.UserConverter;
@@ -26,6 +28,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final TokenRepository tokenRepository;
 
     // 토큰으로 본인 정보 조회
     public ResponseEntity<?> findUserByToken(UserPrincipal userPrincipal) {
@@ -84,6 +87,10 @@ public class UserService {
         User findUser = validateUserByToken(userPrincipal);
         findUser.updateStatus(Status.DELETE);  // soft delete
 
+        Optional<Token> token = tokenRepository.findByUserEmail(userPrincipal.getEmail());
+        DefaultAssert.isTrue(token.isPresent(), "이미 탈퇴되었습니다.");
+        tokenRepository.delete(token.get());
+
         ApiResponse apiResponse = ApiResponse.toApiResponse(
                 Message.builder().message("회원이 탈퇴되었습니다.").build());
 
@@ -137,7 +144,7 @@ public class UserService {
 
 
     public User validateUserByToken(UserPrincipal userPrincipal) {
-        Optional<User> user = userRepository.findByEmail(userPrincipal.getEmail());
+        Optional<User> user = userRepository.findById(userPrincipal.getId());
         DefaultAssert.isTrue(user.isPresent(), "유저 정보가 올바르지 않습니다.");
         return user.get();
     }
