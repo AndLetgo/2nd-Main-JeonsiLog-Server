@@ -1,5 +1,5 @@
 package depth.jeonsilog.domain.exhibition.domain;
 
 public enum OperatingKeyword {
-    BEFORE_DISPLAY, ON_DISPLAY
+    ON_DISPLAY, BEFORE_DISPLAY, AFTER_DISPLAY
 }
