@@ -100,4 +100,10 @@ public class ReviewService {
         ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListRes);
         return ResponseEntity.ok(apiResponse);
     }
+
+    public Review validateReviewById(Long reviewId) {
+        Optional<Review> review = reviewRepository.findById(reviewId);
+        DefaultAssert.isTrue(review.isPresent(), "감상평 정보가 올바르지 않습니다.");
+        return review.get();
+    }
 }
