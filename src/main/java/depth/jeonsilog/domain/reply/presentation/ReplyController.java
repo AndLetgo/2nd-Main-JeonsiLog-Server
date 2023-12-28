@@ -11,6 +11,7 @@ import depth.jeonsilog.global.payload.ErrorResponse;
 import depth.jeonsilog.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,7 +32,7 @@ public class ReplyController {
     // Description : 댓글 목록 조회
     @Operation(summary = "댓글 목록 조회", description = "감상평에 대한 댓글 목록을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "댓글 목록 조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReplyResponseDto.ReplyRes.class))}),
+            @ApiResponse(responseCode = "200", description = "댓글 목록 조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ReplyResponseDto.ReplyRes.class)))}),
             @ApiResponse(responseCode = "400", description = "댓글 목록 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/{reviewId}")
