@@ -1,5 +1,6 @@
 package depth.jeonsilog.domain.rating.presentation;
 
+import depth.jeonsilog.domain.place.dto.PlaceResponseDto;
 import depth.jeonsilog.domain.rating.application.RatingService;
 import depth.jeonsilog.domain.rating.dto.RatingRequestDto;
 import depth.jeonsilog.domain.rating.dto.RatingResponseDto;
@@ -9,6 +10,7 @@ import depth.jeonsilog.global.payload.ErrorResponse;
 import depth.jeonsilog.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -75,7 +77,7 @@ public class RatingController {
 
     @Operation(summary = "나의 별점 목록 조회", description = "Access Token을 이용하여 나의 별점 목록을 조회합니다..")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RatingResponseDto.RatingListRes.class))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = RatingResponseDto.RatingListRes.class)))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping
@@ -87,7 +89,7 @@ public class RatingController {
 
     @Operation(summary = "타 유저의 별점 목록 조회", description = "User id를 이용하여 타 유저의 별점 목록을 조회합니다..")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RatingResponseDto.RatingListRes.class))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = RatingResponseDto.RatingListRes.class)))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/{userId}")

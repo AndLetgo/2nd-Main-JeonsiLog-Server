@@ -1,5 +1,6 @@
 package depth.jeonsilog.domain.user.presentation;
 
+import depth.jeonsilog.domain.review.dto.ReviewResponseDto;
 import depth.jeonsilog.domain.user.application.UserService;
 import depth.jeonsilog.domain.user.dto.UserRequestDto;
 import depth.jeonsilog.domain.user.dto.UserResponseDto;
@@ -9,6 +10,7 @@ import depth.jeonsilog.global.payload.ErrorResponse;
 import depth.jeonsilog.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -90,7 +92,7 @@ public class UserController {
 
     @Operation(summary = "유저 검색", description = "검색어로 유저를 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.SearchUsersRes.class))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = UserResponseDto.SearchUsersRes.class)))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/search/{searchWord}")
