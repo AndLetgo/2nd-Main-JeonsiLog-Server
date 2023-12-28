@@ -4,6 +4,7 @@ import depth.jeonsilog.domain.auth.domain.Token;
 import depth.jeonsilog.domain.auth.domain.repository.TokenRepository;
 import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.follow.domain.repository.FollowRepository;
+import depth.jeonsilog.domain.s3.application.S3Service;
 import depth.jeonsilog.domain.user.converter.UserConverter;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.domain.user.domain.repository.UserRepository;
@@ -17,7 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +32,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     private final TokenRepository tokenRepository;
+    private final S3Service s3Service;
 
     // 토큰으로 본인 정보 조회
     public ResponseEntity<?> findUserByToken(UserPrincipal userPrincipal) {
@@ -64,6 +68,22 @@ public class UserService {
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(
                 Message.builder().message("닉네임을 변경했습니다.").build());
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // 프로필 변경
+    @Transactional
+    public ResponseEntity<?> changeProfile(UserPrincipal userPrincipal, MultipartFile img) throws IOException {
+        User findUser = validateUserByToken(userPrincipal);
+
+        if (!img.isEmpty()) {
+            String storedFileName = s3Service.saveFile(img);
+            findUser.updateProfileImg(storedFileName);
+        }
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(
+                Message.builder().message("프로필 사진을 변경했습니다.").build());
 
         return ResponseEntity.ok(apiResponse);
     }
