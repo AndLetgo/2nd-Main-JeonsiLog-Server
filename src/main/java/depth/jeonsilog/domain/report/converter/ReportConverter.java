@@ -23,6 +23,7 @@ public class ReportConverter {
                 .build();
     }
 
+    // ReportList & TargetList -> ReportResList
     public static List<ReportResponseDto.ReportRes> toReportResList(List<Report> reports, List<Object> targetList) {
 
         List<ReportResponseDto.ReportRes> reportResList = new ArrayList<>();

@@ -77,23 +77,7 @@ public class ReportService {
 
         DefaultAssert.isTrue(!reports.isEmpty(), "신고 내역이 존재하지 않습니다.");
 
-        // Description : 방법 2
-        List<Object> targetList = new ArrayList<>();
-
-        for (Report report : reports) {
-            Object target = new Object();
-            if (report.getReportType().equals(ReportType.REVIEW)) {
-                target = reviewService.validateReviewById(report.getReportedId());
-
-            } else if (report.getReportType().equals(ReportType.REPLY)) {
-                target = replyService.validateReplyById(report.getReportedId());
-
-            } else if (report.getReportType().equals(ReportType.EXHIBITION)) {
-                target = exhibitionService.validateExhibitionById(report.getReportedId());
-
-            }
-            targetList.add(target);
-        }
+        List<Object> targetList = createTargetList(reports);
 
         List<ReportResponseDto.ReportRes> reportResList = ReportConverter.toReportResList(reports, targetList);
 
@@ -113,4 +97,19 @@ public class ReportService {
         }
     }
 
+    private List<Object> createTargetList(List<Report> reports) {
+        List<Object> targetList = new ArrayList<>();
+
+        for (Report report : reports) {
+            Object target = new Object();
+
+            switch (report.getReportType()) {
+                case REVIEW -> target = reviewService.validateReviewById(report.getReportedId());
+                case REPLY -> target = replyService.validateReplyById(report.getReportedId());
+                case EXHIBITION -> target = exhibitionService.validateExhibitionById(report.getReportedId());
+            }
+            targetList.add(target);
+        }
+        return targetList;
+    }
 }
