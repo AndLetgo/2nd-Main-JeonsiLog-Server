@@ -1,4 +1,4 @@
 spring:
   profiles:
     # 로컬 : "h2"  ||  RDS : "rds"로 사용
-    active: ["h2", "s3", "auth", "swagger"]
+    active: ["rds", "s3", "auth", "swagger"]
