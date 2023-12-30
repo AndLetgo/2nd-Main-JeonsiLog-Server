@@ -7,6 +7,7 @@ import depth.jeonsilog.domain.calendar.dto.CalendarRequestDto;
 import depth.jeonsilog.domain.s3.application.S3Uploader;
 import depth.jeonsilog.domain.user.application.UserService;
 import depth.jeonsilog.domain.user.domain.User;
+import depth.jeonsilog.global.DefaultAssert;
 import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
@@ -36,7 +37,7 @@ public class CalendarService {
         if (!img.isEmpty()) {
             String storedFileName = s3Uploader.upload(img, "calendar_img");
 
-            Optional<Calendar> checkCalendar = calendarRepository.findByPhotoDate(uploadImageReq.getDate());
+            Optional<Calendar> checkCalendar = calendarRepository.findByUserAndPhotoDate(findUser, uploadImageReq.getDate());
             if (checkCalendar.isPresent()) {
                 checkCalendar.get().updateImage(storedFileName);
             } else {
@@ -56,7 +57,7 @@ public class CalendarService {
     public ResponseEntity<?> uploadPoster(UserPrincipal userPrincipal, CalendarRequestDto.UploadPosterReq uploadPosterReq) {
         User findUser = userService.validateUserByToken(userPrincipal);
 
-        Optional<Calendar> checkCalendar = calendarRepository.findByPhotoDate(uploadPosterReq.getDate());
+        Optional<Calendar> checkCalendar = calendarRepository.findByUserAndPhotoDate(findUser, uploadPosterReq.getDate());
         if (checkCalendar.isPresent()) {
             checkCalendar.get().updateImage(uploadPosterReq.getImgUrl());
         } else {
@@ -71,6 +72,20 @@ public class CalendarService {
     }
 
     // Description: 이미지 삭제
+    @Transactional
+    public ResponseEntity<?> deleteCalendar(UserPrincipal userPrincipal, CalendarRequestDto.UploadImageReq deleteImageReq) {
+        User findUser = userService.validateUserByToken(userPrincipal);
+
+        Optional<Calendar> findCalendar = calendarRepository.findByUserAndPhotoDate(findUser, deleteImageReq.getDate());
+        DefaultAssert.isTrue(findCalendar.isPresent(), "해당 날짜에 이미지가 없습니다.");
+
+        calendarRepository.delete(findCalendar.get());
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(
+                Message.builder().message("이미지를 삭제했습니다.").build());
+
+        return ResponseEntity.ok(apiResponse);
+    }
 
     // Description: 나의 월별 이미지 목록 조회
 
