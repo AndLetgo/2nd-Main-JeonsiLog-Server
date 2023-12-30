@@ -4,7 +4,7 @@ import depth.jeonsilog.domain.auth.domain.Token;
 import depth.jeonsilog.domain.auth.domain.repository.TokenRepository;
 import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.follow.domain.repository.FollowRepository;
-import depth.jeonsilog.domain.s3.application.S3Service;
+import depth.jeonsilog.domain.s3.application.S3Uploader;
 import depth.jeonsilog.domain.user.converter.UserConverter;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.domain.user.domain.repository.UserRepository;
@@ -32,7 +32,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     private final TokenRepository tokenRepository;
-    private final S3Service s3Service;
+    private final S3Uploader s3Uploader;
 
     // 토큰으로 본인 정보 조회
     public ResponseEntity<?> findUserByToken(UserPrincipal userPrincipal) {
@@ -78,7 +78,7 @@ public class UserService {
         User findUser = validateUserByToken(userPrincipal);
 
         if (!img.isEmpty()) {
-            String storedFileName = s3Service.saveFile(img);
+            String storedFileName = s3Uploader.upload(img, "profile_img");
             findUser.updateProfileImg(storedFileName);
         }
 
