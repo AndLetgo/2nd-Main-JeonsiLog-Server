@@ -29,6 +29,10 @@ public class Report extends BaseEntity {
 
     private boolean isChecked = false;
 
+    public void updateChecked (boolean isChecked) {
+        this.isChecked = isChecked;
+    }
+
     @Builder
     public Report(Long id, User user, ReportType reportType, Long reportedId, boolean isChecked) {
         this.id = id;

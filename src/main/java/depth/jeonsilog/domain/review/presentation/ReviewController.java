@@ -1,5 +1,6 @@
 package depth.jeonsilog.domain.review.presentation;
 
+import depth.jeonsilog.domain.rating.dto.RatingResponseDto;
 import depth.jeonsilog.domain.review.application.ReviewService;
 import depth.jeonsilog.domain.review.dto.ReviewRequestDto;
 import depth.jeonsilog.domain.review.dto.ReviewResponseDto;
@@ -9,6 +10,7 @@ import depth.jeonsilog.global.payload.ErrorResponse;
 import depth.jeonsilog.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -61,7 +63,7 @@ public class ReviewController {
 
     @Operation(summary = "전시회의 감상평 조회", description = "Access Token, 전시회 id를 이용하여 감상평을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReviewResponseDto.ReviewListRes.class))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ReviewResponseDto.ReviewListRes.class)))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/exhibition/{exhibitionId}")

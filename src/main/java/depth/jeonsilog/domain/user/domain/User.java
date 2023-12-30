@@ -50,6 +50,10 @@ public class User extends BaseEntity {
         this.nickname = nickname;
     }
 
+    public void updateProfileImg(String profileImg) {
+        this.profileImg = profileImg;
+    }
+
     public void updateIsOpen(boolean isOpen) {
         this.isOpen = isOpen;
     }
