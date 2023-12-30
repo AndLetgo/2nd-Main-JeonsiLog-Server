@@ -27,6 +27,10 @@ public class Calendar extends BaseEntity {
 
     private String imageUrl;
 
+    public void updateImage(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     @Builder
     public Calendar(Long id, User user, LocalDate photoDate, String imageUrl) {
         this.id = id;
