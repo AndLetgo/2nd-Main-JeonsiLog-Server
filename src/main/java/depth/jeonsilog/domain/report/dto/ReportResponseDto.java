@@ -17,9 +17,6 @@ public class ReportResponseDto {
         @Schema(type = "String", example = "1", description = "신고된 감상평/댓글 작성자 혹은 전시회 이름이 출력합니다.")
         private String name;
 
-        @Schema(type = "String", example = "http://www.culture.go.kr/upload/rdf/23/11/rdf_2023112721202875517.jpg", description = "신고된 감상평/댓글 작성자 프로필 이미지 혹은 전시회 이미지 포스터를 출력합니다.")
-        private String imageUrl;
-
         @Schema(type = "ReportType", example = "REVIEW", description = "신고 타입을 출력합니다. EXHIBITION, REVIEW, REPLY 中 1")
         private ReportType reportType;
 

@@ -27,12 +27,9 @@ public class ReportConverter {
     public static List<ReportResponseDto.ReportRes> toReportResList(List<Report> reports, List<Object> targetList) {
 
         List<ReportResponseDto.ReportRes> reportResList = new ArrayList<>();
-
         for (int i = 0; i < reports.size(); i++) {
 
             String name = "";
-            String imageUrl = "";
-
             Report report = reports.get(i);
             Object target = targetList.get(i);
 
@@ -40,26 +37,21 @@ public class ReportConverter {
                 Review review = (Review) target;
                 User user = review.getUser();
                 name = user.getNickname();
-                imageUrl = user.getProfileImg();
 
             } else if (target instanceof Reply) {
                 Reply reply = (Reply) target;
                 User user = reply.getUser();
                 name = user.getNickname();
-                imageUrl = user.getProfileImg();
 
 
             } else if (target instanceof Exhibition) {
                 Exhibition exhibition = (Exhibition) target;
                 name = exhibition.getName();
-                imageUrl = exhibition.getImageUrl();
 
             }
-
             ReportResponseDto.ReportRes reportRes = ReportResponseDto.ReportRes.builder()
                     .reportId(report.getId())
                     .name(name) // 신고된 유저 혹은 전시회 이름
-                    .imageUrl(imageUrl) // 신고된 유저 혹은 전시회 이미지
                     .reportType(report.getReportType())
                     .reportedId(report.getReportedId())
                     .build();
@@ -68,5 +60,4 @@ public class ReportConverter {
         }
         return reportResList;
     }
-
 }
