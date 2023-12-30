@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -86,6 +87,20 @@ public class ReportService {
 
     }
 
+    // Description : 신고 확인
+    @Transactional
+    public ResponseEntity<?> checkReport(UserPrincipal userPrincipal, Long reportId) {
+
+        User user = userService.validateUserByToken(userPrincipal);
+        DefaultAssert.isTrue(user.getRole().equals(Role.ADMIN), "관리자만 확인할 수 있습니다.");
+
+        Report report = validateReportById(reportId);
+        report.updateChecked(true);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(Message.builder().message("신고가 확인되었습니다.").build());
+        return ResponseEntity.ok(apiResponse);
+    }
+
     private void validate(ReportType reportType, Long id) {
         switch (reportType) {
             case REVIEW -> reviewService.validateReviewById(id);
@@ -112,4 +127,11 @@ public class ReportService {
         }
         return targetList;
     }
+
+    public Report validateReportById(Long reportId) {
+        Optional<Report> report = reportRepository.findById(reportId);
+        DefaultAssert.isTrue(report.isPresent(), "신고 정보가 올바르지 않습니다.");
+        return report.get();
+    }
+
 }

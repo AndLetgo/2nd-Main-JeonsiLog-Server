@@ -55,4 +55,18 @@ public class ReportController {
         return reportService.findReportList(page, userPrincipal);
     }
 
+    // Description : 신고 확인
+    @Operation(summary = "신고 확인", description = "신고 확인")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "확인 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Message.class)))}),
+            @ApiResponse(responseCode = "400", description = "확인 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @PostMapping("/check/{reportId}")
+    public ResponseEntity<?> checkReport(
+            @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
+            @Parameter(description = "신고 Id를 입력해주세요.", required = true) @PathVariable(value = "reportId") Long reportId
+    ) {
+        return reportService.checkReport(userPrincipal, reportId);
+    }
+
 }
