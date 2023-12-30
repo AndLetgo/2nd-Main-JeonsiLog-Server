@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,5 +59,18 @@ public class CalendarController {
             @Parameter(description = "Schemas의 UploadPosterReq 를 확인해주세요.", required = true) @RequestBody CalendarRequestDto.UploadPosterReq uploadPosterReq
     ) {
         return calendarService.uploadPoster(userPrincipal, uploadPosterReq);
+    }
+
+    @Operation(summary = "이미지 삭제", description = "해당 날짜의 이미지를 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "삭제 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "400", description = "삭제 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @DeleteMapping
+    public ResponseEntity<?> deleteCalendar(
+            @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
+            @Parameter(description = "Schemas의 UploadImageReq 를 확인해주세요.", required = true) @RequestBody CalendarRequestDto.UploadImageReq deleteImageReq
+    ) {
+        return calendarService.deleteCalendar(userPrincipal, deleteImageReq);
     }
 }
