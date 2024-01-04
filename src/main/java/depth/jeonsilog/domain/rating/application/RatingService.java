@@ -1,5 +1,6 @@
 package depth.jeonsilog.domain.rating.application;
 
+import depth.jeonsilog.domain.alarm.application.AlarmService;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
 import depth.jeonsilog.domain.rating.converter.RatingConverter;
@@ -29,6 +30,7 @@ public class RatingService {
     private final RatingRepository ratingRepository;
     private final ExhibitionRepository exhibitionRepository;
     private final UserService userService;
+    private final AlarmService alarmService;
 
     // 별점 등록
     @Transactional
@@ -45,6 +47,8 @@ public class RatingService {
 
         Double updateRate = calculateRate(exhibition.get());
         exhibition.get().updateRate(updateRate);
+
+        alarmService.makeRatingAlarm(rating);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(Message.builder().message("별점을 등록했습니다.").build());
         return ResponseEntity.ok(apiResponse);

@@ -24,13 +24,13 @@ public class Alarm extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AlarmType alarmType;
 
-    private String contents;
+    private Long targetId;
 
     @Builder
-    public Alarm(Long id, User user, AlarmType alarmType, String contents) {
+    public Alarm(Long id, User user, AlarmType alarmType, Long targetId) {
         this.id = id;
         this.user = user;
         this.alarmType = alarmType;
-        this.contents = contents;
+        this.targetId = targetId;
     }
 }
