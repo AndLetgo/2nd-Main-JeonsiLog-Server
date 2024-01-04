@@ -36,7 +36,7 @@ public class ExhibitionConverter {
     }
 
     // EXHIBITION & PlaceRes -> ExhibitionDetailRes
-    public static ExhibitionResponseDto.ExhibitionDetailRes toExhibitionDetailRes(Exhibition exhibition, PlaceResponseDto.PlaceRes placeRes) {
+    public static ExhibitionResponseDto.ExhibitionDetailRes toExhibitionDetailRes(Exhibition exhibition, PlaceResponseDto.PlaceRes placeRes, Boolean checkInterest, Double myRate) {
         return ExhibitionResponseDto.ExhibitionDetailRes.builder()
                 .exhibitionId(exhibition.getId())
                 .exhibitionName(exhibition.getName())
@@ -48,6 +48,8 @@ public class ExhibitionConverter {
                 .rate(exhibition.getRate())
                 .imageUrl(exhibition.getImageUrl())
                 .place(placeRes)
+                .checkInterest(checkInterest)
+                .myRating(myRate)
                 .build();
     }
 

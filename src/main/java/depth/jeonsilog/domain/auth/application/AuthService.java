@@ -40,9 +40,6 @@ public class AuthService {
     @Transactional
     public ResponseEntity<?> signUp(AuthRequestDto.SignUpReq signUpReq){
 
-        // 이메일은 unique가 아님.. 이메일로 찾는 이유 ?
-        DefaultAssert.isTrue(!userRepository.existsByEmailAndStatus(signUpReq.getEmail(), Status.ACTIVE), "해당 이메일로 가입한 유저가 존재합니다.");
-
         User user = AuthConverter.toUser(signUpReq, passwordEncoder);
         userRepository.save(user);
 

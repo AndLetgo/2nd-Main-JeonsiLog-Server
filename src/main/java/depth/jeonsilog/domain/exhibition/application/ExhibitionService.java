@@ -5,10 +5,17 @@ import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionRequestDto;
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
+import depth.jeonsilog.domain.interest.domain.Interest;
+import depth.jeonsilog.domain.interest.domain.repository.InterestRepository;
 import depth.jeonsilog.domain.place.converter.PlaceConverter;
 import depth.jeonsilog.domain.place.domain.Place;
 import depth.jeonsilog.domain.place.dto.PlaceResponseDto;
+import depth.jeonsilog.domain.rating.domain.Rating;
+import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
+import depth.jeonsilog.domain.user.application.UserService;
+import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.global.DefaultAssert;
+import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +35,10 @@ import java.util.stream.Collectors;
 public class ExhibitionService {
 
     private final ExhibitionRepository exhibitionRepository;
+    private final InterestRepository interestRepository;
+    private final RatingRepository ratingRepository;
+
+    private final UserService userService;
 
     // Description : 전시회 목록 조회
     // TODO : OK
@@ -60,14 +71,25 @@ public class ExhibitionService {
 
     // Description : 전시회 상세 정보 조회
     // TODO : OK
-    public ResponseEntity<?> findExhibition(Long exhibitionId) {
+    public ResponseEntity<?> findExhibition(UserPrincipal userPrincipal, Long exhibitionId) {
 
+        User user = userService.validateUserByToken(userPrincipal);
         Exhibition exhibition = validateExhibitionById(exhibitionId);
 
         Place place = exhibition.getPlace();
         PlaceResponseDto.PlaceRes placeRes = PlaceConverter.toPlaceRes(place);
 
-        ExhibitionResponseDto.ExhibitionDetailRes exhibitionDetailRes = ExhibitionConverter.toExhibitionDetailRes(exhibition, placeRes);
+        Optional<Interest> findInterest = interestRepository.findByUserIdAndExhibitionId(user.getId(), exhibition.getId());
+        Boolean checkInterest = findInterest.isPresent();
+
+        Optional<Rating> findRating = ratingRepository.findByUserIdAndExhibitionId(user.getId(), exhibition.getId());
+        Rating rating = findRating.orElse(null);
+        Double myRate = null;
+        if (rating != null) {
+            myRate = rating.getRate();
+        }
+
+        ExhibitionResponseDto.ExhibitionDetailRes exhibitionDetailRes = ExhibitionConverter.toExhibitionDetailRes(exhibition, placeRes, checkInterest, myRate);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionDetailRes);
 
