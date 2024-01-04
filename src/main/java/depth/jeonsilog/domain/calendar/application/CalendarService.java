@@ -29,9 +29,12 @@ import java.util.Optional;
 @Service
 public class CalendarService {
 
+    private final CalendarRepository calendarRepository;
+
     private final UserService userService;
     private final S3Uploader s3Uploader;
-    private final CalendarRepository calendarRepository;
+
+    private static final String DIRNAME = "calendar_img";
 
     // Description : 갤러리 이미지 업로드
     @Transactional
@@ -39,7 +42,7 @@ public class CalendarService {
         User findUser = userService.validateUserByToken(userPrincipal);
 
         if (!img.isEmpty()) {
-            String storedFileName = s3Uploader.upload(img, "calendar_img");
+            String storedFileName = s3Uploader.upload(img, DIRNAME);
 
             Optional<Calendar> checkCalendar = calendarRepository.findByUserAndPhotoDate(findUser, uploadImageReq.getDate());
             if (checkCalendar.isPresent()) {
@@ -83,7 +86,10 @@ public class CalendarService {
         Optional<Calendar> findCalendar = calendarRepository.findByUserAndPhotoDate(findUser, deleteImageReq.getDate());
         DefaultAssert.isTrue(findCalendar.isPresent(), "해당 날짜에 이미지가 없습니다.");
 
-        calendarRepository.delete(findCalendar.get());
+        Calendar calendar = findCalendar.get();
+
+        s3Uploader.deleteImage(DIRNAME, calendar.getImageUrl());
+        calendarRepository.delete(calendar);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(
                 Message.builder().message("이미지를 삭제했습니다.").build());

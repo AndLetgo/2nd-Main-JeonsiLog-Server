@@ -29,19 +29,28 @@ import java.util.Optional;
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
-    private final CustomTokenProviderService customTokenProviderService;
     private final PasswordEncoder passwordEncoder;
-    
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
+
+    private final CustomTokenProviderService customTokenProviderService;
 
     @Transactional
     public ResponseEntity<?> signUp(AuthRequestDto.SignUpReq signUpReq){
 
-        DefaultAssert.isTrue(!userRepository.existsByEmailAndStatus(signUpReq.getEmail(), Status.ACTIVE), "해당 이메일이 존재합니다.");
+        DefaultAssert.isTrue(!userRepository.existsByEmailAndStatus(signUpReq.getEmail(), Status.ACTIVE), "해당 이메일로 가입한 유저가 존재합니다.");
 
-        User user = AuthConverter.toUser(signUpReq, passwordEncoder);
-        userRepository.save(user);
+        Optional<User> userByEmailAndStatus = userRepository.findByEmailAndStatus(signUpReq.getEmail(), Status.DELETE);
+        User user = userByEmailAndStatus.orElse(null);
+
+        if (user != null) { // 탈퇴 후 재가입
+            user.updateStatus(Status.ACTIVE);
+
+        } else { // 최초 가입
+            user = AuthConverter.toUser(signUpReq, passwordEncoder);
+            userRepository.save(user);
+
+        }
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(
                 Message.builder().message("회원가입에 성공하였습니다.").build());

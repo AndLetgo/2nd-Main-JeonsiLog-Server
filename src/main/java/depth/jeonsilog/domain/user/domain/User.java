@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Where(clause = "status = 'ACTIVE'")
+//@Where(clause = "status = 'ACTIVE'")
 @Entity
 @Getter
 public class User extends BaseEntity {

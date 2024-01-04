@@ -34,7 +34,12 @@ public class FollowService {
 
         User findUser = userService.validateUserByToken(userPrincipal);
         User followUser = userService.validateUserById(userId);
-        DefaultAssert.isTrue((!Objects.equals(findUser, followUser)), "나를 팔로우할 수 없습니다.");
+        DefaultAssert.isTrue((!Objects.equals(findUser, followUser)), "나를 팔로우 할 수 없습니다.");
+
+        List<Follow> followings = followRepository.findAllByUser(findUser);
+        for (Follow follow : followings) {
+            DefaultAssert.isTrue(!(Objects.equals(follow.getFollow(), followUser)), "이미 팔로우 한 유저입니다.");
+        }
 
         Follow follow = FollowConverter.toFollow(findUser, followUser);
         followRepository.save(follow);
@@ -108,8 +113,6 @@ public class FollowService {
 
         return ResponseEntity.ok(apiResponse);
     }
-
-
 
     // 유저의 팔로잉 리스트 조회
     public ResponseEntity<?> findUserFollowingList(UserPrincipal userPrincipal, Long userId) {
