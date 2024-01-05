@@ -46,7 +46,9 @@ public class CalendarService {
 
             Optional<Calendar> checkCalendar = calendarRepository.findByUserAndPhotoDate(findUser, uploadImageReq.getDate());
             if (checkCalendar.isPresent()) {
-                checkCalendar.get().updateImage(storedFileName);
+                Calendar calendar = checkCalendar.get();
+                s3Uploader.deleteImage(DIRNAME, calendar.getImageUrl());
+                calendar.updateImage(storedFileName);
             } else {
                 Calendar calendar = CalendarConverter.toCalendar(findUser, uploadImageReq.getDate(), storedFileName);
                 calendarRepository.save(calendar);
