@@ -25,7 +25,7 @@ public class AlarmResponseDto {
         @Schema(type = "long", example = "1", description = "클릭 시 페이지 이동에 필요한 ID를 clickId 로 설정한다.")
         private Long clickId;
 
-        @Schema(type = "string", example = "https://..", description = "이미지 url을 출력한다.")
+        @Schema(type = "string", example = "https://..", description = "프로필 / 전시회 이미지 url을 출력한다.")
         private String imgUrl;
 
         @Schema(type = "string", example = "루피 님이 나를 팔로우해요", description = "알림 내용을 출력합니다.")
