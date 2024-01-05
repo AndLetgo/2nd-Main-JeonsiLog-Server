@@ -25,6 +25,7 @@ public class Calendar extends BaseEntity {
 
     private LocalDate photoDate;
 
+    @Column(length = 2048)
     private String imageUrl;
 
     public void updateImage(String imageUrl) {

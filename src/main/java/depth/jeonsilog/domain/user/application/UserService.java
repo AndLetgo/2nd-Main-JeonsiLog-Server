@@ -105,7 +105,7 @@ public class UserService {
     public ResponseEntity<?> deleteUser(UserPrincipal userPrincipal) {
 
         User findUser = validateUserByToken(userPrincipal);
-        findUser.updateStatus(Status.DELETE);  // soft delete
+        userRepository.delete(findUser); // hard delete
 
         Optional<Token> token = tokenRepository.findByUserEmail(userPrincipal.getEmail());
         DefaultAssert.isTrue(token.isPresent(), "이미 탈퇴되었습니다.");

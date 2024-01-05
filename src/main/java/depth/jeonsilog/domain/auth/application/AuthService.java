@@ -5,6 +5,7 @@ import depth.jeonsilog.domain.auth.domain.Token;
 import depth.jeonsilog.domain.auth.domain.repository.TokenRepository;
 import depth.jeonsilog.domain.auth.dto.*;
 import depth.jeonsilog.domain.common.Status;
+import depth.jeonsilog.domain.user.application.UserService;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.domain.user.domain.repository.UserRepository;
 import depth.jeonsilog.global.DefaultAssert;
@@ -29,16 +30,15 @@ import java.util.Optional;
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
-    private final CustomTokenProviderService customTokenProviderService;
     private final PasswordEncoder passwordEncoder;
-    
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
 
+    private final CustomTokenProviderService customTokenProviderService;
+    private final UserService userService;
+
     @Transactional
     public ResponseEntity<?> signUp(AuthRequestDto.SignUpReq signUpReq){
-
-        DefaultAssert.isTrue(!userRepository.existsByEmailAndStatus(signUpReq.getEmail(), Status.ACTIVE), "해당 이메일이 존재합니다.");
 
         User user = AuthConverter.toUser(signUpReq, passwordEncoder);
         userRepository.save(user);

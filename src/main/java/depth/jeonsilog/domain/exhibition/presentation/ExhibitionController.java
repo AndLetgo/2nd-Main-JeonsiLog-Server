@@ -4,6 +4,8 @@ import depth.jeonsilog.domain.exhibition.application.ExhibitionService;
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionRequestDto;
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
 import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
+import depth.jeonsilog.global.config.security.token.CurrentUser;
+import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ErrorResponse;
 import depth.jeonsilog.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,9 +49,10 @@ public class ExhibitionController {
     })
     @GetMapping("/{exhibitionId}")
     public ResponseEntity<?> findExhibition(
+            @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @Parameter(description = "Exhibition Id를 입력해주세요.", required = true) @PathVariable(value = "exhibitionId") Long exhibitionId
     ) {
-        return exhibitionService.findExhibition(exhibitionId);
+        return exhibitionService.findExhibition(userPrincipal, exhibitionId);
     }
 
     // Description : 랜덤 전시회 2개 조회
