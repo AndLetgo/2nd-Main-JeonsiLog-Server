@@ -1,6 +1,7 @@
 package depth.jeonsilog.domain.review.application;
 
 
+import depth.jeonsilog.domain.alarm.application.AlarmService;
 import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
@@ -33,6 +34,7 @@ public class ReviewService {
     private final ExhibitionRepository exhibitionRepository;
     private final RatingRepository ratingRepository;
     private final UserService userService;
+    private final AlarmService alarmService;
 
     // 감상평 작성
     @Transactional
@@ -43,6 +45,8 @@ public class ReviewService {
 
         Review review = ReviewConverter.toReview(findUser, exhibition.get(), writeReviewReq.getContents());
         reviewRepository.save(review);
+
+        alarmService.makeReviewAlarm(review);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(Message.builder().message("감상평을 작성했습니다.").build());
         return ResponseEntity.ok(apiResponse);

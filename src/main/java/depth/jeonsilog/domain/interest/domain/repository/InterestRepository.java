@@ -1,5 +1,6 @@
 package depth.jeonsilog.domain.interest.domain.repository;
 
+import depth.jeonsilog.domain.exhibition.domain.OperatingKeyword;
 import depth.jeonsilog.domain.interest.domain.Interest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,4 +14,6 @@ public interface InterestRepository extends JpaRepository<Interest, Long> {
     Optional<Interest> findByUserIdAndExhibitionId(Long userId, Long exhibitionId);
 
     List<Interest> findAllByUserId(Long userId);
+
+    List<Interest> findByExhibition_OperatingKeyword(OperatingKeyword operatingKeyword);
 }

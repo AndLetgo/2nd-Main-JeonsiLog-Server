@@ -1,5 +1,6 @@
 package depth.jeonsilog.domain.follow.application;
 
+import depth.jeonsilog.domain.alarm.application.AlarmService;
 import depth.jeonsilog.domain.follow.converter.FollowConverter;
 import depth.jeonsilog.domain.follow.domain.Follow;
 import depth.jeonsilog.domain.follow.domain.repository.FollowRepository;
@@ -15,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,6 +27,7 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final UserService userService;
+    private final AlarmService alarmService;
 
     // 팔로우하기
     @Transactional
@@ -43,6 +44,8 @@ public class FollowService {
 
         Follow follow = FollowConverter.toFollow(findUser, followUser);
         followRepository.save(follow);
+
+        alarmService.makeFollowAlarm(follow);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(
                 Message.builder().message("[" + followUser.getNickname() + "]님을 팔로우했습니다.").build());

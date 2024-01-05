@@ -1,5 +1,6 @@
 package depth.jeonsilog.domain.reply.application;
 
+import depth.jeonsilog.domain.alarm.application.AlarmService;
 import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.reply.converter.ReplyConverter;
 import depth.jeonsilog.domain.reply.domain.Reply;
@@ -8,7 +9,6 @@ import depth.jeonsilog.domain.reply.dto.ReplyRequestDto;
 import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import depth.jeonsilog.domain.review.application.ReviewService;
 import depth.jeonsilog.domain.review.domain.Review;
-import depth.jeonsilog.domain.review.domain.repository.ReviewRepository;
 import depth.jeonsilog.domain.user.application.UserService;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.global.DefaultAssert;
@@ -32,10 +32,9 @@ import java.util.Optional;
 public class ReplyService {
 
     private final ReplyRepository replyRepository;
-    private final ReviewRepository reviewRepository;
-
     private final UserService userService;
     private final ReviewService reviewService;
+    private final AlarmService alarmService;
 
     // Description : 댓글 목록 조회
     public ResponseEntity<?> findReplyList(Integer page, Long reviewId) {
@@ -65,6 +64,8 @@ public class ReplyService {
         replyRepository.save(reply);
 
         review.updateNumReply(review.getNumReply() + 1);
+
+        alarmService.makeReplyAlarm(reply);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(Message.builder().message("댓글을 작성했습니다.").build());
         return ResponseEntity.ok(apiResponse);
