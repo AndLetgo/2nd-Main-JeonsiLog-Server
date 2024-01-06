@@ -32,6 +32,11 @@ public class Rating extends BaseEntity {
         this.rate = rate;
     }
 
+    // 유저 삭제 시 사용 (null)
+    public void deleteUser() {
+        this.user = null;
+    }
+
     @Builder
     public Rating(Long id, User user, Exhibition exhibition, Double rate) {
         this.id = id;

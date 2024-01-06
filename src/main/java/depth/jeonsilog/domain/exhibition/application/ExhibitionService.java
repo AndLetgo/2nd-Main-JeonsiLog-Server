@@ -12,7 +12,9 @@ import depth.jeonsilog.domain.place.domain.Place;
 import depth.jeonsilog.domain.place.dto.PlaceResponseDto;
 import depth.jeonsilog.domain.rating.domain.Rating;
 import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
+import depth.jeonsilog.domain.s3.application.S3Uploader;
 import depth.jeonsilog.domain.user.application.UserService;
+import depth.jeonsilog.domain.user.domain.Role;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.global.DefaultAssert;
 import depth.jeonsilog.global.config.security.token.UserPrincipal;
@@ -25,7 +27,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,6 +43,9 @@ public class ExhibitionService {
     private final RatingRepository ratingRepository;
 
     private final UserService userService;
+    private final S3Uploader s3Uploader;
+
+    private static final String DIRNAME = "exhibition_img";
 
     // Description : 전시회 목록 조회
     // TODO : OK
@@ -133,7 +140,7 @@ public class ExhibitionService {
 
         PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "createdDate"));
 
-        Page<Exhibition> exhibitionPage = exhibitionRepository.findByNameContaining(pageRequest, searchWord);
+        Page<Exhibition> exhibitionPage = exhibitionRepository.findByNameContainingOrPlace_AddressContaining(pageRequest, searchWord, searchWord);
 
         List<Exhibition> exhibitions = exhibitionPage.getContent();
         // 이렇게 써도 될지 .. ?
@@ -159,10 +166,24 @@ public class ExhibitionService {
     // Description : 전시회 상세 정보 수정
     // TODO : OK
     @Transactional
-    public ResponseEntity<?> updateExhibitionDetail(ExhibitionRequestDto.UpdateExhibitionDetailReq updateExhibitionDetailReq) {
+    public ResponseEntity<?> updateExhibitionDetail(UserPrincipal userPrincipal, ExhibitionRequestDto.UpdateExhibitionDetailReq updateExhibitionDetailReq, MultipartFile img) throws IOException {
+
+        User user = userService.validateUserByToken(userPrincipal);
+        DefaultAssert.isTrue(user.getRole().equals(Role.ADMIN), "관리자만 수정할 수 있습니다.");
 
         Exhibition exhibition = validateExhibitionById(updateExhibitionDetailReq.getExhibitionId());
-        exhibition.updateExhibitionDetail(updateExhibitionDetailReq);
+
+        String storedFileName = null;
+
+        if (updateExhibitionDetailReq.getIsImageChange()) { // 이미지를 변경하는 경우
+            if (!img.isEmpty()) { // 이미지 삭제가 아닌 이미지를 변경하거나 추가하는 경우
+                storedFileName = s3Uploader.upload(img, DIRNAME);
+            }
+            // 기존 포스터 이미지가 s3에 있으면, 이미지 삭제 / 없으면(OPEN API 포스터 이미지 or NULL의 경우) 말고
+            s3Uploader.deleteImage(DIRNAME, exhibition.getImageUrl());
+        }
+
+        exhibition.updateExhibitionDetail(updateExhibitionDetailReq, storedFileName);
 
         Place place = exhibition.getPlace();
         place.updatePlaceWithExhibitionDetail(updateExhibitionDetailReq.getUpdatePlaceInfo());

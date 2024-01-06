@@ -7,9 +7,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
 
     Page<Reply> findByReview(PageRequest pageRequest, Review review);
+
+    List<Reply> findByReview(Review review);
+
+    List<Reply> findAllByUserId(Long userId);
 
 }
