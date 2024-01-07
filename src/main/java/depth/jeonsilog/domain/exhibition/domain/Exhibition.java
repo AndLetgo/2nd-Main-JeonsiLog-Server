@@ -50,11 +50,15 @@ public class Exhibition extends BaseEntity {
     private Integer sequence;
 
     // update 메소드
-    public void updateExhibitionDetail(ExhibitionRequestDto.UpdateExhibitionDetailReq updateExhibitionDetailReq) {
+    public void updateExhibitionDetail(ExhibitionRequestDto.UpdateExhibitionDetailReq updateExhibitionDetailReq, String imageUrl) {
         this.name = updateExhibitionDetailReq.getExhibitionName();
         this.operatingKeyword = updateExhibitionDetailReq.getOperatingKeyword();
         this.priceKeyword = updateExhibitionDetailReq.getPriceKeyword();
         this.information = updateExhibitionDetailReq.getInformation();
+
+        if (updateExhibitionDetailReq.getIsImageChange()) { // 이미지 변경하는 경우
+            this.imageUrl = imageUrl;
+        }
     }
 
     public void updateRate(Double rate) {

@@ -28,6 +28,9 @@ public class ExhibitionRequestDto {
         @Size(max = 1000, message = "1000자 이하로만 작성 가능합니다.")
         private String information;
 
+        @Schema(type = "Boolean", example = "false", description = "전시회 포스터 이미지 변동 여부 입니다.")
+        private Boolean isImageChange;
+
         private PlaceRequestDto.UpdatePlaceWithExhibitionDetailReq updatePlaceInfo;
 
     }

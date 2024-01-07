@@ -13,11 +13,6 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Place extends BaseEntity {
 
-    /**
-     * TODO : address 나눠야 하나 ?
-     * TODO : OPEN API 응답 보고, 우리 피그마 보고 --> 시/군/구 등 나눌 필요 있다면 나누는 것으로 !
-     */
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,9 +32,8 @@ public class Place extends BaseEntity {
 
     // update 메소드
     public void updatePlaceWithExhibitionDetail(PlaceRequestDto.UpdatePlaceWithExhibitionDetailReq updatePlaceWithExhibitionDetailReq) {
+        this.name = updatePlaceWithExhibitionDetailReq.getPlaceName();
         this.address = updatePlaceWithExhibitionDetailReq.getPlaceAddress();
-        this.operatingTime = updatePlaceWithExhibitionDetailReq.getOperatingTime();
-        this.closedDays = updatePlaceWithExhibitionDetailReq.getClosedDays();
         this.tel = updatePlaceWithExhibitionDetailReq.getPlaceTel();
         this.homePage = updatePlaceWithExhibitionDetailReq.getPlaceHomePage();
     }
