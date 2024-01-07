@@ -10,6 +10,7 @@ import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import depth.jeonsilog.domain.review.application.ReviewService;
 import depth.jeonsilog.domain.review.domain.Review;
 import depth.jeonsilog.domain.user.application.UserService;
+import depth.jeonsilog.domain.user.domain.Role;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.global.DefaultAssert;
 import depth.jeonsilog.global.config.security.token.UserPrincipal;
@@ -79,7 +80,8 @@ public class ReplyService {
         Reply reply = validateReplyById(replyId);
         Review review = reply.getReview();
 
-        DefaultAssert.isTrue(user.equals(reply.getUser()), "해당 댓글의 작성자만 삭제할 수 있습니다.");
+        DefaultAssert.isTrue(user.equals(reply.getUser()) || user.getRole().equals(Role.ADMIN)
+                , "해당 댓글의 작성자 혹은 관리자만 삭제할 수 있습니다.");
         reply.updateStatus(Status.DELETE);
 
         review.updateNumReply(review.getNumReply() - 1);

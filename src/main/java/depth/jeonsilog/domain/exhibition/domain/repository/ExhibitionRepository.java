@@ -19,6 +19,8 @@ public interface ExhibitionRepository extends JpaRepository<Exhibition, Long> {
     @EntityGraph(attributePaths = {"place"})
     Page<Exhibition> findByNameContaining(Pageable pageable, String searchWord);
 
+    Page<Exhibition> findByNameContainingOrPlace_AddressContaining(Pageable pageable, String searchWord, String searchWord2);
+
     Page<Exhibition> findByPlace(Pageable pageable, Place place);
 
     Optional<Exhibition> findBySequence(Integer sequence);

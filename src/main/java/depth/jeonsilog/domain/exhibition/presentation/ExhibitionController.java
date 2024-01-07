@@ -18,6 +18,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Tag(name = "Exhibition API", description = "Exhibition 관련 API입니다.")
 @RequiredArgsConstructor
@@ -88,13 +91,14 @@ public class ExhibitionController {
     })
     @PatchMapping
     public ResponseEntity<?> updateExhibitionDetail(
-            @Parameter(description = "Schemas의 UpdateExhibitionDetailReq와 UpdatePlaceWithExhibitionDetailReq를 참고해주세요", required = true) @RequestBody ExhibitionRequestDto.UpdateExhibitionDetailReq updateExhibitionDetailReq
-    ) {
-        return exhibitionService.updateExhibitionDetail(updateExhibitionDetailReq);
+            @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
+            @Parameter(description = "Schemas의 UpdateExhibitionDetailReq와 UpdatePlaceWithExhibitionDetailReq를 참고해주세요", required = true) @RequestPart("updateExhibitionDetailReq") ExhibitionRequestDto.UpdateExhibitionDetailReq updateExhibitionDetailReq,
+            @Parameter(description = "등록할 전시회 포스터 이미지 파일을 입력해주세요.") @RequestPart(value = "img", required = false) MultipartFile img
+            ) throws IOException {
+        return exhibitionService.updateExhibitionDetail(userPrincipal, updateExhibitionDetailReq, img);
     }
 
     // Description : 전시회 id로 전시회 포스터 조회
-    // 전시회 포스터는 하나라서.. 그 화면의 필요 여부 확인이 필요하긴 하나..
     @Operation(summary = "전시회 포스터 조회", description = "전시회 포스터를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExhibitionResponseDto.PosterRes.class))}),
@@ -120,7 +124,7 @@ public class ExhibitionController {
         return exhibitionService.searchExhibitionsByName(page, searchWord);
     }
 
-    @Operation(summary = "전시회 순서 변경", description = "관리자 페이지에서 전시회 순서를 변경합니다..")
+    @Operation(summary = "전시회 순서 변경", description = "관리자 페이지에서 전시회 순서를 변경합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "수정 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
