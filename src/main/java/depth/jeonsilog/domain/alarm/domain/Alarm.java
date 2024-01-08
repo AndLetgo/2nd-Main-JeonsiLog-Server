@@ -37,8 +37,14 @@ public class Alarm extends BaseEntity {
     @Nullable
     private String contents;
 
+    private Boolean isChecked = false;
+
+    public void updateIsChecked(Boolean isChecked) {
+        this.isChecked = isChecked;
+    }
+
     @Builder
-    public Alarm(Long id, User user, @Nullable Long senderId, AlarmType alarmType, Long targetId, Long clickId, @Nullable String contents) {
+    public Alarm(Long id, User user, @Nullable Long senderId, AlarmType alarmType, Long targetId, Long clickId, @Nullable String contents, Boolean isChecked) {
         this.id = id;
         this.user = user;
         this.senderId = senderId;
@@ -46,5 +52,6 @@ public class Alarm extends BaseEntity {
         this.targetId = targetId;
         this.clickId = clickId;
         this.contents = contents;
+        this.isChecked = isChecked;
     }
 }

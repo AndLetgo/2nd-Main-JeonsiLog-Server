@@ -13,6 +13,7 @@ public class AlarmConverter {
                 .targetId(interest.getExhibition().getId())
                 .clickId(interest.getExhibition().getId())
                 .contents(contents)
+                .isChecked(false)
                 .build();
     }
 }

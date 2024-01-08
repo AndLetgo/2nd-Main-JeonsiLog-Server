@@ -47,7 +47,7 @@ public class ReviewResponseDto {
         @Schema(type = "string", example = "뎁스 개인전", description = "전시회 이름을 출력합니다.")
         private String exhibitionName;
 
-        @Schema(type = "string", example = "http://www..", description = "전시회 포스터 이미지 url을 출력합니다.")
+        @Schema(type = "string", example = "http://www..", description = "전시회 포스터 이미지 util 출력합니다.")
         private String exhibitionImgUrl;
 
         @Schema(type = "string", example = "멋진 전시였다.", description = "감상평을 출력합니다.")
@@ -62,5 +62,13 @@ public class ReviewResponseDto {
         private Integer numReview;
 
         private List<UserReviewRes> data;
+    }
+
+    @Data
+    @Builder
+    public static class CheckIsWriteRes {
+
+        @Schema(type = "boolean", example = "true", description = "해당 전시회 - 감상평 작성 여부를 출력합니다.")
+        private Boolean isWrite;
     }
 }

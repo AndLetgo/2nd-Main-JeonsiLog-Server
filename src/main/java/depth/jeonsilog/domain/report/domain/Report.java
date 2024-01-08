@@ -27,7 +27,7 @@ public class Report extends BaseEntity {
     // 타입별 아이디를 부여하는 것 !!
     private Long reportedId;
 
-    private boolean isChecked = false;
+    private Boolean isChecked = false;
 
     public void updateChecked (boolean isChecked) {
         this.isChecked = isChecked;

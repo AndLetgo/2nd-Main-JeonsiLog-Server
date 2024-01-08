@@ -36,11 +36,11 @@ public class User extends BaseEntity {
     private String profileImg;
 
     // 포토 캘린더 공개 여부
-    private boolean isOpen;
+    private Boolean isOpen;
 
-    private boolean isRecvFollowing;
+    private Boolean isRecvFollowing;
 
-    private boolean isRecvActive;
+    private Boolean isRecvActive;
 
     @Enumerated(EnumType.STRING)
     private Role role;

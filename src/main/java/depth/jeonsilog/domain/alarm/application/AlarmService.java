@@ -21,6 +21,7 @@ import depth.jeonsilog.domain.user.domain.repository.UserRepository;
 import depth.jeonsilog.global.DefaultAssert;
 import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
+import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -80,6 +81,7 @@ public class AlarmService {
                     .imgUrl(sender.get().getProfileImg())
                     .contents(content)
                     .dateTime(alarm.getCreatedDate())
+                    .isChecked(alarm.getIsChecked())
                     .build();
             alarmResList.add(alarmRes);
         }
@@ -106,11 +108,29 @@ public class AlarmService {
                     .imgUrl(exhibition.get().getImageUrl())
                     .contents("[" + exhibition.get().getName() + "] " + alarm.getContents())
                     .dateTime(alarm.getCreatedDate())
+                    .isChecked(alarm.getIsChecked())
                     .build();
             alarmResList.add(alarmRes);
         }
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(alarmResList);
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // TODO: 알림 확인
+    @Transactional
+    public ResponseEntity<?> checkAlarm(UserPrincipal userPrincipal, Long alarmId) {
+
+        User findUser = userService.validateUserByToken(userPrincipal);
+
+        Optional<Alarm> alarm = alarmRepository.findById(alarmId);
+        DefaultAssert.isTrue(alarm.isPresent(), "알림 정보가 올바르지 않습니다.");
+        DefaultAssert.isTrue(findUser.equals(alarm.get().getUser()), "알림 수신자만 알림을 확인할 수 있습니다.");
+
+        Alarm findAlarm = alarm.get();
+        findAlarm.updateIsChecked(true);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(Message.builder().message("알림이 확인되었습니다.").build());
         return ResponseEntity.ok(apiResponse);
     }
 
@@ -125,6 +145,7 @@ public class AlarmService {
                     .alarmType(AlarmType.REVIEW)
                     .targetId(review.getId())
                     .clickId(review.getId())
+                    .isChecked(false)
                     .build();
             alarmRepository.save(alarm);
         }
@@ -141,6 +162,7 @@ public class AlarmService {
                     .alarmType(AlarmType.RATING)
                     .targetId(rating.getId())
                     .clickId(rating.getExhibition().getId())
+                    .isChecked(false)
                     .build();
             alarmRepository.save(alarm);
         }
@@ -155,6 +177,7 @@ public class AlarmService {
                 .alarmType(AlarmType.REPLY)
                 .targetId(reply.getId())
                 .clickId(reply.getReview().getId())
+                .isChecked(false)
                 .build();
         alarmRepository.save(alarm);
     }
@@ -168,13 +191,14 @@ public class AlarmService {
                 .alarmType(AlarmType.FOLLOW)
                 .targetId(follow.getId())
                 .clickId(follow.getUser().getId())
+                .isChecked(false)
                 .build();
         alarmRepository.save(alarm);
     }
 
     // 관심 전시회 시작 전 -> 알림 생성
     @Transactional
-    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
+    @Scheduled(cron = "0 0 9 * * *") // 오전 9시에 실행
     public void makeExhibitionAlarm() {
         List<Interest> interests = interestRepository.findByExhibition_OperatingKeyword(OperatingKeyword.BEFORE_DISPLAY);
 
