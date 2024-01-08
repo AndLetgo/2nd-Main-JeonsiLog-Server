@@ -115,6 +115,18 @@ public class ReviewService {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // 전시회에 감상평을 남겼는지 체크
+    public ResponseEntity<?> checkIsWrite(UserPrincipal userPrincipal, Long exhibitionId) {
+        User findUser = userService.validateUserByToken(userPrincipal);
+        Optional<Exhibition> findExhibition = exhibitionRepository.findById(exhibitionId);
+        DefaultAssert.isTrue(findExhibition.isPresent(), "전시회 정보가 올바르지 않습니다.");
+
+        Boolean isWrite = reviewRepository.existsByUserIdAndExhibitionId(findUser.getId(), exhibitionId);
+        ReviewResponseDto.CheckIsWriteRes responseDto = ReviewResponseDto.CheckIsWriteRes.builder().isWrite(isWrite).build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(responseDto);
+        return ResponseEntity.ok(apiResponse);
+    }
+
     public Review validateReviewById(Long reviewId) {
         Optional<Review> review = reviewRepository.findById(reviewId);
         DefaultAssert.isTrue(review.isPresent(), "감상평 정보가 올바르지 않습니다.");

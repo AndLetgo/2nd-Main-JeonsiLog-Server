@@ -96,4 +96,17 @@ public class ReviewController {
     ) {
         return reviewService.getUserReviewList(userId);
     }
+
+    @Operation(summary = "해당 전시회에 감상평을 작성했는지 체크", description = "전시회 ID와 Access Token을 이용해서 해당 전시회에 작성한 감상평이 있는지 체크합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReviewResponseDto.CheckIsWriteRes.class))}),
+            @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/check/{exhibitionId}")
+    public ResponseEntity<?> getUserReviewList(
+            @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
+            @Parameter(description = "전시회 id를 입력해주세요.", required = true) @PathVariable(value = "exhibitionId") Long exhibitionId
+    ) {
+        return reviewService.checkIsWrite(userPrincipal, exhibitionId);
+    }
 }
