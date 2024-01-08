@@ -45,6 +45,9 @@ jobs:
         
         touch ./src/main/resources/application-auth.yml
         echo "${{ secrets.AUTH_YML }}" | base64 --decode > src/main/resources/application-auth.yml
+        
+        touch ./src/main/resources/forbidden-words.txt
+        echo "${{ secrets.FORBIDDEN_TXT }}" | base64 --decode > src/main/resources/forbidden-words.txt
 
     #추가
     - name: Make Gradle Wrapper script executable
