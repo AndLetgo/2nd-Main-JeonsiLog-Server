@@ -38,6 +38,10 @@ public class Place extends BaseEntity {
         this.homePage = updatePlaceWithExhibitionDetailReq.getPlaceHomePage();
     }
 
+    public void updateTel(String tel) {
+        this.tel = tel;
+    }
+
     @Builder
     public Place(Long id, String name, String address, String operatingTime, ClosedDays closedDays, String tel, String homePage) {
         this.id = id;
