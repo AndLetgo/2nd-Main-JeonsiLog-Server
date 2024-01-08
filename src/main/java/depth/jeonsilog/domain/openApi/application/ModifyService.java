@@ -52,6 +52,7 @@ public class ModifyService {
 
             // 이름이 비어 있는 경우 삭제
             if (name == null || name.equals("") || name.equals(" ")) {
+                exhibitionList.add(exhibition);
                 log.info("삭제된 전시회 ID : " + exhibition.getId());
                 exhibitionRepository.delete(exhibition);
                 continue;
