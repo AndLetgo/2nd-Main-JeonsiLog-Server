@@ -3,7 +3,6 @@ package depth.jeonsilog.domain.exhibition.presentation;
 import depth.jeonsilog.domain.exhibition.application.ExhibitionService;
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionRequestDto;
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
-import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import depth.jeonsilog.global.config.security.token.CurrentUser;
 import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ErrorResponse;
@@ -110,5 +109,31 @@ public class ExhibitionController {
             @Parameter(description = "Exhibition Id를 입력해주세요.", required = true) @PathVariable(value = "exhibitionId") Long exhibitionId
     ) {
         return exhibitionService.findPoster(exhibitionId);
+    }
+
+    @Operation(summary = "전시회 이름으로 전시회 조회", description = "전시회 이름만으로 전시회를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ExhibitionResponseDto.SearchExhibitionByNameRes.class)))}),
+            @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/search/name/{searchWord}")
+    public ResponseEntity<?> searchExhibitionByName(
+            @Parameter(description = "검색한 전시회 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
+            @Parameter(description = "전시회 이름을 입력해주세요.", required = true) @PathVariable String searchWord
+    ) {
+        return exhibitionService.searchExhibitionsByName(page, searchWord);
+    }
+
+    @Operation(summary = "전시회 순서 변경", description = "관리자 페이지에서 전시회 순서를 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "수정 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @PatchMapping("/sequence")
+    public ResponseEntity<?> updateExhibitionSequence(
+            @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
+            @Parameter(description = "Schemas의 UpdateExhibitionSequenceList와 UpdateExhibitionSequence를 참고해주세요", required = true) @RequestBody ExhibitionRequestDto.UpdateExhibitionSequenceList requestDto
+    ) {
+        return exhibitionService.updateExhibitionSequence(userPrincipal, requestDto);
     }
 }

@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.List;
+
 public class ExhibitionRequestDto {
 
     @Data
@@ -33,5 +35,21 @@ public class ExhibitionRequestDto {
 
         private PlaceRequestDto.UpdatePlaceWithExhibitionDetailReq updatePlaceInfo;
 
+    }
+
+    @Data
+    public static class UpdateExhibitionSequence {
+
+        @Schema(type = "Integer", example = "1", description = "설정할 전시회 순서입니다.")
+        private Integer sequence;
+
+        @Schema(type = "Long", example = "1", description = "전시회 ID입니다.")
+        private Long exhibitionId;
+    }
+
+    @Data
+    public static class UpdateExhibitionSequenceList {
+
+        private List<UpdateExhibitionSequence> updateSequenceInfo;
     }
 }

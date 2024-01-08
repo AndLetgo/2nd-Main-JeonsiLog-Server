@@ -65,6 +65,10 @@ public class Exhibition extends BaseEntity {
         this.rate = rate;
     }
 
+    public void updateSequence(Integer sequence) {
+        this.sequence = sequence;
+    }
+
     @Builder
     public Exhibition(Long id, Place place, String name, String imageUrl, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, Double rate) {
         this.id = id;
