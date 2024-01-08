@@ -33,5 +33,8 @@ public class AlarmResponseDto {
 
         @Schema(type = "LocalDateTime", example = "2023-12-22 23:51:45.848882", description = "알림이 생성된 DateTime을 출력합니다.")
         private LocalDateTime dateTime;
+
+        @Schema(type = "boolean", example = "true", description = "알림을 확인했는지 출력합니다.")
+        private Boolean isChecked;
     }
 }

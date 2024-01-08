@@ -120,6 +120,25 @@ public class ExhibitionResponseDto {
 
         @Schema(type = "String", example = "http://www.culture.go.kr/upload/rdf/23/11/rdf_2023112721202875517.jpg", description = "전시회 이미지 포스터를 출력합니다.")
         private String imageUrl;
+
+        @Schema(type = "String", example = "20231122", description = "전시회 시작 날짜를 출력합니다.")
+        private String startDate;
+
+        @Schema(type = "String", example = "20231127", description = "전시회 종료 날짜를 출력합니다.")
+        private String endDate;
     }
 
+    @Data
+    @Builder
+    public static class SearchExhibitionByNameRes {
+
+        @Schema(type = "long", example = "1", description = "전시회 ID를 출력합니다.")
+        private Long exhibitionId;
+
+        @Schema(type = "String", example = "한국필묵그룹 선흔 창립20주년 기념전", description = "전시회 이름을 출력합니다.")
+        private String exhibitionName;
+
+        @Schema(type = "String", example = "http://www.culture.go.kr/upload/rdf/23/11/rdf_2023112721202875517.jpg", description = "전시회 이미지 포스터를 출력합니다.")
+        private String imageUrl;
+    }
 }

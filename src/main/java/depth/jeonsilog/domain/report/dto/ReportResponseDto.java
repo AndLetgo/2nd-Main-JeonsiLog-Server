@@ -22,5 +22,8 @@ public class ReportResponseDto {
 
         @Schema(type = "Long", example = "1", description = "신고된 감상평, 댓글 혹은 전시회 ID를 출력합니다.")
         private Long reportedId;
+
+        @Schema(type = "boolean", example = "true", description = "신고를 확인했는지 출력합니다.")
+        private Boolean isChecked;
     }
 }

@@ -6,12 +6,15 @@ import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
 import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
+import depth.jeonsilog.domain.reply.domain.Reply;
+import depth.jeonsilog.domain.reply.domain.repository.ReplyRepository;
 import depth.jeonsilog.domain.review.converter.ReviewConverter;
 import depth.jeonsilog.domain.review.domain.Review;
 import depth.jeonsilog.domain.review.domain.repository.ReviewRepository;
 import depth.jeonsilog.domain.review.dto.ReviewRequestDto;
 import depth.jeonsilog.domain.review.dto.ReviewResponseDto;
 import depth.jeonsilog.domain.user.application.UserService;
+import depth.jeonsilog.domain.user.domain.Role;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.global.DefaultAssert;
 import depth.jeonsilog.global.config.security.token.UserPrincipal;
@@ -33,6 +36,8 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ExhibitionRepository exhibitionRepository;
     private final RatingRepository ratingRepository;
+    private final ReplyRepository replyRepository;
+
     private final UserService userService;
     private final AlarmService alarmService;
 
@@ -56,11 +61,16 @@ public class ReviewService {
     @Transactional
     public ResponseEntity<?> deleteReview(UserPrincipal userPrincipal, Long reviewId) {
         User findUser = userService.validateUserByToken(userPrincipal);
-        Optional<Review> review = reviewRepository.findById(reviewId);
-        DefaultAssert.isTrue(review.isPresent(), "Review id가 올바르지 않습니다.");
-        Review findReview = review.get();
+        Review findReview = validateReviewById(reviewId);
 
-        DefaultAssert.isTrue(findUser.equals(findReview.getUser()), "해당 리뷰의 작성자만 삭제할 수 있습니다.");
+        DefaultAssert.isTrue(findUser.equals(findReview.getUser()) || findUser.getRole().equals(Role.ADMIN)
+                , "해당 리뷰의 작성자 혹은 관리자만 삭제할 수 있습니다.");
+
+        List<Reply> replyList = replyRepository.findByReview(findReview);
+        for (Reply reply : replyList) {
+            reply.updateStatus(Status.DELETE);
+        }
+
         findReview.updateStatus(Status.DELETE);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(Message.builder().message("감상평을 삭제했습니다.").build());
@@ -102,6 +112,18 @@ public class ReviewService {
         ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, reviewRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListRes);
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // 전시회에 감상평을 남겼는지 체크
+    public ResponseEntity<?> checkIsWrite(UserPrincipal userPrincipal, Long exhibitionId) {
+        User findUser = userService.validateUserByToken(userPrincipal);
+        Optional<Exhibition> findExhibition = exhibitionRepository.findById(exhibitionId);
+        DefaultAssert.isTrue(findExhibition.isPresent(), "전시회 정보가 올바르지 않습니다.");
+
+        Boolean isWrite = reviewRepository.existsByUserIdAndExhibitionId(findUser.getId(), exhibitionId);
+        ReviewResponseDto.CheckIsWriteRes responseDto = ReviewResponseDto.CheckIsWriteRes.builder().isWrite(isWrite).build();
+        ApiResponse apiResponse = ApiResponse.toApiResponse(responseDto);
         return ResponseEntity.ok(apiResponse);
     }
 

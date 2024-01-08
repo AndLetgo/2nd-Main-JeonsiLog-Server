@@ -4,6 +4,14 @@ import depth.jeonsilog.domain.auth.domain.Token;
 import depth.jeonsilog.domain.auth.domain.repository.TokenRepository;
 import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.follow.domain.repository.FollowRepository;
+import depth.jeonsilog.domain.interest.domain.Interest;
+import depth.jeonsilog.domain.interest.domain.repository.InterestRepository;
+import depth.jeonsilog.domain.rating.domain.Rating;
+import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
+import depth.jeonsilog.domain.reply.domain.Reply;
+import depth.jeonsilog.domain.reply.domain.repository.ReplyRepository;
+import depth.jeonsilog.domain.review.domain.Review;
+import depth.jeonsilog.domain.review.domain.repository.ReviewRepository;
 import depth.jeonsilog.domain.s3.application.S3Uploader;
 import depth.jeonsilog.domain.user.converter.UserConverter;
 import depth.jeonsilog.domain.user.domain.User;
@@ -32,7 +40,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     private final TokenRepository tokenRepository;
+
+    private final ReviewRepository reviewRepository;
+    private final ReplyRepository replyRepository;
+    private final RatingRepository ratingRepository;
+    private final InterestRepository interestRepository;
+
     private final S3Uploader s3Uploader;
+
+    private static final String DIRNAME = "profile_img";
 
     // 토큰으로 본인 정보 조회
     public ResponseEntity<?> findUserByToken(UserPrincipal userPrincipal) {
@@ -78,7 +94,7 @@ public class UserService {
         User findUser = validateUserByToken(userPrincipal);
 
         if (!img.isEmpty()) {
-            String storedFileName = s3Uploader.upload(img, "profile_img");
+            String storedFileName = s3Uploader.upload(img, DIRNAME);
             findUser.updateProfileImg(storedFileName);
         }
 
@@ -105,6 +121,33 @@ public class UserService {
     public ResponseEntity<?> deleteUser(UserPrincipal userPrincipal) {
 
         User findUser = validateUserByToken(userPrincipal);
+        Long userId = findUser.getId();
+
+        // 즐겨찾기, 별점, 감상평, 댓글 DELETE 처리
+        List<Review> reviews = reviewRepository.findAllByUserId(userId);
+        List<Rating> ratings = ratingRepository.findAllByUserId(userId);
+        List<Interest> interests = interestRepository.findAllByUserId(userId);
+
+        // review의 replies도
+        for (Review review : reviews) {
+            List<Reply> replyByReview = replyRepository.findByReview(review);
+            replyRepository.deleteAll(replyByReview);
+        }
+        // 얘만 여기 있는 이유 : 바로 위에서 지운 reply와 겹치지 않도록 하기 위함
+        List<Reply> replyByUser = replyRepository.findAllByUserId(userId);
+        replyRepository.deleteAll(replyByUser);
+
+        // soft delete를 통한 별점 변동 x
+        for (Rating rating : ratings) {
+            rating.updateStatus(Status.DELETE);
+            rating.deleteUser();
+        }
+
+        reviewRepository.deleteAll(reviews);
+        interestRepository.deleteAll(interests);
+
+        // s3에서 프로필 이미지 삭제
+        s3Uploader.deleteImage(DIRNAME, findUser.getProfileImg());
         userRepository.delete(findUser); // hard delete
 
         Optional<Token> token = tokenRepository.findByUserEmail(userPrincipal.getEmail());
@@ -123,7 +166,7 @@ public class UserService {
 
         User findUser = validateUserByToken(userPrincipal);
 
-        findUser.updateIsOpen(!findUser.isOpen());
+        findUser.updateIsOpen(!findUser.getIsOpen());
 
         UserResponseDto.SwitchIsOpenRes switchIsOpenRes = UserConverter.toSwitchIsOpenRes(findUser);
 
@@ -138,7 +181,7 @@ public class UserService {
 
         User findUser = validateUserByToken(userPrincipal);
 
-        findUser.updateIsRecvFollowing(!findUser.isRecvFollowing());
+        findUser.updateIsRecvFollowing(!findUser.getIsRecvFollowing());
 
         UserResponseDto.SwitchIsRecvFollowingRes switchIsRecvFollowingRes = UserConverter.toSwitchIsRecvFollowingRes(findUser);
 
@@ -153,7 +196,7 @@ public class UserService {
 
         User findUser = validateUserByToken(userPrincipal);
 
-        findUser.updateIsRecvActive(!findUser.isRecvActive());
+        findUser.updateIsRecvActive(!findUser.getIsRecvActive());
 
         UserResponseDto.SwitchIsRecvActiveRes switchIsRecvActiveRes = UserConverter.toSwitchIsRecvActive(findUser);
 
@@ -162,6 +205,14 @@ public class UserService {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // 유저 포토캘린더 공개 여부 조회
+    public ResponseEntity<?> getIsOpen(Long userId) {
+        User findUser = validateUserById(userId);
+        UserResponseDto.IsOpenRes responseDto = UserConverter.toIsOpenRes(findUser);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(responseDto);
+        return ResponseEntity.ok(apiResponse);
+    }
 
     public User validateUserByToken(UserPrincipal userPrincipal) {
         Optional<User> user = userRepository.findById(userPrincipal.getId());

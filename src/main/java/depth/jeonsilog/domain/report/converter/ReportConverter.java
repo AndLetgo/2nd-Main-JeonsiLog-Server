@@ -54,6 +54,7 @@ public class ReportConverter {
                     .name(name) // 신고된 유저 혹은 전시회 이름
                     .reportType(report.getReportType())
                     .reportedId(report.getReportedId())
+                    .isChecked(report.getIsChecked())
                     .build();
 
             reportResList.add(reportRes);

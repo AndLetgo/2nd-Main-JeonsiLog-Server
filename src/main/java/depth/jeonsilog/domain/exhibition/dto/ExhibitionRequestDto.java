@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.List;
+
 public class ExhibitionRequestDto {
 
     @Data
@@ -28,7 +30,26 @@ public class ExhibitionRequestDto {
         @Size(max = 1000, message = "1000자 이하로만 작성 가능합니다.")
         private String information;
 
+        @Schema(type = "Boolean", example = "false", description = "전시회 포스터 이미지 변동 여부 입니다.")
+        private Boolean isImageChange;
+
         private PlaceRequestDto.UpdatePlaceWithExhibitionDetailReq updatePlaceInfo;
 
+    }
+
+    @Data
+    public static class UpdateExhibitionSequence {
+
+        @Schema(type = "Integer", example = "1", description = "설정할 전시회 순서입니다.")
+        private Integer sequence;
+
+        @Schema(type = "Long", example = "1", description = "전시회 ID입니다.")
+        private Long exhibitionId;
+    }
+
+    @Data
+    public static class UpdateExhibitionSequenceList {
+
+        private List<UpdateExhibitionSequence> updateSequenceInfo;
     }
 }

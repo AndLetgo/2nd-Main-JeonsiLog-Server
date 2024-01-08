@@ -1,13 +1,19 @@
 package depth.jeonsilog.domain.user.domain;
 
+import depth.jeonsilog.domain.alarm.domain.Alarm;
+import depth.jeonsilog.domain.calendar.domain.Calendar;
 import depth.jeonsilog.domain.common.BaseEntity;
+import depth.jeonsilog.domain.follow.domain.Follow;
+import depth.jeonsilog.domain.report.domain.Report;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -30,11 +36,11 @@ public class User extends BaseEntity {
     private String profileImg;
 
     // 포토 캘린더 공개 여부
-    private boolean isOpen;
+    private Boolean isOpen;
 
-    private boolean isRecvFollowing;
+    private Boolean isRecvFollowing;
 
-    private boolean isRecvActive;
+    private Boolean isRecvActive;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -43,6 +49,22 @@ public class User extends BaseEntity {
     private Provider provider;
     // 카카오 고유 ID
     private String providerId;
+
+    // CASCADE 추가
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Follow> followers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "follow", cascade = CascadeType.REMOVE)
+    private List<Follow> followings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Calendar> calendars = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Report> reports = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Alarm> alarms = new ArrayList<>();
 
     // update 메서드
     public void updateNickname(String nickname) {

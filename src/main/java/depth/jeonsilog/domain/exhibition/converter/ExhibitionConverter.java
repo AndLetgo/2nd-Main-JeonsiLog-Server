@@ -82,6 +82,8 @@ public class ExhibitionConverter {
                     .operatingKeyword(exhibition.getOperatingKeyword())
                     .priceKeyword(exhibition.getPriceKeyword())
                     .imageUrl(exhibition.getImageUrl())
+                    .startDate(exhibition.getStartDate())
+                    .endDate(exhibition.getEndDate())
                     .build();
 
             exhibitionInPlaceResList.add(exhibitionInPlaceRes);
@@ -90,4 +92,19 @@ public class ExhibitionConverter {
         return exhibitionInPlaceResList;
     }
 
+    public static List<ExhibitionResponseDto.SearchExhibitionByNameRes> toSearchByNameRes(List<Exhibition> exhibitions) {
+
+        List<ExhibitionResponseDto.SearchExhibitionByNameRes> exhibitionByNameResList = new ArrayList<>();
+
+        for (Exhibition exhibition : exhibitions) {
+            ExhibitionResponseDto.SearchExhibitionByNameRes searchExhibitionByNameRes = ExhibitionResponseDto.SearchExhibitionByNameRes.builder()
+                    .exhibitionId(exhibition.getId())
+                    .exhibitionName(exhibition.getName())
+                    .imageUrl(exhibition.getImageUrl())
+                    .build();
+
+            exhibitionByNameResList.add(searchExhibitionByNameRes);
+        }
+        return exhibitionByNameResList;
+    }
 }

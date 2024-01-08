@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ExhibitionRepository extends JpaRepository<Exhibition, Long> {
 
@@ -17,6 +19,9 @@ public interface ExhibitionRepository extends JpaRepository<Exhibition, Long> {
     @EntityGraph(attributePaths = {"place"})
     Page<Exhibition> findByNameContaining(Pageable pageable, String searchWord);
 
+    Page<Exhibition> findByNameContainingOrPlace_AddressContaining(Pageable pageable, String searchWord, String searchWord2);
+
     Page<Exhibition> findByPlace(Pageable pageable, Place place);
 
+    Optional<Exhibition> findBySequence(Integer sequence);
 }

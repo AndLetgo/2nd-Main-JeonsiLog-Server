@@ -150,4 +150,16 @@ public class UserController {
     ) {
         return userService.deleteUser(userPrincipal);
     }
+
+    @Operation(summary = "타 유저 포토 캘린더 공개 여부 조회", description = "User Id로 포토 캘린더 공개 여부를 조회합니다..")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.IsOpenRes.class))}),
+            @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/calendar/{userId}")
+    public ResponseEntity<?> getIsOpen(
+            @Parameter(description = "조회할 유저의 ID를 입력해주세요", required = true) @PathVariable Long userId
+    ) {
+        return userService.getIsOpen(userId);
+    }
 }
