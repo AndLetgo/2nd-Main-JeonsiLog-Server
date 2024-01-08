@@ -32,7 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -237,7 +236,7 @@ public class ExhibitionService {
             if (tempExhibition.isPresent()) {
                 tempExhibition.get().updateSequence(11);
             } else {
-                log.info("그 다음은 없다.");
+                break;
             }
         }
 
