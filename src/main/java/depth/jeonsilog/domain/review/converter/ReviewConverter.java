@@ -35,6 +35,7 @@ public class ReviewConverter {
                     .rate(rating.isPresent() ? rating.get().getRate() : 0)
                     .contents(review.getContents())
                     .numReply(review.getNumReply())
+                    .createdDate(review.getCreatedDate())
                     .build();
             reviewListRes.add(reviewRes);
         }
@@ -51,6 +52,7 @@ public class ReviewConverter {
                     .exhibitionName(exhibition.getName())
                     .exhibitionImgUrl(exhibition.getImageUrl())
                     .contents(review.getContents())
+                    .createdDate(review.getCreatedDate())
                     .build();
 
             reviewResList.add(reviewRes);

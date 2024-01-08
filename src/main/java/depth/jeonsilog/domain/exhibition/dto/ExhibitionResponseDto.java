@@ -120,6 +120,12 @@ public class ExhibitionResponseDto {
 
         @Schema(type = "String", example = "http://www.culture.go.kr/upload/rdf/23/11/rdf_2023112721202875517.jpg", description = "전시회 이미지 포스터를 출력합니다.")
         private String imageUrl;
+
+        @Schema(type = "String", example = "20231122", description = "전시회 시작 날짜를 출력합니다.")
+        private String startDate;
+
+        @Schema(type = "String", example = "20231127", description = "전시회 종료 날짜를 출력합니다.")
+        private String endDate;
     }
 
     @Data

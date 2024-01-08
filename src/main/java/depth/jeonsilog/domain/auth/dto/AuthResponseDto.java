@@ -21,7 +21,10 @@ public class AuthResponseDto {
     @Builder
     public static class NicknameCheckRes {
 
-        @Schema(type = "boolean", example = "true", description = "사용 가능한 닉네임일 경우 true를 출력합니다.")
-        private Boolean isAvailable;
+        @Schema(type = "boolean", example = "true", description = "중복일 경우 true를 출력합니다.")
+        private Boolean isDuplicate;
+
+        @Schema(type = "boolean", example = "true", description = "금칙어일 경우 true를 출력합니다.")
+        private Boolean isForbidden;
     }
 }
