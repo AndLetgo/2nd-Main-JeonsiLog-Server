@@ -41,7 +41,7 @@ public class UserConverter {
     public static UserResponseDto.SwitchIsOpenRes toSwitchIsOpenRes(User user) {
         return UserResponseDto.SwitchIsOpenRes.builder()
                 .userId(user.getId())
-                .isOpen(user.isOpen())
+                .isOpen(user.getIsOpen())
                 .build();
     }
 
@@ -49,7 +49,7 @@ public class UserConverter {
     public static UserResponseDto.SwitchIsRecvFollowingRes toSwitchIsRecvFollowingRes(User user) {
         return UserResponseDto.SwitchIsRecvFollowingRes.builder()
                 .userId(user.getId())
-                .isRecvFollowing(user.isRecvFollowing())
+                .isRecvFollowing(user.getIsRecvFollowing())
                 .build();
     }
 
@@ -57,7 +57,13 @@ public class UserConverter {
     public static UserResponseDto.SwitchIsRecvActiveRes toSwitchIsRecvActive(User user) {
         return UserResponseDto.SwitchIsRecvActiveRes.builder()
                 .userId(user.getId())
-                .isRecvActive(user.isRecvActive())
+                .isRecvActive(user.getIsRecvActive())
+                .build();
+    }
+
+    public static UserResponseDto.IsOpenRes toIsOpenRes(User user) {
+        return UserResponseDto.IsOpenRes.builder()
+                .isOpen(user.getIsOpen())
                 .build();
     }
 }

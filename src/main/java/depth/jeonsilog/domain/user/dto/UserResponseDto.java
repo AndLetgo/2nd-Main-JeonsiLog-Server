@@ -49,7 +49,7 @@ public class UserResponseDto {
         private Long userId;
 
         @Schema(type = "boolean", example = "true", description = "유저의 포토캘린더 공개/비공개 여부를 출력합니다.")
-        private boolean isOpen;
+        private Boolean isOpen;
     }
 
     @Data
@@ -60,7 +60,7 @@ public class UserResponseDto {
         private Long userId;
 
         @Schema(type = "boolean", example = "true", description = "유저의 팔로잉 알림 수신 여부를 출력합니다.")
-        private boolean isRecvFollowing;
+        private Boolean isRecvFollowing;
     }
 
     @Data
@@ -71,6 +71,14 @@ public class UserResponseDto {
         private Long userId;
 
         @Schema(type = "boolean", example = "true", description = "유저의 나의 활동 알림 수신 여부를 출력합니다.")
-        private boolean isRecvActive;
+        private Boolean isRecvActive;
+    }
+
+    @Data
+    @Builder
+    public static class IsOpenRes {
+
+        @Schema(type = "boolean", example = "true", description = "유저의 포토캘린더 공개/비공개 여부를 출력합니다.")
+        private Boolean isOpen;
     }
 }

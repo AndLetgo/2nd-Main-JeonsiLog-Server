@@ -162,7 +162,7 @@ public class UserService {
 
         User findUser = validateUserByToken(userPrincipal);
 
-        findUser.updateIsOpen(!findUser.isOpen());
+        findUser.updateIsOpen(!findUser.getIsOpen());
 
         UserResponseDto.SwitchIsOpenRes switchIsOpenRes = UserConverter.toSwitchIsOpenRes(findUser);
 
@@ -177,7 +177,7 @@ public class UserService {
 
         User findUser = validateUserByToken(userPrincipal);
 
-        findUser.updateIsRecvFollowing(!findUser.isRecvFollowing());
+        findUser.updateIsRecvFollowing(!findUser.getIsRecvFollowing());
 
         UserResponseDto.SwitchIsRecvFollowingRes switchIsRecvFollowingRes = UserConverter.toSwitchIsRecvFollowingRes(findUser);
 
@@ -192,7 +192,7 @@ public class UserService {
 
         User findUser = validateUserByToken(userPrincipal);
 
-        findUser.updateIsRecvActive(!findUser.isRecvActive());
+        findUser.updateIsRecvActive(!findUser.getIsRecvActive());
 
         UserResponseDto.SwitchIsRecvActiveRes switchIsRecvActiveRes = UserConverter.toSwitchIsRecvActive(findUser);
 
@@ -201,6 +201,14 @@ public class UserService {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // 유저 포토캘린더 공개 여부 조회
+    public ResponseEntity<?> getIsOpen(Long userId) {
+        User findUser = validateUserById(userId);
+        UserResponseDto.IsOpenRes responseDto = UserConverter.toIsOpenRes(findUser);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(responseDto);
+        return ResponseEntity.ok(apiResponse);
+    }
 
     public User validateUserByToken(UserPrincipal userPrincipal) {
         Optional<User> user = userRepository.findById(userPrincipal.getId());
