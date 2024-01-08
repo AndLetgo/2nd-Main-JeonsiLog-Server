@@ -131,8 +131,9 @@ public class ExhibitionController {
     })
     @PatchMapping("/sequence")
     public ResponseEntity<?> updateExhibitionSequence(
+            @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @Parameter(description = "Schemas의 UpdateExhibitionSequenceList와 UpdateExhibitionSequence를 참고해주세요", required = true) @RequestBody ExhibitionRequestDto.UpdateExhibitionSequenceList requestDto
     ) {
-        return exhibitionService.updateExhibitionSequence(requestDto);
+        return exhibitionService.updateExhibitionSequence(userPrincipal, requestDto);
     }
 }

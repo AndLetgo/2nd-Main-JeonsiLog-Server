@@ -213,11 +213,14 @@ public class ExhibitionService {
 
     // Description: 관리자 페이지 전시회 sequence 수정
     @Transactional
-    public ResponseEntity<?> updateExhibitionSequence(ExhibitionRequestDto.UpdateExhibitionSequenceList updateSequenceReq) {
+    public ResponseEntity<?> updateExhibitionSequence(UserPrincipal userPrincipal, ExhibitionRequestDto.UpdateExhibitionSequenceList updateSequenceReq) {
+
+        User findUser = userService.validateUserByToken(userPrincipal);
+        DefaultAssert.isTrue(findUser.getRole() == Role.ADMIN, "관리자만 전시회 순서를 변경할 수 있습니다.");
 
         List<ExhibitionRequestDto.UpdateExhibitionSequence> updateExhibitionSequenceList = updateSequenceReq.getUpdateSequenceInfo();
-
-        for (int i = 0; i < updateExhibitionSequenceList.size(); i++) {
+        int size = updateExhibitionSequenceList.size();
+        for (int i = 0; i < size; i++) {
             ExhibitionRequestDto.UpdateExhibitionSequence updateExhibitionSequence = updateExhibitionSequenceList.get(i);
             Optional<Exhibition> exhibition = exhibitionRepository.findById(updateExhibitionSequence.getExhibitionId());
             DefaultAssert.isTrue(exhibition.isPresent(), "전시회 정보가 올바르지 않습니다.");
@@ -227,6 +230,15 @@ public class ExhibitionService {
 
             Exhibition findExhibition = exhibition.get();
             findExhibition.updateSequence(updateExhibitionSequence.getSequence());
+        }
+        // sequence 삭제 로직
+        for (int i = size; i < 10 ;i++) {
+            Optional<Exhibition> tempExhibition = exhibitionRepository.findBySequence(i + 1);
+            if (tempExhibition.isPresent()) {
+                tempExhibition.get().updateSequence(11);
+            } else {
+                log.info("그 다음은 없다.");
+            }
         }
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(
