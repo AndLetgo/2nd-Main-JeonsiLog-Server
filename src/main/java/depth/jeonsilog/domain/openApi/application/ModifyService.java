@@ -94,6 +94,9 @@ public class ModifyService {
         for (Place place : places) {
             String tel = place.getTel();
 
+            if (tel == null)
+                continue;
+
             // 전화 번호가 비어 있는 경우 null로 통일
             if (tel.equals("") || tel.equals(" ")) {
                 log.info("전화 번호가 비어 있는 전시 공간 이름: " + place.getName() + " 전화 번호 : " + place.getTel());
@@ -113,6 +116,30 @@ public class ModifyService {
                 log.info("전화 번호가 여러 개 있는 전시 공간 이름: " + place.getName() + " 변경 후 전화 번호 : " + place.getTel());
             }
 
+        }
+        ApiResponse apiResponse = ApiResponse.toApiResponse(placeResList);
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // Description : 전시 공간 홈페이지 비어있는 경우 null
+    @Transactional
+    public ResponseEntity<?> modifyPlaceHomepage() {
+
+        List<Place> places = placeRepository.findAll();
+        List<PlaceResponseDto.PlaceRes> placeResList = new ArrayList<>();
+
+        for (Place place : places) {
+            String homepage = place.getHomePage();
+            if (homepage == null)
+                continue;
+
+            if (homepage.equals("") || homepage.equals(" ")) {
+                log.info("홈페이지가 비어 있는 전시 공간 이름 : " + place.getName() + " 홈페이지 : " + place.getHomePage());
+                homepage = null;
+                place.updateHomepage(homepage);
+                PlaceResponseDto.PlaceRes placeRes = PlaceConverter.toPlaceRes(place);
+                placeResList.add(placeRes);
+            }
         }
         ApiResponse apiResponse = ApiResponse.toApiResponse(placeResList);
         return ResponseEntity.ok(apiResponse);

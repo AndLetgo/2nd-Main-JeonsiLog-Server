@@ -23,4 +23,9 @@ public class ModifyController {
     public ResponseEntity<?> modifyPlaceTel() {
         return modifyService.modifyPlaceTel();
     }
+
+    @PatchMapping("/place/homepage")
+    public ResponseEntity<?> modifyPlaceHomepage() {
+        return modifyService.modifyPlaceHomepage();
+    }
 }

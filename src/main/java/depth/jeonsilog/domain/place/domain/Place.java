@@ -42,6 +42,10 @@ public class Place extends BaseEntity {
         this.tel = tel;
     }
 
+    public void updateHomepage(String homePage) {
+        this.homePage = homePage;
+    }
+
     @Builder
     public Place(Long id, String name, String address, String operatingTime, ClosedDays closedDays, String tel, String homePage) {
         this.id = id;
