@@ -61,6 +61,10 @@ public class Exhibition extends BaseEntity {
         }
     }
 
+    public void updateName(String name) {
+        this.name = name;
+    }
+
     public void updateRate(Double rate) {
         this.rate = rate;
     }

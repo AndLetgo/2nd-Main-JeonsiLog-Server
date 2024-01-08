@@ -53,7 +53,7 @@ public class SaveService {
          */
 
         // page
-        Integer count = 15;
+        Integer count = 13;
 
         while (true) {
             System.out.println("=============================== num :" + count + " ===============================");
@@ -245,7 +245,7 @@ public class SaveService {
             Integer rows = exhibitionList.getResponse().getMsgBody().getRows();
             Integer numOfPages = (totalCount / rows) + 1;
 
-            if (count == 23) { // count로 페이지 조절
+            if (count == 14) { // count로 페이지 조절
                 ApiResponse apiResponse = ApiResponse.builder()
                         .check(true)
                         .information(exhibitionList)
@@ -258,7 +258,6 @@ public class SaveService {
 
     }
 
-
     // Description : 전시회 목록 조회 OPEN API  /  파라미터로 cPage / from, to
     public String callExhibitionListApi(Integer cPage) throws IOException {
 
@@ -268,8 +267,8 @@ public class SaveService {
         // 파라미터 추가 : 서비스 키, 날짜 범위 (from, to), 현재 페이지, 페이지 당 가져올 개수
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
 //        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
-        urlBuilder.append("&" + URLEncoder.encode("from","UTF-8") + "=" + URLEncoder.encode("20230918", "UTF-8")); /**/
-        urlBuilder.append("&" + URLEncoder.encode("to","UTF-8") + "=" + URLEncoder.encode("20240118", "UTF-8")); /**/
+        urlBuilder.append("&" + URLEncoder.encode("from","UTF-8") + "=" + URLEncoder.encode("2023108", "UTF-8")); /**/
+        urlBuilder.append("&" + URLEncoder.encode("to","UTF-8") + "=" + URLEncoder.encode("20240208", "UTF-8")); /**/
 
         urlBuilder.append("&" + URLEncoder.encode("cPage","UTF-8") + "=" + URLEncoder.encode(cPage.toString(), "UTF-8")); // 요청 페이지
         urlBuilder.append("&" + URLEncoder.encode("rows","UTF-8") + "=" + URLEncoder.encode("100", "UTF-8")); // 페이지 당 가져올 개수
