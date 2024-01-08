@@ -48,6 +48,8 @@ public class UserService {
 
     private final S3Uploader s3Uploader;
 
+    private static final String DIRNAME = "profile_img";
+
     // 토큰으로 본인 정보 조회
     public ResponseEntity<?> findUserByToken(UserPrincipal userPrincipal) {
 
@@ -92,7 +94,7 @@ public class UserService {
         User findUser = validateUserByToken(userPrincipal);
 
         if (!img.isEmpty()) {
-            String storedFileName = s3Uploader.upload(img, "profile_img");
+            String storedFileName = s3Uploader.upload(img, DIRNAME);
             findUser.updateProfileImg(storedFileName);
         }
 
@@ -144,6 +146,8 @@ public class UserService {
         reviewRepository.deleteAll(reviews);
         interestRepository.deleteAll(interests);
 
+        // s3에서 프로필 이미지 삭제
+        s3Uploader.deleteImage(DIRNAME, findUser.getProfileImg());
         userRepository.delete(findUser); // hard delete
 
         Optional<Token> token = tokenRepository.findByUserEmail(userPrincipal.getEmail());
