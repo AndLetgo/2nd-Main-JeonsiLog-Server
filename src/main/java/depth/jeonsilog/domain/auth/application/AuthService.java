@@ -4,7 +4,6 @@ import depth.jeonsilog.domain.auth.converter.AuthConverter;
 import depth.jeonsilog.domain.auth.domain.Token;
 import depth.jeonsilog.domain.auth.domain.repository.TokenRepository;
 import depth.jeonsilog.domain.auth.dto.*;
-import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.user.application.UserService;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.domain.user.domain.repository.UserRepository;
@@ -13,6 +12,7 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,7 +21,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileCopyUtils;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -119,8 +125,19 @@ public class AuthService {
 
     public ResponseEntity<?> checkNickname(String nickname) {
 
+        List<String> forbiddenList = loadForbiddenWords();
+        System.out.println(forbiddenList);
+        boolean isForbidden = false;
+        for (String forbiddenWord : forbiddenList) {
+            if (nickname.contains(forbiddenWord)) {
+                isForbidden = true;
+                break;
+            }
+        }
+
         AuthResponseDto.NicknameCheckRes nicknameCheckRes = AuthResponseDto.NicknameCheckRes.builder()
-                .isAvailable(!userRepository.existsByNickname(nickname))
+                .isDuplicate(userRepository.existsByNickname(nickname))
+                .isForbidden(isForbidden)
                 .build();
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(nicknameCheckRes);
@@ -143,5 +160,20 @@ public class AuthService {
         DefaultAssert.isTrue(token.get().getUserEmail().equals(authentication.getName()), "사용자 인증에 실패하였습니다.");
 
         return true;
+    }
+
+    // Description: 금칙어 리스트 파일에서 리스트를 읽어서 반환하는 메서드
+    public List<String> loadForbiddenWords() {
+        List<String> forbiddenList = new ArrayList<>();
+        try {
+            ClassPathResource resource = new ClassPathResource("forbidden-words.txt");
+            byte[] fileData = FileCopyUtils.copyToByteArray(resource.getInputStream());
+            String content = new String(fileData, StandardCharsets.UTF_8);
+            String[] lines = content.split(System.lineSeparator());
+            forbiddenList.addAll(Arrays.asList(lines));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return forbiddenList;
     }
 }

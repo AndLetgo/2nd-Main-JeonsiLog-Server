@@ -52,6 +52,9 @@ public class FollowResponseDto {
 
         @Schema(type = "boolean", example = "true", description = "내가 이 유저를 팔로우하고 있는지 출력합니다.")
         private boolean isIFollow;
+
+        @Schema(type = "boolean", example = "true", description = "이 유저가 나를 팔로우하고 있는지 출력합니다.")
+        private boolean isFollowMe;
     }
 
     @Data

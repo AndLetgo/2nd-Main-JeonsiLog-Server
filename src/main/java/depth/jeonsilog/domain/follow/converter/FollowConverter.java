@@ -66,6 +66,7 @@ public class FollowConverter {
                     .nickname(follow.getFollow().getNickname())
                     .profileImgUrl(follow.getFollow().getProfileImg())
                     .isIFollow(followRepository.findByUserAndFollow(me, follow.getFollow()).isPresent())
+                    .isFollowMe(followRepository.findByUserAndFollow(follow.getFollow(), me).isPresent())
                     .build();
 
             followerListRes.add(followRes);

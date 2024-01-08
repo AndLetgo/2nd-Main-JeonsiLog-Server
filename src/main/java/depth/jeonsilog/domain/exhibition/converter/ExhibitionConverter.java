@@ -82,6 +82,8 @@ public class ExhibitionConverter {
                     .operatingKeyword(exhibition.getOperatingKeyword())
                     .priceKeyword(exhibition.getPriceKeyword())
                     .imageUrl(exhibition.getImageUrl())
+                    .startDate(exhibition.getStartDate())
+                    .endDate(exhibition.getEndDate())
                     .build();
 
             exhibitionInPlaceResList.add(exhibitionInPlaceRes);
