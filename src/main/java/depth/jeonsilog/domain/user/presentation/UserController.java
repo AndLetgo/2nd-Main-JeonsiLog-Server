@@ -20,14 +20,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
@@ -97,10 +90,11 @@ public class UserController {
     })
     @GetMapping("/search/{searchWord}")
     public ResponseEntity<?> searchUsers(
+            @Parameter(description = "유저 검색 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @Parameter(description = "Schemas의 를 참고해주세요", required = true) @PathVariable(value = "searchWord") String keyword
     ) {
-        return userService.searchUsers(userPrincipal, keyword);
+        return userService.searchUsers(page, userPrincipal, keyword);
     }
 
     @Operation(summary = "포토 캘린더 공개/비공개 변경", description = "포토 캘린더 공개/비공개 여부를 변경합니다.")

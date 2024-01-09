@@ -55,12 +55,10 @@ public class PlaceService {
     }
 
     // Description : 검색어를 포함한 전시 공간 목록 조회
-    // TODO : 논의 후 페이징 처리
     public ResponseEntity<?> searchPlaces(Integer page, String searchWord) {
 
-        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "createdDate"));
+        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.ASC, "createdDate"));
 
-//        Page<Place> placePage = placeRepository.findByNameContaining(pageRequest, searchWord);
         Page<Place> placePage = placeRepository.findByNameContainingOrAddressContaining(pageRequest, searchWord, searchWord);
 
         List<Place> places = placePage.getContent();

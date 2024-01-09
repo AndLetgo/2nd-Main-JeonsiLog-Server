@@ -12,6 +12,9 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,12 +95,17 @@ public class FollowService {
     }
 
     // 나의 팔로잉 리스트 조회
-    public ResponseEntity<?> findMyFollowingList(UserPrincipal userPrincipal) {
+    public ResponseEntity<?> findMyFollowingList(Integer page, UserPrincipal userPrincipal) {
 
         User findUser = userService.validateUserByToken(userPrincipal);
-        List<Follow> follows = followRepository.findAllByUser(findUser);
 
-        List<FollowResponseDto.MyFollowingListRes> followListRes = FollowConverter.toMyFollowingListRes(follows);
+        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.ASC, "modifiedDate"));
+        Page<Follow> followPage = followRepository.findAllByUser(pageRequest, findUser);
+        List<Follow> followList = followPage.getContent();
+
+        DefaultAssert.isTrue(!followList.isEmpty(), "팔로잉 유저가 존재하지 않습니다.");
+
+        List<FollowResponseDto.MyFollowingListRes> followListRes = FollowConverter.toMyFollowingListRes(followList);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(followListRes);
 
@@ -105,12 +113,17 @@ public class FollowService {
     }
 
     // 나의 팔로워 리스트 조회
-    public ResponseEntity<?> findMyFollowerList(UserPrincipal userPrincipal) {
+    public ResponseEntity<?> findMyFollowerList(Integer page, UserPrincipal userPrincipal) {
 
         User findUser = userService.validateUserByToken(userPrincipal);
-        List<Follow> follows = followRepository.findAllByFollow(findUser);
 
-        List<FollowResponseDto.MyFollowerListRes> followingListRes = FollowConverter.toMyFollowerListRes(follows, followRepository);
+        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.ASC, "modifiedDate"));
+        Page<Follow> followPage = followRepository.findAllByFollow(pageRequest, findUser);
+        List<Follow> followList = followPage.getContent();
+
+        DefaultAssert.isTrue(!followList.isEmpty(), "팔로워가 존재하지 않습니다.");
+
+        List<FollowResponseDto.MyFollowerListRes> followingListRes = FollowConverter.toMyFollowerListRes(followList, followRepository);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(followingListRes);
 
@@ -118,13 +131,18 @@ public class FollowService {
     }
 
     // 유저의 팔로잉 리스트 조회
-    public ResponseEntity<?> findUserFollowingList(UserPrincipal userPrincipal, Long userId) {
+    public ResponseEntity<?> findUserFollowingList(Integer page, UserPrincipal userPrincipal, Long userId) {
 
         User me = userService.validateUserByToken(userPrincipal);
         User findUser = userService.validateUserById(userId);
-        List<Follow> follows = followRepository.findAllByUser(findUser);
 
-        List<FollowResponseDto.UserFollowingListRes> followListRes = FollowConverter.toUserFollowingListRes(me, follows, followRepository);
+        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.ASC, "modifiedDate"));
+        Page<Follow> followPage = followRepository.findAllByUser(pageRequest, findUser);
+        List<Follow> followList = followPage.getContent();
+
+        DefaultAssert.isTrue(!followList.isEmpty(), "팔로잉 유저가 존재하지 않습니다.");
+
+        List<FollowResponseDto.UserFollowingListRes> followListRes = FollowConverter.toUserFollowingListRes(me, followList, followRepository);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(followListRes);
 
@@ -132,13 +150,18 @@ public class FollowService {
     }
 
     // 유저의 팔로워 리스트 조회
-    public ResponseEntity<?> findUserFollowerList(UserPrincipal userPrincipal, Long userId) {
+    public ResponseEntity<?> findUserFollowerList(Integer page, UserPrincipal userPrincipal, Long userId) {
 
         User me = userService.validateUserByToken(userPrincipal);
         User findUser = userService.validateUserById(userId);
-        List<Follow> follows = followRepository.findAllByFollow(findUser);
 
-        List<FollowResponseDto.UserFollowerListRes> followingListRes = FollowConverter.toUserFollowerListRes(me, follows, followRepository);
+        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.ASC, "modifiedDate"));
+        Page<Follow> followPage = followRepository.findAllByFollow(pageRequest, findUser);
+        List<Follow> followList = followPage.getContent();
+
+        DefaultAssert.isTrue(!followList.isEmpty(), "팔로워가 존재하지 않습니다.");
+
+        List<FollowResponseDto.UserFollowerListRes> followingListRes = FollowConverter.toUserFollowerListRes(me, followList, followRepository);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(followingListRes);
 

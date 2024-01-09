@@ -72,7 +72,7 @@ public class ReportService {
         User user = userService.validateUserByToken(userPrincipal);
         DefaultAssert.isTrue(user.getRole().equals(Role.ADMIN), "관리자만 조회할 수 있습니다.");
 
-        PageRequest pageRequest = PageRequest.of(page, 10, Sort.Direction.DESC, "createdDate");
+        PageRequest pageRequest = PageRequest.of(page, 20, Sort.Direction.DESC, "createdDate");
         Page<Report> reportPage = reportRepository.findAll(pageRequest);
         List<Report> reports = reportPage.getContent();
 

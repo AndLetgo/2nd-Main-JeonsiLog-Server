@@ -8,6 +8,7 @@ import depth.jeonsilog.domain.rating.domain.Rating;
 import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
 import depth.jeonsilog.domain.rating.dto.RatingRequestDto;
 import depth.jeonsilog.domain.rating.dto.RatingResponseDto;
+import depth.jeonsilog.domain.review.domain.Review;
 import depth.jeonsilog.domain.user.application.UserService;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.global.DefaultAssert;
@@ -15,6 +16,9 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,9 +91,14 @@ public class RatingService {
     }
 
     // 나의 별점 목록 조회
-    public ResponseEntity<?> getMyRatingList(UserPrincipal userPrincipal) {
+    public ResponseEntity<?> getMyRatingList(Integer page, UserPrincipal userPrincipal) {
         User findUser = userService.validateUserByToken(userPrincipal);
-        List<Rating> ratingList = ratingRepository.findAllByUserId(findUser.getId());
+
+        PageRequest pageRequest = PageRequest.of(page, 12, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Rating> ratingPage = ratingRepository.findByUserId(pageRequest, findUser.getId());
+        List<Rating> ratingList = ratingPage.getContent();
+
+        DefaultAssert.isTrue(!ratingList.isEmpty(), "내가 작성한 별점이 존재하지 않습니다.");
 
         List<RatingResponseDto.RatingRes> ratingRes = RatingConverter.toRatingRes(ratingList);
         Integer numRating = ratingList.size();
@@ -100,10 +109,15 @@ public class RatingService {
     }
 
     // 타 유저의 별점 목록 조회
-    public ResponseEntity<?> getUserRatingList(UserPrincipal userPrincipal, Long userId) {
+    public ResponseEntity<?> getUserRatingList(Integer page, UserPrincipal userPrincipal, Long userId) {
         userService.validateUserByToken(userPrincipal);
         User findUser = userService.validateUserById(userId);
-        List<Rating> ratingList = ratingRepository.findAllByUserId(findUser.getId());
+
+        PageRequest pageRequest = PageRequest.of(page, 12, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Rating> ratingPage = ratingRepository.findByUserId(pageRequest, findUser.getId());
+        List<Rating> ratingList = ratingPage.getContent();
+
+        DefaultAssert.isTrue(!ratingList.isEmpty(), "해당 유저가 작성한 별점이 존재하지 않습니다.");
 
         List<RatingResponseDto.RatingRes> ratingRes = RatingConverter.toRatingRes(ratingList);
         Integer numRating = ratingList.size();

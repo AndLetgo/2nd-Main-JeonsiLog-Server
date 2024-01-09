@@ -21,6 +21,9 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,11 +81,16 @@ public class ReviewService {
     }
 
     // 전시회의 감상평 목록 조회
-    public ResponseEntity<?> getReviewList(Long exhibitionId) {
+    public ResponseEntity<?> getReviewList(Integer page, Long exhibitionId) {
         Optional<Exhibition> exhibition = exhibitionRepository.findById(exhibitionId);
         DefaultAssert.isTrue(exhibition.isPresent(), "전시회 id가 올바르지 않습니다.");
 
-        List<Review> reviewList = reviewRepository.findAllByExhibitionId(exhibitionId);
+        PageRequest pageRequest = PageRequest.of(page, 13, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Review> reviewPage = reviewRepository.findByExhibitionId(pageRequest, exhibitionId);
+        List<Review> reviewList = reviewPage.getContent();
+
+        DefaultAssert.isTrue(!reviewList.isEmpty(), "해당 전시회에 대한 감상평이 존재하지 않습니다.");
+
         List<ReviewResponseDto.ReviewListRes> reviewListRes = ReviewConverter.toReviewListRes(reviewList, ratingRepository);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListRes);
@@ -90,9 +98,14 @@ public class ReviewService {
     }
 
     // 나의 감상평 목록 조회
-    public ResponseEntity<?> getMyReviewList(UserPrincipal userPrincipal) {
+    public ResponseEntity<?> getMyReviewList(Integer page, UserPrincipal userPrincipal) {
         User findUser = userService.validateUserByToken(userPrincipal);
-        List<Review> reviewList = reviewRepository.findAllByUserId(findUser.getId());
+
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Review> reviewPage = reviewRepository.findByUserId(pageRequest, findUser.getId());
+        List<Review> reviewList = reviewPage.getContent();
+
+        DefaultAssert.isTrue(!reviewList.isEmpty(), "해당 유저가 작성한 감상평이 존재하지 않습니다.");
 
         List<ReviewResponseDto.UserReviewRes> reviewRes = ReviewConverter.toUserReviewRes(reviewList);
         Integer numReview = reviewList.size();
@@ -103,9 +116,14 @@ public class ReviewService {
     }
 
     // 타 유저의 감상평 목록 조회
-    public ResponseEntity<?> getUserReviewList(Long userId) {
+    public ResponseEntity<?> getUserReviewList(Integer page, Long userId) {
         User findUser = userService.validateUserById(userId);
-        List<Review> reviewList = reviewRepository.findAllByUserId(findUser.getId());
+
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<Review> reviewPage = reviewRepository.findByUserId(pageRequest, findUser.getId());
+        List<Review> reviewList = reviewPage.getContent();
+
+        DefaultAssert.isTrue(!reviewList.isEmpty(), "해당 유저가 작성한 감상평이 존재하지 않습니다.");
 
         List<ReviewResponseDto.UserReviewRes> reviewRes = ReviewConverter.toUserReviewRes(reviewList);
         Integer numReview = reviewList.size();

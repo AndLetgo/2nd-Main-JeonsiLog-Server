@@ -19,14 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Rating API", description = "Rating 관련 API입니다.")
 @RestController
@@ -82,9 +75,10 @@ public class RatingController {
     })
     @GetMapping
     public ResponseEntity<?> getMyRatingList(
+            @Parameter(description = "별점 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
-        return ratingService.getMyRatingList(userPrincipal);
+        return ratingService.getMyRatingList(page, userPrincipal);
     }
 
     @Operation(summary = "타 유저의 별점 목록 조회", description = "User id를 이용하여 타 유저의 별점 목록을 조회합니다..")
@@ -94,9 +88,10 @@ public class RatingController {
     })
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserRatingList(
+            @Parameter(description = "별점 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @Parameter(description = "User id를 입력해주세요.", required = true) @PathVariable Long userId
     ) {
-        return ratingService.getUserRatingList(userPrincipal, userId);
+        return ratingService.getUserRatingList(page, userPrincipal, userId);
     }
 }

@@ -19,13 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Review API", description = "Review 관련 API입니다.")
 @RestController
@@ -68,9 +62,10 @@ public class ReviewController {
     })
     @GetMapping("/exhibition/{exhibitionId}")
     public ResponseEntity<?> getReviewList(
+            @Parameter(description = "감상평 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Exhibition id를 입력해주세요.", required = true) @PathVariable Long exhibitionId
     ) {
-        return reviewService.getReviewList(exhibitionId);
+        return reviewService.getReviewList(page, exhibitionId);
     }
 
     @Operation(summary = "나의 감상평 조회", description = "Access Token을 이용하여 나의 감상평을 조회합니다.")
@@ -80,9 +75,10 @@ public class ReviewController {
     })
     @GetMapping
     public ResponseEntity<?> getMyReviewList(
+            @Parameter(description = "감상평 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
-        return reviewService.getMyReviewList(userPrincipal);
+        return reviewService.getMyReviewList(page, userPrincipal);
     }
 
     @Operation(summary = "타 유저의 감상평 조회", description = "유저 id를 이용하여 타 유저의 감상평을 조회합니다.")
@@ -92,9 +88,10 @@ public class ReviewController {
     })
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserReviewList(
+            @Parameter(description = "감상평 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "유저 id를 입력해주세요.", required = true) @PathVariable Long userId
     ) {
-        return reviewService.getUserReviewList(userId);
+        return reviewService.getUserReviewList(page, userId);
     }
 
     @Operation(summary = "해당 전시회에 감상평을 작성했는지 체크", description = "전시회 ID와 Access Token을 이용해서 해당 전시회에 작성한 감상평이 있는지 체크합니다.")
