@@ -1,5 +1,6 @@
 package depth.jeonsilog.domain.user.application;
 
+import depth.jeonsilog.domain.alarm.domain.Alarm;
 import depth.jeonsilog.domain.auth.domain.Token;
 import depth.jeonsilog.domain.auth.domain.repository.TokenRepository;
 import depth.jeonsilog.domain.common.Status;
@@ -23,6 +24,9 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,11 +109,17 @@ public class UserService {
     }
 
     // 유저 검색
-    public ResponseEntity<?> searchUsers(UserPrincipal userPrincipal, String searchWord) {
+    public ResponseEntity<?> searchUsers(Integer page, UserPrincipal userPrincipal, String searchWord) {
 
         validateUserByToken(userPrincipal);
-        List<User> findUsers = userRepository.findAllByNicknameContaining(searchWord);
-        List<UserResponseDto.SearchUsersRes> searchUsersResList = UserConverter.toSearchUsersRes(findUsers);
+
+        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "modifiedDate"));
+        Page<User> userPage = userRepository.findAllByNicknameContaining(pageRequest, searchWord);
+        List<User> userList = userPage.getContent();
+
+        DefaultAssert.isTrue(!userList.isEmpty(), "해당 검색어를 포함한 유저가 존재하지 않습니다.");
+
+        List<UserResponseDto.SearchUsersRes> searchUsersResList = UserConverter.toSearchUsersRes(userList);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(searchUsersResList);
 

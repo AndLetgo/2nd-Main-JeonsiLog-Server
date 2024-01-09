@@ -6,6 +6,7 @@ import depth.jeonsilog.domain.interest.converter.InterestConverter;
 import depth.jeonsilog.domain.interest.domain.Interest;
 import depth.jeonsilog.domain.interest.domain.repository.InterestRepository;
 import depth.jeonsilog.domain.interest.dto.InterestResponseDto;
+import depth.jeonsilog.domain.rating.domain.Rating;
 import depth.jeonsilog.domain.user.application.UserService;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.global.DefaultAssert;
@@ -13,6 +14,9 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,11 +71,16 @@ public class InterestService {
     }
 
     // 즐겨찾기 목록 조회
-    public ResponseEntity<?> getInterestList(UserPrincipal userPrincipal) {
+    public ResponseEntity<?> getInterestList(Integer page, UserPrincipal userPrincipal) {
         User findUser = userService.validateUserByToken(userPrincipal);
-        List<Interest> findInterest = interestRepository.findAllByUserId(findUser.getId());
 
-        List<InterestResponseDto.InterestListRes> interestListResList = InterestConverter.toInterestListRes(findInterest);
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "modifiedDate"));
+        Page<Interest> interestPage = interestRepository.findByUserId(pageRequest, findUser.getId());
+        List<Interest> interestList = interestPage.getContent();
+
+        DefaultAssert.isTrue(!interestList.isEmpty(), "등록된 즐겨찾기가 존재하지 않습니다.");
+
+        List<InterestResponseDto.InterestListRes> interestListResList = InterestConverter.toInterestListRes(interestList);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(interestListResList);
 

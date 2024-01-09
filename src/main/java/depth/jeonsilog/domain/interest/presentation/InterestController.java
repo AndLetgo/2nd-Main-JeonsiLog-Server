@@ -17,12 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Interest API", description = "Interest 관련 API입니다.")
 @RequiredArgsConstructor
@@ -65,8 +60,9 @@ public class InterestController {
     })
     @GetMapping
     public ResponseEntity<?> deleteInterest(
+            @Parameter(description = "즐겨찾기 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
-        return interestService.getInterestList(userPrincipal);
+        return interestService.getInterestList(page, userPrincipal);
     }
 }

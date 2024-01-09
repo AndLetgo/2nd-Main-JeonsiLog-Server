@@ -17,11 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Alarm API", description = "알림 관련 API입니다.")
 @RestController
@@ -38,9 +34,10 @@ public class AlarmController {
     })
     @GetMapping("/activity")
     public ResponseEntity<?> getActivityAlarmList(
+            @Parameter(description = "활동 알림 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
-        return alarmService.getActivityAlarmList(userPrincipal);
+        return alarmService.getActivityAlarmList(page, userPrincipal);
     }
 
     @Operation(summary = "전시 알림 목록 조회", description = "전시 알림 목록을 조회합니다.")
@@ -50,9 +47,10 @@ public class AlarmController {
     })
     @GetMapping("/exhibition")
     public ResponseEntity<?> getExhibitionAlarmList(
+            @Parameter(description = "전시 알림 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
-        return alarmService.getExhibitionAlarmList(userPrincipal);
+        return alarmService.getExhibitionAlarmList(page, userPrincipal);
     }
 
     @Operation(summary = "알림 확인", description = "알림 확인")

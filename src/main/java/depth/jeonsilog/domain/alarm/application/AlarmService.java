@@ -24,6 +24,9 @@ import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -55,13 +58,18 @@ public class AlarmService {
     private static String BEFORE_1DAYS = "전시 시작까지 1일 남았어요";
 
     // TODO: 활동 알림 목록 조회
-    public ResponseEntity<?> getActivityAlarmList(UserPrincipal userPrincipal) {
+    public ResponseEntity<?> getActivityAlarmList(Integer page, UserPrincipal userPrincipal) {
         User findUser = userService.validateUserByToken(userPrincipal);
         List<AlarmType> types = Arrays.asList(AlarmType.RATING, AlarmType.REVIEW, AlarmType.REPLY, AlarmType.FOLLOW);
-        List<Alarm> alarms = alarmRepository.findByUserIdAndAlarmTypeIn(findUser.getId(), types);
+
+        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "modifiedDate"));
+        Page<Alarm> alarmPage = alarmRepository.findByUserIdAndAlarmTypeIn(pageRequest, findUser.getId(), types);
+        List<Alarm> alarmList = alarmPage.getContent();
+
+        DefaultAssert.isTrue(!alarmList.isEmpty(), "활동 알림이 존재하지 않습니다.");
 
         List<AlarmResponseDto.AlarmRes> alarmResList = new ArrayList<>();
-        for (Alarm alarm : alarms) {
+        for (Alarm alarm : alarmList) {
             Optional<User> sender = userRepository.findById(alarm.getSenderId());
             DefaultAssert.isTrue(sender.isPresent());
 
@@ -91,13 +99,18 @@ public class AlarmService {
     }
 
     // TODO: 전시 알림 목록 조회
-    public ResponseEntity<?> getExhibitionAlarmList(UserPrincipal userPrincipal) {
+    public ResponseEntity<?> getExhibitionAlarmList(Integer page, UserPrincipal userPrincipal) {
         User findUser = userService.validateUserByToken(userPrincipal);
         List<AlarmType> types = List.of(AlarmType.EXHIBITION);
-        List<Alarm> alarms = alarmRepository.findByUserIdAndAlarmTypeIn(findUser.getId(), types);
+
+        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "modifiedDate"));
+        Page<Alarm> alarmPage = alarmRepository.findByUserIdAndAlarmTypeIn(pageRequest, findUser.getId(), types);
+        List<Alarm> alarmList = alarmPage.getContent();
+
+        DefaultAssert.isTrue(!alarmList.isEmpty(), "전시 알림이 존재하지 않습니다.");
 
         List<AlarmResponseDto.AlarmRes> alarmResList = new ArrayList<>();
-        for (Alarm alarm : alarms) {
+        for (Alarm alarm : alarmList) {
             Optional<Exhibition> exhibition = exhibitionRepository.findById(alarm.getTargetId());
             DefaultAssert.isTrue(exhibition.isPresent());
             AlarmResponseDto.AlarmRes alarmRes = AlarmResponseDto.AlarmRes.builder()

@@ -17,12 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Follow API", description = "Follow 관련 API입니다.")
 @RequiredArgsConstructor
@@ -79,9 +74,10 @@ public class FollowController {
     })
     @GetMapping("/following")
     public ResponseEntity<?> findMyFollowingList(
+            @Parameter(description = "나의 팔로잉 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
-        return followService.findMyFollowingList(userPrincipal);
+        return followService.findMyFollowingList(page, userPrincipal);
     }
 
     @Operation(summary = "나의 팔로워 목록 조회", description = "나의 팔로워 목록을 조회합니다.")
@@ -91,9 +87,10 @@ public class FollowController {
     })
     @GetMapping("/follower")
     public ResponseEntity<?> findMyFollowerList(
+            @Parameter(description = "나의 팔로워 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
-        return followService.findMyFollowerList(userPrincipal);
+        return followService.findMyFollowerList(page, userPrincipal);
     }
 
     //- 타 유저 팔로잉 목록 조회 : GET /follows/following/{user-id}
@@ -104,10 +101,11 @@ public class FollowController {
     })
     @GetMapping("/following/{userId}")
     public ResponseEntity<?> findUserFollowingList(
+            @Parameter(description = "타 유저의 팔로잉 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @Parameter(description = "조회할 유저의 ID를 입력해주세요.", required = true) @PathVariable(value = "userId") Long userId
     ) {
-        return followService.findUserFollowingList(userPrincipal, userId);
+        return followService.findUserFollowingList(page, userPrincipal, userId);
     }
     //- 타 유저 팔로워 목록 조회 : GET /follows/follower/{user-id}
     @Operation(summary = "타 유저 팔로워 목록 조회", description = "타 유저의 팔로워 목록을 조회합니다.")
@@ -117,9 +115,10 @@ public class FollowController {
     })
     @GetMapping("/follower/{userId}")
     public ResponseEntity<?> findUserFollowerList(
+            @Parameter(description = "타 유저의 팔로워 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @Parameter(description = "조회할 유저의 ID를 입력해주세요.", required = true) @PathVariable(value = "userId") Long userId
     ) {
-        return followService.findUserFollowerList(userPrincipal, userId);
+        return followService.findUserFollowerList(page, userPrincipal, userId);
     }
 }

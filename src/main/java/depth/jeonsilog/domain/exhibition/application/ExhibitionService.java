@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -49,10 +50,9 @@ public class ExhibitionService {
     private static final String DIRNAME = "exhibition_img";
 
     // Description : 전시회 목록 조회
-    // TODO : OK
     public ResponseEntity<?> findExhibitionList(Integer page) {
 
-        PageRequest pageRequest = PageRequest.of(page, 6, Sort.by(
+        PageRequest pageRequest = PageRequest.of(page, 15, Sort.by(
                 Sort.Order.asc("sequence"),
                 Sort.Order.asc("createdDate")
         ));
@@ -78,7 +78,6 @@ public class ExhibitionService {
     }
 
     // Description : 전시회 상세 정보 조회
-    // TODO : OK
     public ResponseEntity<?> findExhibition(UserPrincipal userPrincipal, Long exhibitionId) {
 
         User user = userService.validateUserByToken(userPrincipal);
@@ -105,7 +104,6 @@ public class ExhibitionService {
     }
 
     // Description : 랜덤 전시회 2개 조회
-    // TODO : OK
     public ResponseEntity<?> randomTwoExhibitions() {
 
         long size = exhibitionRepository.count();
@@ -136,7 +134,6 @@ public class ExhibitionService {
     }
 
     // Description : 검색어를 포함한 전시회 목록 조회
-    // TODO : 논의 후 페이징 처리 필요
     public ResponseEntity<?> searchExhibitions(Integer page, String searchWord) {
 
         PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "createdDate"));
@@ -144,7 +141,7 @@ public class ExhibitionService {
         Page<Exhibition> exhibitionPage = exhibitionRepository.findByNameContainingOrPlace_AddressContaining(pageRequest, searchWord, searchWord);
 
         List<Exhibition> exhibitions = exhibitionPage.getContent();
-        // 이렇게 써도 될지 .. ?
+
         DefaultAssert.isTrue(!exhibitions.isEmpty(), "해당 검색어를 포함한 전시회가 존재하지 않습니다.");
 
         List<Place> places = new ArrayList<>();
@@ -179,7 +176,6 @@ public class ExhibitionService {
     }
 
     // Description : 전시회 상세 정보 수정
-    // TODO : OK
     @Transactional
     public ResponseEntity<?> updateExhibitionDetail(UserPrincipal userPrincipal, ExhibitionRequestDto.UpdateExhibitionDetailReq updateExhibitionDetailReq, MultipartFile img) throws IOException {
 
