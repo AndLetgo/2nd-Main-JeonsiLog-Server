@@ -52,7 +52,7 @@ public class AddService {
         String oneMonthsAfterStr = oneMonthsAfter.format(formatter);
 
         // page
-        Integer page = 3;
+        Integer page = 1;
 
         while (true) {
 
@@ -233,7 +233,7 @@ public class AddService {
             Integer rows = exhibitionList.getResponse().getMsgBody().getRows();
             Integer numOfPages = (totalCount / rows) + 1;
 
-            if (page == 3) { // 페이지 조절
+            if (page == numOfPages) { // 페이지 조절
                 ApiResponse apiResponse = ApiResponse.builder()
                         .check(true)
                         .information(exhibitionList)
