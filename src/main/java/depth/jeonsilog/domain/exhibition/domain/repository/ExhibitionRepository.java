@@ -24,4 +24,6 @@ public interface ExhibitionRepository extends JpaRepository<Exhibition, Long> {
     Page<Exhibition> findByPlace(Pageable pageable, Place place);
 
     Optional<Exhibition> findBySequence(Integer sequence);
+
+    Optional<Exhibition> findByExhibitionSeq(Integer exhibitionSeq);
 }

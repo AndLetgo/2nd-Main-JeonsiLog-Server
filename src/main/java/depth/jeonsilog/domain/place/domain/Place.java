@@ -21,11 +21,6 @@ public class Place extends BaseEntity {
 
     private String address;
 
-    private String operatingTime;
-
-    @Enumerated(EnumType.STRING)
-    private ClosedDays closedDays;
-
     private String tel;
 
     private String homePage;
@@ -47,12 +42,10 @@ public class Place extends BaseEntity {
     }
 
     @Builder
-    public Place(Long id, String name, String address, String operatingTime, ClosedDays closedDays, String tel, String homePage) {
+    public Place(Long id, String name, String address, String tel, String homePage) {
         this.id = id;
         this.name = name;
         this.address = address;
-        this.operatingTime = operatingTime;
-        this.closedDays = closedDays;
         this.tel = tel;
         this.homePage = homePage;
     }

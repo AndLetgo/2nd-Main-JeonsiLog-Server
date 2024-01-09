@@ -14,8 +14,6 @@ public class PlaceConverter {
                 .placeId(place.getId())
                 .placeName(place.getName())
                 .address(place.getAddress())
-                .operationTime(place.getOperatingTime())
-                .closedDays(place.getClosedDays())
                 .tel(place.getTel())
                 .homePage(place.getHomePage())
                 .build();

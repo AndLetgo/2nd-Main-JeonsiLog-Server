@@ -47,13 +47,24 @@ public class SaveService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
+        // 현재 날짜
+        LocalDate today = LocalDate.now();
+        // 3개월 전의 날짜 계산
+        LocalDate threeMonthsAgo = today.minusMonths(3);
+        // 1개월 후의 날짜 계산
+        LocalDate oneMonthsAfter = today.plusMonths(1);
+
+        String todayStr = today.format(formatter);
+        String threeMonthsAgoStr = threeMonthsAgo.format(formatter);
+        String oneMonthsAfterStr = oneMonthsAfter.format(formatter);
+
         /**
          * Description : exhibition list 가져오는 api 호출 - count++ 파라미터로 호출
          * Description : while문 속에서 exhibition 호출 - seq 파라미터로 호출
          */
 
         // page
-        Integer count = 13;
+        Integer count = 1;
 
         while (true) {
             System.out.println("=============================== num :" + count + " ===============================");
@@ -62,7 +73,7 @@ public class SaveService {
             // String 타입 XML 받아오기
             String listXml = "";
             try {
-                listXml = callExhibitionListApi(count);
+                listXml = callExhibitionListApi(count, threeMonthsAgoStr, oneMonthsAfterStr);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -178,8 +189,6 @@ public class SaveService {
                             .address(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulAddr())
                             .homePage(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulHomeUrl())
                             .tel(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulTel())
-                            .operatingTime(null)
-                            .closedDays(null)
                             .build();
 
                     placeRepository.save(place);
@@ -230,6 +239,7 @@ public class SaveService {
                         .endDate(exhibitionDetail.getResponse().getMsgBody().getPerforInfo().getEndDate())
                         .information(null)
                         .rate(null)
+                        .exhibitionSeq(exhibitionDetail.getResponse().getMsgBody().getPerforInfo().getSeq())
                         .imageUrl(exhibitionDetail.getResponse().getMsgBody().getPerforInfo().getImgUrl())
                         .build();
 
@@ -245,7 +255,7 @@ public class SaveService {
             Integer rows = exhibitionList.getResponse().getMsgBody().getRows();
             Integer numOfPages = (totalCount / rows) + 1;
 
-            if (count == 14) { // count로 페이지 조절
+            if (count == 1) { // count로 페이지 조절
                 ApiResponse apiResponse = ApiResponse.builder()
                         .check(true)
                         .information(exhibitionList)
@@ -259,7 +269,7 @@ public class SaveService {
     }
 
     // Description : 전시회 목록 조회 OPEN API  /  파라미터로 cPage / from, to
-    public String callExhibitionListApi(Integer cPage) throws IOException {
+    public String callExhibitionListApi(Integer cPage, String from, String to) throws IOException {
 
         // 요청 기본 URL
         StringBuilder urlBuilder = new StringBuilder("http://www.culture.go.kr/openapi/rest/publicperformancedisplays/period");
@@ -267,8 +277,10 @@ public class SaveService {
         // 파라미터 추가 : 서비스 키, 날짜 범위 (from, to), 현재 페이지, 페이지 당 가져올 개수
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
 //        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
-        urlBuilder.append("&" + URLEncoder.encode("from","UTF-8") + "=" + URLEncoder.encode("2023108", "UTF-8")); /**/
-        urlBuilder.append("&" + URLEncoder.encode("to","UTF-8") + "=" + URLEncoder.encode("20240208", "UTF-8")); /**/
+//        urlBuilder.append("&" + URLEncoder.encode("from","UTF-8") + "=" + URLEncoder.encode("20231008", "UTF-8")); /**/
+        urlBuilder.append("&" + URLEncoder.encode("from","UTF-8") + "=" + URLEncoder.encode(from, "UTF-8")); /**/
+//        urlBuilder.append("&" + URLEncoder.encode("to","UTF-8") + "=" + URLEncoder.encode("20240208", "UTF-8")); /**/
+        urlBuilder.append("&" + URLEncoder.encode("to","UTF-8") + "=" + URLEncoder.encode(to, "UTF-8")); /**/
 
         urlBuilder.append("&" + URLEncoder.encode("cPage","UTF-8") + "=" + URLEncoder.encode(cPage.toString(), "UTF-8")); // 요청 페이지
         urlBuilder.append("&" + URLEncoder.encode("rows","UTF-8") + "=" + URLEncoder.encode("100", "UTF-8")); // 페이지 당 가져올 개수

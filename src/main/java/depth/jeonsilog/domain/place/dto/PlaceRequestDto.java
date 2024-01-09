@@ -1,6 +1,5 @@
 package depth.jeonsilog.domain.place.dto;
 
-import depth.jeonsilog.domain.place.domain.ClosedDays;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
