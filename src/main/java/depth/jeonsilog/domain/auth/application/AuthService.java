@@ -169,7 +169,7 @@ public class AuthService {
             ClassPathResource resource = new ClassPathResource("forbidden-words.txt");
             byte[] fileData = FileCopyUtils.copyToByteArray(resource.getInputStream());
             String content = new String(fileData, StandardCharsets.UTF_8);
-            String[] lines = content.split(System.lineSeparator());
+            String[] lines = content.split("\r\n|\n");
             forbiddenList.addAll(Arrays.asList(lines));
         } catch (IOException e) {
             e.printStackTrace();
