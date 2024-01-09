@@ -34,7 +34,7 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-      ## create application-rds.yml && application-s3.yml && application-auth.yml
+      ## create application-rds.yml && application-s3.yml && application-auth.yml && forbidden-words.txt
     - name: create application.properties file
       run: |
         touch ./src/main/resources/application-rds.yml
