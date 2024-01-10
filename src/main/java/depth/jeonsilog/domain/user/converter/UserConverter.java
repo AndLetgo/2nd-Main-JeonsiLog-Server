@@ -73,4 +73,13 @@ public class UserConverter {
                 .isOpen(user.getIsOpen())
                 .build();
     }
+
+    // Review에서 사용
+    public static UserResponseDto.SearchUsersRes toSearchUserRes (User user) {
+        return UserResponseDto.SearchUsersRes.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .profileImgUrl(user.getProfileImg())
+                .build();
+    }
 }

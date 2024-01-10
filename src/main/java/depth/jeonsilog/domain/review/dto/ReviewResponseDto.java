@@ -1,5 +1,7 @@
 package depth.jeonsilog.domain.review.dto;
 
+import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
+import depth.jeonsilog.domain.user.dto.UserResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -91,4 +93,5 @@ public class ReviewResponseDto {
         @Schema(type = "boolean", example = "true", description = "해당 전시회 - 감상평 작성 여부를 출력합니다.")
         private Boolean isWrite;
     }
+
 }

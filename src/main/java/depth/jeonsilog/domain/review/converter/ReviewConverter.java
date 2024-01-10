@@ -1,11 +1,13 @@
 package depth.jeonsilog.domain.review.converter;
 
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
+import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
 import depth.jeonsilog.domain.rating.domain.Rating;
 import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
 import depth.jeonsilog.domain.review.domain.Review;
 import depth.jeonsilog.domain.review.dto.ReviewResponseDto;
 import depth.jeonsilog.domain.user.domain.User;
+import depth.jeonsilog.domain.user.dto.UserResponseDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +74,19 @@ public class ReviewConverter {
         return ReviewResponseDto.ReviewListResList.builder()
                 .hasNextPage(hasNextPage)
                 .data(reviewListRes)
+                .build();
+    }
+
+    public static ReviewResponseDto.ReviewListRes toReviewListRes(Review review, UserResponseDto.SearchUsersRes userRes, Double rate) {
+        return ReviewResponseDto.ReviewListRes.builder()
+                .reviewId(review.getId())
+                .userId(userRes.getUserId())
+                .imgUrl(userRes.getProfileImgUrl())
+                .nickname(userRes.getNickname())
+                .contents(review.getContents())
+                .rate(rate)
+                .numReply(review.getNumReply())
+                .createdDate(review.getCreatedDate())
                 .build();
     }
 }
