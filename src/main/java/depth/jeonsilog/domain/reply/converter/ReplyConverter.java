@@ -4,6 +4,7 @@ import depth.jeonsilog.domain.reply.domain.Reply;
 import depth.jeonsilog.domain.reply.dto.ReplyRequestDto;
 import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import depth.jeonsilog.domain.review.domain.Review;
+import depth.jeonsilog.domain.review.dto.ReviewResponseDto;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.domain.user.dto.UserResponseDto;
 
@@ -37,6 +38,13 @@ public class ReplyConverter {
         }
 
         return replyResList;
+    }
+
+    public static ReplyResponseDto.ReplyResListWithPaging toReplyResListWithPaging(boolean hasNextPage, List<ReplyResponseDto.ReplyRes> replyResList) {
+        return ReplyResponseDto.ReplyResListWithPaging.builder()
+                .hasNextPage(hasNextPage)
+                .data(replyResList)
+                .build();
     }
 
     // Make Reply

@@ -23,6 +23,7 @@ import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -86,14 +87,16 @@ public class ReviewService {
         DefaultAssert.isTrue(exhibition.isPresent(), "전시회 id가 올바르지 않습니다.");
 
         PageRequest pageRequest = PageRequest.of(page, 13, Sort.by(Sort.Direction.DESC, "createdDate"));
-        Page<Review> reviewPage = reviewRepository.findByExhibitionId(pageRequest, exhibitionId);
+        Slice<Review> reviewPage = reviewRepository.findSliceByExhibitionId(pageRequest, exhibitionId);
         List<Review> reviewList = reviewPage.getContent();
 
         DefaultAssert.isTrue(!reviewList.isEmpty(), "해당 전시회에 대한 감상평이 존재하지 않습니다.");
 
         List<ReviewResponseDto.ReviewListRes> reviewListRes = ReviewConverter.toReviewListRes(reviewList, ratingRepository);
+        boolean hasNextPage = reviewPage.hasNext();
+        ReviewResponseDto.ReviewListResList reviewListResList = ReviewConverter.toReviewListResList(hasNextPage, reviewListRes);
 
-        ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListRes);
+        ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListResList);
         return ResponseEntity.ok(apiResponse);
     }
 
@@ -108,8 +111,12 @@ public class ReviewService {
         DefaultAssert.isTrue(!reviewList.isEmpty(), "해당 유저가 작성한 감상평이 존재하지 않습니다.");
 
         List<ReviewResponseDto.UserReviewRes> reviewRes = ReviewConverter.toUserReviewRes(reviewList);
-        Integer numReview = reviewList.size();
-        ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, reviewRes);
+
+        Long totalElements = reviewPage.getTotalElements();
+        Integer numReview = totalElements.intValue();
+        boolean hasNextPage = reviewPage.hasNext();
+
+        ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, hasNextPage, reviewRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListRes);
         return ResponseEntity.ok(apiResponse);
@@ -126,8 +133,12 @@ public class ReviewService {
         DefaultAssert.isTrue(!reviewList.isEmpty(), "해당 유저가 작성한 감상평이 존재하지 않습니다.");
 
         List<ReviewResponseDto.UserReviewRes> reviewRes = ReviewConverter.toUserReviewRes(reviewList);
-        Integer numReview = reviewList.size();
-        ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, reviewRes);
+
+        Long totalElements = reviewPage.getTotalElements();
+        Integer numReview = totalElements.intValue();
+        boolean hasNextPage = reviewPage.hasNext();
+
+        ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, hasNextPage, reviewRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListRes);
         return ResponseEntity.ok(apiResponse);

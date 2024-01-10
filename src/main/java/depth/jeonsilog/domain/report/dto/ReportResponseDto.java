@@ -1,9 +1,12 @@
 package depth.jeonsilog.domain.report.dto;
 
+import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import depth.jeonsilog.domain.report.domain.ReportType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 public class ReportResponseDto {
 
@@ -25,5 +28,15 @@ public class ReportResponseDto {
 
         @Schema(type = "boolean", example = "true", description = "신고를 확인했는지 출력합니다.")
         private Boolean isChecked;
+    }
+
+    @Data
+    @Builder
+    public static class ReportResListWithPaging {
+
+        @Schema(type = "boolean", example = "true", description = "다음 페이지 존재 여부를 반환합니다.")
+        private boolean hasNextPage;
+
+        private List<ReportResponseDto.ReportRes> data;
     }
 }

@@ -1,9 +1,12 @@
 package depth.jeonsilog.domain.user.dto;
 
 
+import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 public class UserResponseDto {
 
@@ -39,6 +42,16 @@ public class UserResponseDto {
 
         @Schema(type = "string", example = "http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg", description = "프로필 이미지 url을 출력합니다.")
         private String profileImgUrl;
+    }
+
+    @Data
+    @Builder
+    public static class SearchUserWithPaging {
+
+        @Schema(type = "boolean", example = "true", description = "다음 페이지 존재 여부를 반환합니다.")
+        private boolean hasNextPage;
+
+        private List<UserResponseDto.SearchUsersRes> data;
     }
 
     @Data

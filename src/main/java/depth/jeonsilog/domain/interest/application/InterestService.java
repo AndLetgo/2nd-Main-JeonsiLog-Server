@@ -16,6 +16,7 @@ import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -75,14 +76,16 @@ public class InterestService {
         User findUser = userService.validateUserByToken(userPrincipal);
 
         PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "modifiedDate"));
-        Page<Interest> interestPage = interestRepository.findByUserId(pageRequest, findUser.getId());
+        Slice<Interest> interestPage = interestRepository.findSliceByUserId(pageRequest, findUser.getId());
         List<Interest> interestList = interestPage.getContent();
 
         DefaultAssert.isTrue(!interestList.isEmpty(), "등록된 즐겨찾기가 존재하지 않습니다.");
 
         List<InterestResponseDto.InterestListRes> interestListResList = InterestConverter.toInterestListRes(interestList);
+        boolean hasNextPage = interestPage.hasNext();
+        InterestResponseDto.InterestListResWithPaging interestListResWithPaging = InterestConverter.toInterestListResWithPaging(hasNextPage, interestListResList);
 
-        ApiResponse apiResponse = ApiResponse.toApiResponse(interestListResList);
+        ApiResponse apiResponse = ApiResponse.toApiResponse(interestListResWithPaging);
 
         return ResponseEntity.ok(apiResponse);
     }

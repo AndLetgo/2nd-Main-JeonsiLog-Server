@@ -37,6 +37,13 @@ public class UserConverter {
         return usersResList;
     }
 
+    public static UserResponseDto.SearchUserWithPaging toSearchUserWithPaging(boolean hasNextPage, List<UserResponseDto.SearchUsersRes> SearchUsersResList) {
+        return UserResponseDto.SearchUserWithPaging.builder()
+                .hasNextPage(hasNextPage)
+                .data(SearchUsersResList)
+                .build();
+    }
+
     // USER -> SwitchIsOpenRes
     public static UserResponseDto.SwitchIsOpenRes toSwitchIsOpenRes(User user) {
         return UserResponseDto.SwitchIsOpenRes.builder()

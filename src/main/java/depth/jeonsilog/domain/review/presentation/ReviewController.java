@@ -57,12 +57,12 @@ public class ReviewController {
 
     @Operation(summary = "전시회의 감상평 조회", description = "Access Token, 전시회 id를 이용하여 감상평을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ReviewResponseDto.ReviewListRes.class)))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReviewResponseDto.ReviewListResList.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/exhibition/{exhibitionId}")
     public ResponseEntity<?> getReviewList(
-            @Parameter(description = "감상평 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
+            @Parameter(description = "해당 전시회의 감상평 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Exhibition id를 입력해주세요.", required = true) @PathVariable Long exhibitionId
     ) {
         return reviewService.getReviewList(page, exhibitionId);
@@ -75,7 +75,7 @@ public class ReviewController {
     })
     @GetMapping
     public ResponseEntity<?> getMyReviewList(
-            @Parameter(description = "감상평 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
+            @Parameter(description = "내가 작성한 감상평 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
         return reviewService.getMyReviewList(page, userPrincipal);
@@ -88,7 +88,7 @@ public class ReviewController {
     })
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserReviewList(
-            @Parameter(description = "감상평 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
+            @Parameter(description = "타 유저의 감상평 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "유저 id를 입력해주세요.", required = true) @PathVariable Long userId
     ) {
         return reviewService.getUserReviewList(page, userId);

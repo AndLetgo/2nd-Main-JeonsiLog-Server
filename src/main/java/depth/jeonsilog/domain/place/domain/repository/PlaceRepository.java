@@ -3,6 +3,7 @@ package depth.jeonsilog.domain.place.domain.repository;
 import depth.jeonsilog.domain.place.domain.Place;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +16,7 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
 
     Optional<Place> findByAddress(String placeAddr);
 
-    Page<Place> findByNameContaining(Pageable pageable, String searchWord);
-
     Page<Place> findByNameContainingOrAddressContaining(Pageable pageable, String searchWord, String searchWord2);
+
+    Slice<Place> findSliceByNameContainingOrAddressContaining(Pageable pageable, String searchWord, String searchWord2);
 }

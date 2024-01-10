@@ -101,8 +101,12 @@ public class RatingService {
         DefaultAssert.isTrue(!ratingList.isEmpty(), "내가 작성한 별점이 존재하지 않습니다.");
 
         List<RatingResponseDto.RatingRes> ratingRes = RatingConverter.toRatingRes(ratingList);
-        Integer numRating = ratingList.size();
-        RatingResponseDto.RatingListRes ratingListRes = RatingConverter.toRatingListRes(numRating, ratingRes);
+
+        Long totalElements = ratingPage.getTotalElements();
+        Integer numRating = totalElements.intValue();
+        boolean hasNextPage = ratingPage.hasNext();
+
+        RatingResponseDto.RatingListRes ratingListRes = RatingConverter.toRatingListRes(numRating, hasNextPage, ratingRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(ratingListRes);
         return ResponseEntity.ok(apiResponse);
@@ -120,8 +124,12 @@ public class RatingService {
         DefaultAssert.isTrue(!ratingList.isEmpty(), "해당 유저가 작성한 별점이 존재하지 않습니다.");
 
         List<RatingResponseDto.RatingRes> ratingRes = RatingConverter.toRatingRes(ratingList);
-        Integer numRating = ratingList.size();
-        RatingResponseDto.RatingListRes ratingListRes = RatingConverter.toRatingListRes(numRating, ratingRes);
+
+        Long totalElements = ratingPage.getTotalElements();
+        Integer numRating = totalElements.intValue();
+        boolean hasNextPage = ratingPage.hasNext();
+
+        RatingResponseDto.RatingListRes ratingListRes = RatingConverter.toRatingListRes(numRating, hasNextPage, ratingRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(ratingListRes);
         return ResponseEntity.ok(apiResponse);

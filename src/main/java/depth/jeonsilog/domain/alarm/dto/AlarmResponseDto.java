@@ -1,11 +1,13 @@
 package depth.jeonsilog.domain.alarm.dto;
 
 import depth.jeonsilog.domain.alarm.domain.AlarmType;
+import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class AlarmResponseDto {
 
@@ -36,5 +38,15 @@ public class AlarmResponseDto {
 
         @Schema(type = "boolean", example = "true", description = "알림을 확인했는지 출력합니다.")
         private Boolean isChecked;
+    }
+
+    @Data
+    @Builder
+    public static class AlarmResListWithPaging {
+
+        @Schema(type = "boolean", example = "true", description = "다음 페이지 존재 여부를 반환합니다.")
+        private boolean hasNextPage;
+
+        private List<AlarmResponseDto.AlarmRes> data;
     }
 }
