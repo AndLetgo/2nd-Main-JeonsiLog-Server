@@ -101,14 +101,17 @@ public class ReviewService {
     public ResponseEntity<?> getMyReviewList(Integer page, UserPrincipal userPrincipal) {
         User findUser = userService.validateUserByToken(userPrincipal);
 
-        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
+        PageRequest pageRequest = PageRequest.of(page, 2, Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<Review> reviewPage = reviewRepository.findByUserId(pageRequest, findUser.getId());
         List<Review> reviewList = reviewPage.getContent();
 
         DefaultAssert.isTrue(!reviewList.isEmpty(), "해당 유저가 작성한 감상평이 존재하지 않습니다.");
 
         List<ReviewResponseDto.UserReviewRes> reviewRes = ReviewConverter.toUserReviewRes(reviewList);
-        Integer numReview = reviewList.size();
+
+        Long totalElements = reviewPage.getTotalElements();
+        Integer numReview = totalElements.intValue();
+
         ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, reviewRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListRes);
@@ -126,7 +129,10 @@ public class ReviewService {
         DefaultAssert.isTrue(!reviewList.isEmpty(), "해당 유저가 작성한 감상평이 존재하지 않습니다.");
 
         List<ReviewResponseDto.UserReviewRes> reviewRes = ReviewConverter.toUserReviewRes(reviewList);
-        Integer numReview = reviewList.size();
+
+        Long totalElements = reviewPage.getTotalElements();
+        Integer numReview = totalElements.intValue();
+
         ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, reviewRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListRes);
