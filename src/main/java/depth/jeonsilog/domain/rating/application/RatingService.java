@@ -149,7 +149,7 @@ public class RatingService {
         return sum / ratingList.size();
     }
 
-    private Rating validateRatingByUserIdAndExhibitionId(Long userId, Long exhibitionId) {
+    public Rating validateRatingByUserIdAndExhibitionId(Long userId, Long exhibitionId) {
         Optional<Rating> rating = ratingRepository.findByUserIdAndExhibitionId(userId, exhibitionId);
         DefaultAssert.isTrue(rating.isPresent(), "해당하는 별점이 없습니다.");
         return rating.get();
