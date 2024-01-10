@@ -94,26 +94,4 @@ public class ReviewResponseDto {
         private Boolean isWrite;
     }
 
-    @Data
-    @Builder
-    public static class ReviewRes {
-
-        @Schema(type = "long", example = "1", description = "감상평 id를 출력합니다.")
-        private Long reviewId;
-
-        @Schema(type = "string", example = "멋진 전시였다.", description = "감상평을 출력합니다.")
-        private String contents;
-
-        @Schema(type = "Integer", example = "8", description = "감상평에 달린 댓글의 개수를 출력합니다.")
-        private Integer numReply;
-
-        @Schema(type = "LocalDateTime", example = "2023-12-22 23:51:45.848882", description = " 감상평이 작성된 날짜/시간을 출력합니다.")
-        private LocalDateTime createdDate;
-
-        @Schema(type = "Double", example = "3.5", description = "유저가 전시회에 등록한 별점을 출력합니다.")
-        private Double rate;
-
-        private UserResponseDto.SearchUsersRes user;
-
-    }
 }

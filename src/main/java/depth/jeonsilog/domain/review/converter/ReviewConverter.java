@@ -77,14 +77,16 @@ public class ReviewConverter {
                 .build();
     }
 
-    public static ReviewResponseDto.ReviewRes toReviewRes(Review review, UserResponseDto.SearchUsersRes userRes, Double rate) {
-        return ReviewResponseDto.ReviewRes.builder()
+    public static ReviewResponseDto.ReviewListRes toReviewListRes(Review review, UserResponseDto.SearchUsersRes userRes, Double rate) {
+        return ReviewResponseDto.ReviewListRes.builder()
                 .reviewId(review.getId())
+                .userId(userRes.getUserId())
+                .imgUrl(userRes.getProfileImgUrl())
+                .nickname(userRes.getNickname())
                 .contents(review.getContents())
+                .rate(rate)
                 .numReply(review.getNumReply())
                 .createdDate(review.getCreatedDate())
-                .rate(rate)
-                .user(userRes)
                 .build();
     }
 }

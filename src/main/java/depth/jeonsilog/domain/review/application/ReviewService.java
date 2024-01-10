@@ -178,7 +178,7 @@ public class ReviewService {
         Double rate = rating.getRate();
 
         UserResponseDto.SearchUsersRes userRes = UserConverter.toSearchUserRes(user);
-        ReviewResponseDto.ReviewRes reviewRes = ReviewConverter.toReviewRes(review, userRes, rate);
+        ReviewResponseDto.ReviewListRes reviewRes = ReviewConverter.toReviewListRes(review, userRes, rate);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(reviewRes);
         return ResponseEntity.ok(apiResponse);
