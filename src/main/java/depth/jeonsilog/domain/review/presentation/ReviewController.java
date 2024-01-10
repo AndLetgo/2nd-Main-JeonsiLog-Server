@@ -57,7 +57,7 @@ public class ReviewController {
 
     @Operation(summary = "전시회의 감상평 조회", description = "Access Token, 전시회 id를 이용하여 감상평을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ReviewResponseDto.ReviewListRes.class)))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReviewResponseDto.ReviewListResList.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/exhibition/{exhibitionId}")

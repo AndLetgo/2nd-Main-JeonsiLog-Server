@@ -33,7 +33,7 @@ public class ExhibitionController {
     // Description : 전시회 목록 조회
     @Operation(summary = "전시회 목록 조회", description = "전시회 목록을 조회합니다. 관리자가 미리 설정해 둔 10개의 전시회와 그 뒤로 저장 순서대로 전시회 목록을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ExhibitionResponseDto.ExhibitionRes.class)))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExhibitionResponseDto.ExhibitionResListWithPaging.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping
@@ -72,7 +72,7 @@ public class ExhibitionController {
     // TODO : 논의 후 페이징 처리 필요
     @Operation(summary = "검색어를 포함한 전시회 목록 조회", description = "검색어를 포함한 전시회 목록을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ExhibitionResponseDto.ExhibitionRes.class)))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExhibitionResponseDto.ExhibitionResListWithPaging.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/search/{searchWord}")
@@ -113,7 +113,7 @@ public class ExhibitionController {
 
     @Operation(summary = "전시회 이름으로 전시회 조회", description = "전시회 이름만으로 전시회를 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ExhibitionResponseDto.SearchExhibitionByNameRes.class)))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExhibitionResponseDto.SearchExhibitionByNameResListWithPaging.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/search/name/{searchWord}")
