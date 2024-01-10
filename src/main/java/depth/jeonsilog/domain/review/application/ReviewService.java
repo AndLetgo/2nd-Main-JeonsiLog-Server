@@ -101,7 +101,7 @@ public class ReviewService {
     public ResponseEntity<?> getMyReviewList(Integer page, UserPrincipal userPrincipal) {
         User findUser = userService.validateUserByToken(userPrincipal);
 
-        PageRequest pageRequest = PageRequest.of(page, 2, Sort.by(Sort.Direction.DESC, "createdDate"));
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<Review> reviewPage = reviewRepository.findByUserId(pageRequest, findUser.getId());
         List<Review> reviewList = reviewPage.getContent();
 
