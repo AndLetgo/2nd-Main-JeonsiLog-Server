@@ -34,9 +34,10 @@ public class RatingConverter {
         return ratingResList;
     }
 
-    public static RatingResponseDto.RatingListRes toRatingListRes(Integer num, List<RatingResponseDto.RatingRes> ratingRes) {
+    public static RatingResponseDto.RatingListRes toRatingListRes(Integer num, boolean hasNextPage, List<RatingResponseDto.RatingRes> ratingRes) {
         return RatingResponseDto.RatingListRes.builder()
                 .numRating(num)
+                .hasNextPage(hasNextPage)
                 .data(ratingRes)
                 .build();
     }

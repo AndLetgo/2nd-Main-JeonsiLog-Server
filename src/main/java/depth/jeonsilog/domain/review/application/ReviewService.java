@@ -114,8 +114,9 @@ public class ReviewService {
 
         Long totalElements = reviewPage.getTotalElements();
         Integer numReview = totalElements.intValue();
+        boolean hasNextPage = reviewPage.hasNext();
 
-        ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, reviewRes);
+        ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, hasNextPage, reviewRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListRes);
         return ResponseEntity.ok(apiResponse);
@@ -135,8 +136,9 @@ public class ReviewService {
 
         Long totalElements = reviewPage.getTotalElements();
         Integer numReview = totalElements.intValue();
+        boolean hasNextPage = reviewPage.hasNext();
 
-        ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, reviewRes);
+        ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, hasNextPage, reviewRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListRes);
         return ResponseEntity.ok(apiResponse);

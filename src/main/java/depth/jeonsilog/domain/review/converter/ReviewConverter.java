@@ -60,9 +60,10 @@ public class ReviewConverter {
         return reviewResList;
     }
 
-    public static ReviewResponseDto.UserReviewListRes toUserReviewListRes(Integer numReview, List<ReviewResponseDto.UserReviewRes> reviewRes) {
+    public static ReviewResponseDto.UserReviewListRes toUserReviewListRes(Integer numReview, boolean hasNextPage, List<ReviewResponseDto.UserReviewRes> reviewRes) {
         return ReviewResponseDto.UserReviewListRes.builder()
                 .numReview(numReview)
+                .hasNextPage(hasNextPage)
                 .data(reviewRes)
                 .build();
     }

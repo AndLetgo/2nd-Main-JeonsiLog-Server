@@ -104,8 +104,9 @@ public class RatingService {
 
         Long totalElements = ratingPage.getTotalElements();
         Integer numRating = totalElements.intValue();
+        boolean hasNextPage = ratingPage.hasNext();
 
-        RatingResponseDto.RatingListRes ratingListRes = RatingConverter.toRatingListRes(numRating, ratingRes);
+        RatingResponseDto.RatingListRes ratingListRes = RatingConverter.toRatingListRes(numRating, hasNextPage, ratingRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(ratingListRes);
         return ResponseEntity.ok(apiResponse);
@@ -126,8 +127,9 @@ public class RatingService {
 
         Long totalElements = ratingPage.getTotalElements();
         Integer numRating = totalElements.intValue();
+        boolean hasNextPage = ratingPage.hasNext();
 
-        RatingResponseDto.RatingListRes ratingListRes = RatingConverter.toRatingListRes(numRating, ratingRes);
+        RatingResponseDto.RatingListRes ratingListRes = RatingConverter.toRatingListRes(numRating, hasNextPage, ratingRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(ratingListRes);
         return ResponseEntity.ok(apiResponse);
