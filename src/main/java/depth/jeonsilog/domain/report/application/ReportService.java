@@ -23,6 +23,7 @@ import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -73,7 +74,7 @@ public class ReportService {
         DefaultAssert.isTrue(user.getRole().equals(Role.ADMIN), "관리자만 조회할 수 있습니다.");
 
         PageRequest pageRequest = PageRequest.of(page, 20, Sort.Direction.DESC, "createdDate");
-        Page<Report> reportPage = reportRepository.findAll(pageRequest);
+        Slice<Report> reportPage = reportRepository.findSliceBy(pageRequest);
         List<Report> reports = reportPage.getContent();
 
         DefaultAssert.isTrue(!reports.isEmpty(), "신고 내역이 존재하지 않습니다.");
@@ -81,8 +82,10 @@ public class ReportService {
         List<Object> targetList = createTargetList(reports);
 
         List<ReportResponseDto.ReportRes> reportResList = ReportConverter.toReportResList(reports, targetList);
+        boolean hasNextPage = reportPage.hasNext();
+        ReportResponseDto.ReportResListWithPaging reportResListWithPaging = ReportConverter.toReportResListWithPaging(hasNextPage, reportResList);
 
-        ApiResponse apiResponse = ApiResponse.toApiResponse(reportResList);
+        ApiResponse apiResponse = ApiResponse.toApiResponse(reportResListWithPaging);
         return ResponseEntity.ok(apiResponse);
 
     }

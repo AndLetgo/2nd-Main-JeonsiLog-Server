@@ -69,7 +69,7 @@ public class FollowController {
 
     @Operation(summary = "나의 팔로잉 목록 조회", description = "나의 팔로잉 목록을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = FollowResponseDto.MyFollowingListRes.class)))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = FollowResponseDto.MyFollowingListResWithPaging.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/following")
@@ -82,7 +82,7 @@ public class FollowController {
 
     @Operation(summary = "나의 팔로워 목록 조회", description = "나의 팔로워 목록을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = FollowResponseDto.MyFollowerListRes.class)))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = FollowResponseDto.MyFollowerListResWithPaging.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/follower")
@@ -96,7 +96,7 @@ public class FollowController {
     //- 타 유저 팔로잉 목록 조회 : GET /follows/following/{user-id}
     @Operation(summary = "타 유저 팔로잉 목록 조회", description = "타 유저의 팔로잉 목록을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = FollowResponseDto.UserFollowingListRes.class)))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = FollowResponseDto.UserFollowingListResWithPaging.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/following/{userId}")
@@ -110,7 +110,7 @@ public class FollowController {
     //- 타 유저 팔로워 목록 조회 : GET /follows/follower/{user-id}
     @Operation(summary = "타 유저 팔로워 목록 조회", description = "타 유저의 팔로워 목록을 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = FollowResponseDto.UserFollowerListRes.class)))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = FollowResponseDto.UserFollowerListResWithPaging.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/follower/{userId}")

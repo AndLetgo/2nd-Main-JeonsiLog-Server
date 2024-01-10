@@ -101,8 +101,12 @@ public class RatingService {
         DefaultAssert.isTrue(!ratingList.isEmpty(), "내가 작성한 별점이 존재하지 않습니다.");
 
         List<RatingResponseDto.RatingRes> ratingRes = RatingConverter.toRatingRes(ratingList);
-        Integer numRating = ratingList.size();
-        RatingResponseDto.RatingListRes ratingListRes = RatingConverter.toRatingListRes(numRating, ratingRes);
+
+        Long totalElements = ratingPage.getTotalElements();
+        Integer numRating = totalElements.intValue();
+        boolean hasNextPage = ratingPage.hasNext();
+
+        RatingResponseDto.RatingListRes ratingListRes = RatingConverter.toRatingListRes(numRating, hasNextPage, ratingRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(ratingListRes);
         return ResponseEntity.ok(apiResponse);
@@ -120,8 +124,12 @@ public class RatingService {
         DefaultAssert.isTrue(!ratingList.isEmpty(), "해당 유저가 작성한 별점이 존재하지 않습니다.");
 
         List<RatingResponseDto.RatingRes> ratingRes = RatingConverter.toRatingRes(ratingList);
-        Integer numRating = ratingList.size();
-        RatingResponseDto.RatingListRes ratingListRes = RatingConverter.toRatingListRes(numRating, ratingRes);
+
+        Long totalElements = ratingPage.getTotalElements();
+        Integer numRating = totalElements.intValue();
+        boolean hasNextPage = ratingPage.hasNext();
+
+        RatingResponseDto.RatingListRes ratingListRes = RatingConverter.toRatingListRes(numRating, hasNextPage, ratingRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(ratingListRes);
         return ResponseEntity.ok(apiResponse);
@@ -141,7 +149,7 @@ public class RatingService {
         return sum / ratingList.size();
     }
 
-    private Rating validateRatingByUserIdAndExhibitionId(Long userId, Long exhibitionId) {
+    public Rating validateRatingByUserIdAndExhibitionId(Long userId, Long exhibitionId) {
         Optional<Rating> rating = ratingRepository.findByUserIdAndExhibitionId(userId, exhibitionId);
         DefaultAssert.isTrue(rating.isPresent(), "해당하는 별점이 없습니다.");
         return rating.get();

@@ -1,11 +1,13 @@
 package depth.jeonsilog.domain.review.converter;
 
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
+import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
 import depth.jeonsilog.domain.rating.domain.Rating;
 import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
 import depth.jeonsilog.domain.review.domain.Review;
 import depth.jeonsilog.domain.review.dto.ReviewResponseDto;
 import depth.jeonsilog.domain.user.domain.User;
+import depth.jeonsilog.domain.user.dto.UserResponseDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,10 +62,31 @@ public class ReviewConverter {
         return reviewResList;
     }
 
-    public static ReviewResponseDto.UserReviewListRes toUserReviewListRes(Integer numReview, List<ReviewResponseDto.UserReviewRes> reviewRes) {
+    public static ReviewResponseDto.UserReviewListRes toUserReviewListRes(Integer numReview, boolean hasNextPage, List<ReviewResponseDto.UserReviewRes> reviewRes) {
         return ReviewResponseDto.UserReviewListRes.builder()
                 .numReview(numReview)
+                .hasNextPage(hasNextPage)
                 .data(reviewRes)
+                .build();
+    }
+
+    public static ReviewResponseDto.ReviewListResList toReviewListResList(boolean hasNextPage, List<ReviewResponseDto.ReviewListRes> reviewListRes) {
+        return ReviewResponseDto.ReviewListResList.builder()
+                .hasNextPage(hasNextPage)
+                .data(reviewListRes)
+                .build();
+    }
+
+    public static ReviewResponseDto.ReviewListRes toReviewListRes(Review review, UserResponseDto.SearchUsersRes userRes, Double rate) {
+        return ReviewResponseDto.ReviewListRes.builder()
+                .reviewId(review.getId())
+                .userId(userRes.getUserId())
+                .imgUrl(userRes.getProfileImgUrl())
+                .nickname(userRes.getNickname())
+                .contents(review.getContents())
+                .rate(rate)
+                .numReply(review.getNumReply())
+                .createdDate(review.getCreatedDate())
                 .build();
     }
 }

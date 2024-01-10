@@ -54,4 +54,11 @@ public class PlaceConverter {
         return searchPlaceResList;
     }
 
+    public static PlaceResponseDto.SearchPlaceResWithPaging toSearchPlaceResWithPaging(boolean hasNextPage, List<PlaceResponseDto.SearchPlaceRes> searchPlaceResList) {
+        return PlaceResponseDto.SearchPlaceResWithPaging.builder()
+                .hasNextPage(hasNextPage)
+                .data(searchPlaceResList)
+                .build();
+    }
+
 }

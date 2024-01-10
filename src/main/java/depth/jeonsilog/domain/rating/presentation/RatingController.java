@@ -70,7 +70,7 @@ public class RatingController {
 
     @Operation(summary = "나의 별점 목록 조회", description = "Access Token을 이용하여 나의 별점 목록을 조회합니다..")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = RatingResponseDto.RatingListRes.class)))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RatingResponseDto.RatingListRes.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping
@@ -83,7 +83,7 @@ public class RatingController {
 
     @Operation(summary = "타 유저의 별점 목록 조회", description = "User id를 이용하여 타 유저의 별점 목록을 조회합니다..")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = RatingResponseDto.RatingListRes.class)))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = RatingResponseDto.RatingListRes.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/{userId}")

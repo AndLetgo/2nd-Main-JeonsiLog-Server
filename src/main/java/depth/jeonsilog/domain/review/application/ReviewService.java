@@ -3,8 +3,16 @@ package depth.jeonsilog.domain.review.application;
 
 import depth.jeonsilog.domain.alarm.application.AlarmService;
 import depth.jeonsilog.domain.common.Status;
+import depth.jeonsilog.domain.exhibition.application.ExhibitionService;
+import depth.jeonsilog.domain.exhibition.converter.ExhibitionConverter;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
+import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
+import depth.jeonsilog.domain.place.converter.PlaceConverter;
+import depth.jeonsilog.domain.place.domain.Place;
+import depth.jeonsilog.domain.place.dto.PlaceResponseDto;
+import depth.jeonsilog.domain.rating.application.RatingService;
+import depth.jeonsilog.domain.rating.domain.Rating;
 import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
 import depth.jeonsilog.domain.reply.domain.Reply;
 import depth.jeonsilog.domain.reply.domain.repository.ReplyRepository;
@@ -14,8 +22,10 @@ import depth.jeonsilog.domain.review.domain.repository.ReviewRepository;
 import depth.jeonsilog.domain.review.dto.ReviewRequestDto;
 import depth.jeonsilog.domain.review.dto.ReviewResponseDto;
 import depth.jeonsilog.domain.user.application.UserService;
+import depth.jeonsilog.domain.user.converter.UserConverter;
 import depth.jeonsilog.domain.user.domain.Role;
 import depth.jeonsilog.domain.user.domain.User;
+import depth.jeonsilog.domain.user.dto.UserResponseDto;
 import depth.jeonsilog.global.DefaultAssert;
 import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
@@ -23,6 +33,7 @@ import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,7 +53,9 @@ public class ReviewService {
     private final ReplyRepository replyRepository;
 
     private final UserService userService;
+    private final ExhibitionService exhibitionService;
     private final AlarmService alarmService;
+    private final RatingService ratingService;
 
     // 감상평 작성
     @Transactional
@@ -86,14 +99,16 @@ public class ReviewService {
         DefaultAssert.isTrue(exhibition.isPresent(), "전시회 id가 올바르지 않습니다.");
 
         PageRequest pageRequest = PageRequest.of(page, 13, Sort.by(Sort.Direction.DESC, "createdDate"));
-        Page<Review> reviewPage = reviewRepository.findByExhibitionId(pageRequest, exhibitionId);
+        Slice<Review> reviewPage = reviewRepository.findSliceByExhibitionId(pageRequest, exhibitionId);
         List<Review> reviewList = reviewPage.getContent();
 
         DefaultAssert.isTrue(!reviewList.isEmpty(), "해당 전시회에 대한 감상평이 존재하지 않습니다.");
 
         List<ReviewResponseDto.ReviewListRes> reviewListRes = ReviewConverter.toReviewListRes(reviewList, ratingRepository);
+        boolean hasNextPage = reviewPage.hasNext();
+        ReviewResponseDto.ReviewListResList reviewListResList = ReviewConverter.toReviewListResList(hasNextPage, reviewListRes);
 
-        ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListRes);
+        ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListResList);
         return ResponseEntity.ok(apiResponse);
     }
 
@@ -108,8 +123,12 @@ public class ReviewService {
         DefaultAssert.isTrue(!reviewList.isEmpty(), "해당 유저가 작성한 감상평이 존재하지 않습니다.");
 
         List<ReviewResponseDto.UserReviewRes> reviewRes = ReviewConverter.toUserReviewRes(reviewList);
-        Integer numReview = reviewList.size();
-        ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, reviewRes);
+
+        Long totalElements = reviewPage.getTotalElements();
+        Integer numReview = totalElements.intValue();
+        boolean hasNextPage = reviewPage.hasNext();
+
+        ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, hasNextPage, reviewRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListRes);
         return ResponseEntity.ok(apiResponse);
@@ -126,8 +145,12 @@ public class ReviewService {
         DefaultAssert.isTrue(!reviewList.isEmpty(), "해당 유저가 작성한 감상평이 존재하지 않습니다.");
 
         List<ReviewResponseDto.UserReviewRes> reviewRes = ReviewConverter.toUserReviewRes(reviewList);
-        Integer numReview = reviewList.size();
-        ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, reviewRes);
+
+        Long totalElements = reviewPage.getTotalElements();
+        Integer numReview = totalElements.intValue();
+        boolean hasNextPage = reviewPage.hasNext();
+
+        ReviewResponseDto.UserReviewListRes reviewListRes = ReviewConverter.toUserReviewListRes(numReview, hasNextPage, reviewRes);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(reviewListRes);
         return ResponseEntity.ok(apiResponse);
@@ -145,9 +168,26 @@ public class ReviewService {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // Description : Review Id로 review 조회
+    public ResponseEntity<?> getReview(Long reviewId) {
+
+        Review review = validateReviewById(reviewId);
+        User user = review.getUser();
+        Exhibition exhibition = review.getExhibition();
+        Rating rating = ratingService.validateRatingByUserIdAndExhibitionId(user.getId(), exhibition.getId());
+        Double rate = rating.getRate();
+
+        UserResponseDto.SearchUsersRes userRes = UserConverter.toSearchUserRes(user);
+        ReviewResponseDto.ReviewListRes reviewRes = ReviewConverter.toReviewListRes(review, userRes, rate);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(reviewRes);
+        return ResponseEntity.ok(apiResponse);
+    }
+
     public Review validateReviewById(Long reviewId) {
         Optional<Review> review = reviewRepository.findById(reviewId);
         DefaultAssert.isTrue(review.isPresent(), "감상평 정보가 올바르지 않습니다.");
         return review.get();
     }
+
 }

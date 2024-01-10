@@ -3,6 +3,7 @@ package depth.jeonsilog.domain.exhibition.converter;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
 import depth.jeonsilog.domain.place.dto.PlaceResponseDto;
+import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import depth.jeonsilog.global.DefaultAssert;
 
 import java.util.ArrayList;
@@ -33,6 +34,13 @@ public class ExhibitionConverter {
         }
 
         return exhibitionResList;
+    }
+
+    public static ExhibitionResponseDto.ExhibitionResListWithPaging toExhibitionResListWithPaging(boolean hasNextPage, List<ExhibitionResponseDto.ExhibitionRes> exhibitionResList) {
+        return ExhibitionResponseDto.ExhibitionResListWithPaging.builder()
+                .hasNextPage(hasNextPage)
+                .data(exhibitionResList)
+                .build();
     }
 
     // EXHIBITION & PlaceRes -> ExhibitionDetailRes
@@ -92,6 +100,13 @@ public class ExhibitionConverter {
         return exhibitionInPlaceResList;
     }
 
+    public static ExhibitionResponseDto.ExhibitionInPlaceResWithPaging toExhibitionInPlaceResWithPaging(boolean hasNextPage, List<ExhibitionResponseDto.ExhibitionInPlaceRes> exhibitionInPlaceResList) {
+        return ExhibitionResponseDto.ExhibitionInPlaceResWithPaging.builder()
+                .hasNextPage(hasNextPage)
+                .data(exhibitionInPlaceResList)
+                .build();
+    }
+
     public static List<ExhibitionResponseDto.SearchExhibitionByNameRes> toSearchByNameRes(List<Exhibition> exhibitions) {
 
         List<ExhibitionResponseDto.SearchExhibitionByNameRes> exhibitionByNameResList = new ArrayList<>();
@@ -106,5 +121,12 @@ public class ExhibitionConverter {
             exhibitionByNameResList.add(searchExhibitionByNameRes);
         }
         return exhibitionByNameResList;
+    }
+
+    public static ExhibitionResponseDto.SearchExhibitionByNameResListWithPaging toSearchExhibitionByNameResListWithPaging(boolean hasNextPage, List<ExhibitionResponseDto.SearchExhibitionByNameRes> searchExhibitionByNameRes) {
+        return ExhibitionResponseDto.SearchExhibitionByNameResListWithPaging.builder()
+                .hasNextPage(hasNextPage)
+                .data(searchExhibitionByNameRes)
+                .build();
     }
 }

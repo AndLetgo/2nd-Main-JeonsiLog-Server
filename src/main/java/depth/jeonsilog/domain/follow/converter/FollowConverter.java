@@ -3,6 +3,7 @@ package depth.jeonsilog.domain.follow.converter;
 import depth.jeonsilog.domain.follow.domain.Follow;
 import depth.jeonsilog.domain.follow.domain.repository.FollowRepository;
 import depth.jeonsilog.domain.follow.dto.FollowResponseDto;
+import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import depth.jeonsilog.domain.user.domain.User;
 
 
@@ -37,6 +38,13 @@ public class FollowConverter {
         return followingListRes;
     }
 
+    public static FollowResponseDto.MyFollowingListResWithPaging toMyFollowingListResWithPaging(boolean hasNextPage, List<FollowResponseDto.MyFollowingListRes> followListRes) {
+        return FollowResponseDto.MyFollowingListResWithPaging.builder()
+                .hasNextPage(hasNextPage)
+                .data(followListRes)
+                .build();
+    }
+
     // Users -> MyFollowerListRes
     public static List<FollowResponseDto.MyFollowerListRes> toMyFollowerListRes(List<Follow> follows, FollowRepository followRepository) {
 
@@ -53,6 +61,13 @@ public class FollowConverter {
             followerListRes.add(followRes);
         }
         return followerListRes;
+    }
+
+    public static FollowResponseDto.MyFollowerListResWithPaging toMyFollowerListResWithPaging(boolean hasNextPage, List<FollowResponseDto.MyFollowerListRes> followerListRes) {
+        return FollowResponseDto.MyFollowerListResWithPaging.builder()
+                .hasNextPage(hasNextPage)
+                .data(followerListRes)
+                .build();
     }
 
     // Users -> toUserFollowingListRes
@@ -74,6 +89,13 @@ public class FollowConverter {
         return followerListRes;
     }
 
+    public static FollowResponseDto.UserFollowingListResWithPaging toUserFollowingListResWithPaging(boolean hasNextPage, List<FollowResponseDto.UserFollowingListRes> followingListRes) {
+        return FollowResponseDto.UserFollowingListResWithPaging.builder()
+                .hasNextPage(hasNextPage)
+                .data(followingListRes)
+                .build();
+    }
+
     // Users -> toUserFollowerListRes
     public static List<FollowResponseDto.UserFollowerListRes> toUserFollowerListRes(User me, List<Follow> follows, FollowRepository followRepository) {
 
@@ -91,5 +113,12 @@ public class FollowConverter {
             followerListRes.add(followRes);
         }
         return followerListRes;
+    }
+
+    public static FollowResponseDto.UserFollowerListResWithPaging toUserFollowerListResWithPaging(boolean hasNextPage, List<FollowResponseDto.UserFollowerListRes> followingListRes) {
+        return FollowResponseDto.UserFollowerListResWithPaging.builder()
+                .hasNextPage(hasNextPage)
+                .data(followingListRes)
+                .build();
     }
 }

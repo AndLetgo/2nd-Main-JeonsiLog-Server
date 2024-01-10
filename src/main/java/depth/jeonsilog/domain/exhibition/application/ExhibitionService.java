@@ -57,8 +57,7 @@ public class ExhibitionService {
                 Sort.Order.asc("createdDate")
         ));
 
-        Page<Exhibition> exhibitionPage = exhibitionRepository.findAll(pageRequest);
-
+        Slice<Exhibition> exhibitionPage = exhibitionRepository.findSliceBy(pageRequest);
         List<Exhibition> exhibitions = exhibitionPage.getContent();
 
         List<Place> places = new ArrayList<>();
@@ -71,8 +70,10 @@ public class ExhibitionService {
         List<PlaceResponseDto.PlaceInfoRes> placeInfoResList = PlaceConverter.toPlaceInfoListRes(places);
 
         List<ExhibitionResponseDto.ExhibitionRes> exhibitionResList = ExhibitionConverter.toExhibitionListRes(exhibitions, placeInfoResList);
+        boolean hasNextPage = exhibitionPage.hasNext();
+        ExhibitionResponseDto.ExhibitionResListWithPaging exhibitionResListWithPaging = ExhibitionConverter.toExhibitionResListWithPaging(hasNextPage, exhibitionResList);
 
-        ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionResList);
+        ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionResListWithPaging);
 
         return ResponseEntity.ok(apiResponse);
     }
@@ -138,8 +139,7 @@ public class ExhibitionService {
 
         PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "createdDate"));
 
-        Page<Exhibition> exhibitionPage = exhibitionRepository.findByNameContainingOrPlace_AddressContaining(pageRequest, searchWord, searchWord);
-
+        Slice<Exhibition> exhibitionPage = exhibitionRepository.findSliceByNameContainingOrPlace_AddressContaining(pageRequest, searchWord, searchWord);
         List<Exhibition> exhibitions = exhibitionPage.getContent();
 
         DefaultAssert.isTrue(!exhibitions.isEmpty(), "해당 검색어를 포함한 전시회가 존재하지 않습니다.");
@@ -154,8 +154,10 @@ public class ExhibitionService {
         List<PlaceResponseDto.PlaceInfoRes> placeInfoResList = PlaceConverter.toPlaceInfoListRes(places);
 
         List<ExhibitionResponseDto.ExhibitionRes> exhibitionResList = ExhibitionConverter.toExhibitionListRes(exhibitions, placeInfoResList);
+        boolean hasNextPage = exhibitionPage.hasNext();
+        ExhibitionResponseDto.ExhibitionResListWithPaging exhibitionResListWithPaging = ExhibitionConverter.toExhibitionResListWithPaging(hasNextPage, exhibitionResList);
 
-        ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionResList);
+        ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionResListWithPaging);
 
         return ResponseEntity.ok(apiResponse);
     }
@@ -164,14 +166,16 @@ public class ExhibitionService {
     public ResponseEntity<?> searchExhibitionsByName(Integer page, String exhibitionName) {
 
         PageRequest pageRequest = PageRequest.of(page, 10);
-        Page<Exhibition> exhibitionPage = exhibitionRepository.findByNameContaining(pageRequest, exhibitionName);
+        Slice<Exhibition> exhibitionPage = exhibitionRepository.findSliceByNameContaining(pageRequest, exhibitionName);
 
         List<Exhibition> exhibitions = exhibitionPage.getContent();
         DefaultAssert.isTrue(!exhibitions.isEmpty(), "해당 검색어를 포함한 전시회가 존재하지 않습니다.");
 
         List<ExhibitionResponseDto.SearchExhibitionByNameRes> exhibitionResList = ExhibitionConverter.toSearchByNameRes(exhibitions);
+        boolean hasNextPage = exhibitionPage.hasNext();
+        ExhibitionResponseDto.SearchExhibitionByNameResListWithPaging searchExhibitionByNameResListWithPaging = ExhibitionConverter.toSearchExhibitionByNameResListWithPaging(hasNextPage, exhibitionResList);
 
-        ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionResList);
+        ApiResponse apiResponse = ApiResponse.toApiResponse(searchExhibitionByNameResListWithPaging);
         return ResponseEntity.ok(apiResponse);
     }
 

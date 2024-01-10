@@ -9,8 +9,10 @@ import depth.jeonsilog.domain.interest.domain.Interest;
 import depth.jeonsilog.domain.interest.domain.repository.InterestRepository;
 import depth.jeonsilog.domain.rating.domain.Rating;
 import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
+import depth.jeonsilog.domain.reply.converter.ReplyConverter;
 import depth.jeonsilog.domain.reply.domain.Reply;
 import depth.jeonsilog.domain.reply.domain.repository.ReplyRepository;
+import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import depth.jeonsilog.domain.review.domain.Review;
 import depth.jeonsilog.domain.review.domain.repository.ReviewRepository;
 import depth.jeonsilog.domain.s3.application.S3Uploader;
@@ -26,6 +28,7 @@ import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -114,14 +117,16 @@ public class UserService {
         validateUserByToken(userPrincipal);
 
         PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "modifiedDate"));
-        Page<User> userPage = userRepository.findAllByNicknameContaining(pageRequest, searchWord);
+        Slice<User> userPage = userRepository.findSliceByNicknameContaining(pageRequest, searchWord);
         List<User> userList = userPage.getContent();
 
         DefaultAssert.isTrue(!userList.isEmpty(), "해당 검색어를 포함한 유저가 존재하지 않습니다.");
 
         List<UserResponseDto.SearchUsersRes> searchUsersResList = UserConverter.toSearchUsersRes(userList);
+        boolean hasNextPage = userPage.hasNext();
+        UserResponseDto.SearchUserWithPaging searchUserWithPaging = UserConverter.toSearchUserWithPaging(hasNextPage, searchUsersResList);
 
-        ApiResponse apiResponse = ApiResponse.toApiResponse(searchUsersResList);
+        ApiResponse apiResponse = ApiResponse.toApiResponse(searchUserWithPaging);
 
         return ResponseEntity.ok(apiResponse);
     }

@@ -2,6 +2,7 @@ package depth.jeonsilog.domain.report.converter;
 
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.reply.domain.Reply;
+import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import depth.jeonsilog.domain.report.domain.Report;
 import depth.jeonsilog.domain.report.domain.ReportType;
 import depth.jeonsilog.domain.report.dto.ReportResponseDto;
@@ -60,5 +61,12 @@ public class ReportConverter {
             reportResList.add(reportRes);
         }
         return reportResList;
+    }
+
+    public static ReportResponseDto.ReportResListWithPaging toReportResListWithPaging(boolean hasNextPage, List<ReportResponseDto.ReportRes> reportResList) {
+        return ReportResponseDto.ReportResListWithPaging.builder()
+                .hasNextPage(hasNextPage)
+                .data(reportResList)
+                .build();
     }
 }

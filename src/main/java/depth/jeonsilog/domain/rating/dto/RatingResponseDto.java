@@ -32,6 +32,9 @@ public class RatingResponseDto {
         @Schema(type = "integer", example = "15", description = "내가 남긴 별점 개수를 출력합니다.")
         private Integer numRating;
 
+        @Schema(type = "boolean", example = "true", description = "다음 페이지 존재 여부를 반환합니다.")
+        private boolean hasNextPage;
+
         private List<RatingRes> data;
     }
 }

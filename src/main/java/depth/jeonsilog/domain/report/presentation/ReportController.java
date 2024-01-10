@@ -44,7 +44,7 @@ public class ReportController {
     // Description : 신고 내역 조회
     @Operation(summary = "신고 내역 조회", description = "신고 내역 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ReportResponseDto.ReportRes.class)))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReportResponseDto.ReportResListWithPaging.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping
@@ -58,7 +58,7 @@ public class ReportController {
     // Description : 신고 확인
     @Operation(summary = "신고 확인", description = "신고 확인")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "확인 성공", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Message.class)))}),
+            @ApiResponse(responseCode = "200", description = "확인 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "확인 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @PostMapping("/check/{reportId}")

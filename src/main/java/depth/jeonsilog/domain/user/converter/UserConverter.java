@@ -37,6 +37,13 @@ public class UserConverter {
         return usersResList;
     }
 
+    public static UserResponseDto.SearchUserWithPaging toSearchUserWithPaging(boolean hasNextPage, List<UserResponseDto.SearchUsersRes> SearchUsersResList) {
+        return UserResponseDto.SearchUserWithPaging.builder()
+                .hasNextPage(hasNextPage)
+                .data(SearchUsersResList)
+                .build();
+    }
+
     // USER -> SwitchIsOpenRes
     public static UserResponseDto.SwitchIsOpenRes toSwitchIsOpenRes(User user) {
         return UserResponseDto.SwitchIsOpenRes.builder()
@@ -64,6 +71,15 @@ public class UserConverter {
     public static UserResponseDto.IsOpenRes toIsOpenRes(User user) {
         return UserResponseDto.IsOpenRes.builder()
                 .isOpen(user.getIsOpen())
+                .build();
+    }
+
+    // Review에서 사용
+    public static UserResponseDto.SearchUsersRes toSearchUserRes (User user) {
+        return UserResponseDto.SearchUsersRes.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .profileImgUrl(user.getProfileImg())
                 .build();
     }
 }

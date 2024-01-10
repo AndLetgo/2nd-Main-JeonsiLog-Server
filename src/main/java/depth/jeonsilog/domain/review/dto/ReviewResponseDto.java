@@ -1,5 +1,7 @@
 package depth.jeonsilog.domain.review.dto;
 
+import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
+import depth.jeonsilog.domain.user.dto.UserResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -40,6 +42,16 @@ public class ReviewResponseDto {
 
     @Data
     @Builder
+    public static class ReviewListResList {
+
+        @Schema(type = "boolean", example = "true", description = "다음 페이지 존재 여부를 반환합니다.")
+        private boolean hasNextPage;
+
+        private List<ReviewListRes> data;
+    }
+
+    @Data
+    @Builder
     public static class UserReviewRes {
 
         @Schema(type = "long", example = "1", description = "감상평 id를 출력합니다.")
@@ -68,6 +80,9 @@ public class ReviewResponseDto {
         @Schema(type = "integer", example = "24", description = "내가 남긴 감상평 개수를 출력합니다.")
         private Integer numReview;
 
+        @Schema(type = "boolean", example = "true", description = "다음 페이지 존재 여부를 반환합니다.")
+        private boolean hasNextPage;
+
         private List<UserReviewRes> data;
     }
 
@@ -78,4 +93,5 @@ public class ReviewResponseDto {
         @Schema(type = "boolean", example = "true", description = "해당 전시회 - 감상평 작성 여부를 출력합니다.")
         private Boolean isWrite;
     }
+
 }
