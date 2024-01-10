@@ -2,9 +2,12 @@ package depth.jeonsilog.domain.interest.dto;
 
 import depth.jeonsilog.domain.exhibition.domain.OperatingKeyword;
 import depth.jeonsilog.domain.exhibition.domain.PriceKeyword;
+import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 public class InterestResponseDto {
 
@@ -48,5 +51,14 @@ public class InterestResponseDto {
 
         @Schema(type = "string", example = "무료", description = "전시회 가격 정보를 출력합니다.")
         private PriceKeyword priceKeyword;
+    }
+
+    @Data
+    @Builder
+    public static class InterestListResWithPaging {
+        @Schema(type = "boolean", example = "true", description = "다음 페이지 존재 여부를 반환합니다.")
+        private boolean hasNextPage;
+
+        private List<InterestResponseDto.InterestListRes> data;
     }
 }

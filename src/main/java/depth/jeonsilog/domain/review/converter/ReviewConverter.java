@@ -66,4 +66,11 @@ public class ReviewConverter {
                 .data(reviewRes)
                 .build();
     }
+
+    public static ReviewResponseDto.ReviewListResList toReviewListResList(boolean hasNextPage, List<ReviewResponseDto.ReviewListRes> reviewListRes) {
+        return ReviewResponseDto.ReviewListResList.builder()
+                .hasNextPage(hasNextPage)
+                .data(reviewListRes)
+                .build();
+    }
 }

@@ -40,6 +40,16 @@ public class ReviewResponseDto {
 
     @Data
     @Builder
+    public static class ReviewListResList {
+
+        @Schema(type = "boolean", example = "true", description = "다음 페이지 존재 여부를 반환합니다.")
+        private boolean hasNextPage;
+
+        private List<ReviewListRes> data;
+    }
+
+    @Data
+    @Builder
     public static class UserReviewRes {
 
         @Schema(type = "long", example = "1", description = "감상평 id를 출력합니다.")

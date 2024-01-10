@@ -45,4 +45,11 @@ public class InterestConverter {
         }
         return interestListRes;
     }
+
+    public static InterestResponseDto.InterestListResWithPaging toInterestListResWithPaging(boolean hasNextPage, List<InterestResponseDto.InterestListRes> interestList) {
+        return InterestResponseDto.InterestListResWithPaging.builder()
+                .hasNextPage(hasNextPage)
+                .data(interestList)
+                .build();
+    }
 }

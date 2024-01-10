@@ -19,6 +19,7 @@ import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -43,14 +44,16 @@ public class ReplyService {
         Review review = reviewService.validateReviewById(reviewId);
 
         PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "createdDate"));
-        Page<Reply> replyPage = replyRepository.findByReview(pageRequest, review);
+        Slice<Reply> replyPage = replyRepository.findSliceByReview(pageRequest, review);
         List<Reply> replies = replyPage.getContent();
 
         DefaultAssert.isTrue(!replies.isEmpty(), "해당 감상평에 대한 댓글이 존재하지 않습니다.");
 
         List<ReplyResponseDto.ReplyRes> replyResList = ReplyConverter.toReplyResList(replies);
+        boolean hasNextPage = replyPage.hasNext();
+        ReplyResponseDto.ReplyResListWithPaging replyResListWithPaging = ReplyConverter.toReplyResListWithPaging(hasNextPage, replyResList);
 
-        ApiResponse apiResponse = ApiResponse.toApiResponse(replyResList);
+        ApiResponse apiResponse = ApiResponse.toApiResponse(replyResListWithPaging);
         return ResponseEntity.ok(apiResponse);
     }
 

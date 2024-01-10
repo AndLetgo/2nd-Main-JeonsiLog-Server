@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -63,7 +64,7 @@ public class AlarmService {
         List<AlarmType> types = Arrays.asList(AlarmType.RATING, AlarmType.REVIEW, AlarmType.REPLY, AlarmType.FOLLOW);
 
         PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "modifiedDate"));
-        Page<Alarm> alarmPage = alarmRepository.findByUserIdAndAlarmTypeIn(pageRequest, findUser.getId(), types);
+        Slice<Alarm> alarmPage = alarmRepository.findSliceByUserIdAndAlarmTypeIn(pageRequest, findUser.getId(), types);
         List<Alarm> alarmList = alarmPage.getContent();
 
         DefaultAssert.isTrue(!alarmList.isEmpty(), "활동 알림이 존재하지 않습니다.");
@@ -94,7 +95,10 @@ public class AlarmService {
             alarmResList.add(alarmRes);
         }
 
-        ApiResponse apiResponse = ApiResponse.toApiResponse(alarmResList);
+        boolean hasNextPage = alarmPage.hasNext();
+        AlarmResponseDto.AlarmResListWithPaging alarmResListWithPaging = AlarmConverter.toAlarmResListWithPaging(hasNextPage, alarmResList);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(alarmResListWithPaging);
         return ResponseEntity.ok(apiResponse);
     }
 
@@ -104,7 +108,7 @@ public class AlarmService {
         List<AlarmType> types = List.of(AlarmType.EXHIBITION);
 
         PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "modifiedDate"));
-        Page<Alarm> alarmPage = alarmRepository.findByUserIdAndAlarmTypeIn(pageRequest, findUser.getId(), types);
+        Slice<Alarm> alarmPage = alarmRepository.findSliceByUserIdAndAlarmTypeIn(pageRequest, findUser.getId(), types);
         List<Alarm> alarmList = alarmPage.getContent();
 
         DefaultAssert.isTrue(!alarmList.isEmpty(), "전시 알림이 존재하지 않습니다.");
@@ -126,7 +130,10 @@ public class AlarmService {
             alarmResList.add(alarmRes);
         }
 
-        ApiResponse apiResponse = ApiResponse.toApiResponse(alarmResList);
+        boolean hasNextPage = alarmPage.hasNext();
+        AlarmResponseDto.AlarmResListWithPaging alarmResListWithPaging = AlarmConverter.toAlarmResListWithPaging(hasNextPage, alarmResList);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(alarmResListWithPaging);
         return ResponseEntity.ok(apiResponse);
     }
 

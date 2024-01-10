@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 public class PlaceResponseDto {
 
     // 전시회 상세 정보 조회 시 사용될 place
@@ -53,6 +55,17 @@ public class PlaceResponseDto {
 
         @Schema(type = "String", example = "롯데콘서트홀", description = "전시 공간 이름입니다.")
         private String placeName;
+
+    }
+
+    @Data
+    @Builder
+    public static class SearchPlaceResWithPaging {
+
+        @Schema(type = "boolean", example = "true", description = "다음 페이지 존재 여부를 반환합니다.")
+        private boolean hasNextPage;
+
+        private List<PlaceResponseDto.SearchPlaceRes> data;
 
     }
 

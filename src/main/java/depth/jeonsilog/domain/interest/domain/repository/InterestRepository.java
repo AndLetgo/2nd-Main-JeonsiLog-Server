@@ -2,9 +2,9 @@ package depth.jeonsilog.domain.interest.domain.repository;
 
 import depth.jeonsilog.domain.exhibition.domain.OperatingKeyword;
 import depth.jeonsilog.domain.interest.domain.Interest;
-import depth.jeonsilog.domain.rating.domain.Rating;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,5 +20,5 @@ public interface InterestRepository extends JpaRepository<Interest, Long> {
 
     List<Interest> findByExhibition_OperatingKeyword(OperatingKeyword operatingKeyword);
 
-    Page<Interest> findByUserId(PageRequest pageRequest, Long userId);
+    Slice<Interest> findSliceByUserId(PageRequest pageRequest, Long userId);
 }
