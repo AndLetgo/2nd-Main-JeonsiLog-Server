@@ -185,8 +185,13 @@ public class ReviewService {
         Review review = validateReviewById(reviewId);
         User user = review.getUser();
         Exhibition exhibition = review.getExhibition();
-        Rating rating = ratingService.validateRatingByUserIdAndExhibitionId(user.getId(), exhibition.getId());
-        Double rate = rating.getRate();
+
+        Optional<Rating> findRating = ratingRepository.findByUserIdAndExhibitionId(user.getId(), exhibition.getId());
+        Double rate = null;
+        if (findRating.isPresent()) {
+            Rating rating = findRating.get();
+            rate = rating.getRate();
+        }
 
         UserResponseDto.SearchUsersRes userRes = UserConverter.toSearchUserRes(user);
         ReviewResponseDto.ReviewListRes reviewRes = ReviewConverter.toReviewListRes(review, userRes, rate);
