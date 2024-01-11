@@ -44,7 +44,7 @@ public class PlaceController {
     // TODO : 논의 후 페이징 처리
     @Operation(summary = "검색어를 포함한 전시 공간의 목록 조회", description = "전시 공간을 검색합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PlaceResponseDto.SearchPlaceResWithPaging.class))}),
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PlaceResponseDto.PlaceInfoResWithPaging.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
     @GetMapping("/search/{searchWord}")

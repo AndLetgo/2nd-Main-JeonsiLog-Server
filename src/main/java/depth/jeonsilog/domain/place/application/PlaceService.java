@@ -63,11 +63,11 @@ public class PlaceService {
 
         DefaultAssert.isTrue(!places.isEmpty(), "해당 검색어를 포함한 전시 공간이 존재하지 않습니다.");
 
-        List<PlaceResponseDto.SearchPlaceRes> searchPlaceResList = PlaceConverter.toSearchPlaceListRes(places);
+        List<PlaceResponseDto.PlaceInfoRes> placeInfoListRes = PlaceConverter.toPlaceInfoListRes(places);
         boolean hasNextPage = placePage.hasNext();
-        PlaceResponseDto.SearchPlaceResWithPaging searchPlaceResWithPaging = PlaceConverter.toSearchPlaceResWithPaging(hasNextPage, searchPlaceResList);
+        PlaceResponseDto.PlaceInfoResWithPaging placeInfoResWithPaging = PlaceConverter.toPlaceInfoResWithPaging(hasNextPage, placeInfoListRes);
 
-        ApiResponse apiResponse = ApiResponse.toApiResponse(searchPlaceResWithPaging);
+        ApiResponse apiResponse = ApiResponse.toApiResponse(placeInfoResWithPaging);
 
         return ResponseEntity.ok(apiResponse);
     }
