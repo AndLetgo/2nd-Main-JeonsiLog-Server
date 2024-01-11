@@ -37,27 +37,10 @@ public class PlaceConverter {
         return placeInfoResList;
     }
 
-    // Places -> SearchPlaceResList
-    public static List<PlaceResponseDto.SearchPlaceRes> toSearchPlaceListRes(List<Place> places) {
-
-        List<PlaceResponseDto.SearchPlaceRes> searchPlaceResList = new ArrayList<>();
-
-        for (Place place : places) {
-            PlaceResponseDto.SearchPlaceRes searchPlaceRes = PlaceResponseDto.SearchPlaceRes.builder()
-                    .placeId(place.getId())
-                    .placeName(place.getName())
-                    .build();
-
-            searchPlaceResList.add(searchPlaceRes);
-        }
-
-        return searchPlaceResList;
-    }
-
-    public static PlaceResponseDto.SearchPlaceResWithPaging toSearchPlaceResWithPaging(boolean hasNextPage, List<PlaceResponseDto.SearchPlaceRes> searchPlaceResList) {
-        return PlaceResponseDto.SearchPlaceResWithPaging.builder()
+    public static PlaceResponseDto.PlaceInfoResWithPaging toPlaceInfoResWithPaging(boolean hasNextPage, List<PlaceResponseDto.PlaceInfoRes> placeInfoResList) {
+        return PlaceResponseDto.PlaceInfoResWithPaging.builder()
                 .hasNextPage(hasNextPage)
-                .data(searchPlaceResList)
+                .data(placeInfoResList)
                 .build();
     }
 

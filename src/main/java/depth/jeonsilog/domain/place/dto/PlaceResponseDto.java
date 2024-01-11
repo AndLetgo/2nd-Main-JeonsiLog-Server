@@ -45,27 +45,14 @@ public class PlaceResponseDto {
         private String placeAddress;
     }
 
-    // 검색어를 포함한 전시 공간 목록 조회
     @Data
     @Builder
-    public static class SearchPlaceRes {
-
-        @Schema(type = "Long", example = "1", description = "전시 공간 ID입니다.")
-        private Long placeId;
-
-        @Schema(type = "String", example = "롯데콘서트홀", description = "전시 공간 이름입니다.")
-        private String placeName;
-
-    }
-
-    @Data
-    @Builder
-    public static class SearchPlaceResWithPaging {
+    public static class PlaceInfoResWithPaging {
 
         @Schema(type = "boolean", example = "true", description = "다음 페이지 존재 여부를 반환합니다.")
         private boolean hasNextPage;
 
-        private List<PlaceResponseDto.SearchPlaceRes> data;
+        private List<PlaceResponseDto.PlaceInfoRes> data;
 
     }
 
