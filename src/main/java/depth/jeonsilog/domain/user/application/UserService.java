@@ -1,6 +1,5 @@
 package depth.jeonsilog.domain.user.application;
 
-import depth.jeonsilog.domain.alarm.domain.Alarm;
 import depth.jeonsilog.domain.auth.domain.Token;
 import depth.jeonsilog.domain.auth.domain.repository.TokenRepository;
 import depth.jeonsilog.domain.common.Status;
@@ -9,10 +8,8 @@ import depth.jeonsilog.domain.interest.domain.Interest;
 import depth.jeonsilog.domain.interest.domain.repository.InterestRepository;
 import depth.jeonsilog.domain.rating.domain.Rating;
 import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
-import depth.jeonsilog.domain.reply.converter.ReplyConverter;
 import depth.jeonsilog.domain.reply.domain.Reply;
 import depth.jeonsilog.domain.reply.domain.repository.ReplyRepository;
-import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import depth.jeonsilog.domain.review.domain.Review;
 import depth.jeonsilog.domain.review.domain.repository.ReviewRepository;
 import depth.jeonsilog.domain.s3.application.S3Uploader;
@@ -26,7 +23,6 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -139,17 +135,18 @@ public class UserService {
         Long userId = findUser.getId();
 
         // 즐겨찾기, 별점, 감상평, 댓글 DELETE 처리
-        List<Review> reviews = reviewRepository.findAllByUserId(userId);
+        List<Review> reviews = reviewRepository.findAllReviewsByUserId(userId);
         List<Rating> ratings = ratingRepository.findAllByUserId(userId);
         List<Interest> interests = interestRepository.findAllByUserId(userId);
 
         // review의 replies도
         for (Review review : reviews) {
-            List<Reply> replyByReview = replyRepository.findByReview(review);
+            List<Reply> replyByReview = replyRepository.findAllRepliesByReviewId(review.getId());
             replyRepository.deleteAll(replyByReview);
         }
+
         // 얘만 여기 있는 이유 : 바로 위에서 지운 reply와 겹치지 않도록 하기 위함
-        List<Reply> replyByUser = replyRepository.findAllByUserId(userId);
+        List<Reply> replyByUser = replyRepository.findAllRepliesByUserId(userId);
         replyRepository.deleteAll(replyByUser);
 
         // soft delete를 통한 별점 변동 x
