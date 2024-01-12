@@ -142,11 +142,16 @@ public class UserService {
         // review의 replies도
         for (Review review : reviews) {
             List<Reply> replyByReview = replyRepository.findAllRepliesByReviewId(review.getId());
+            review.updateNumReply(review.getNumReply() - replyByReview.size());
             replyRepository.deleteAll(replyByReview);
         }
 
         // 얘만 여기 있는 이유 : 바로 위에서 지운 reply와 겹치지 않도록 하기 위함
         List<Reply> replyByUser = replyRepository.findAllRepliesByUserId(userId);
+        for (Reply reply : replyByUser) {
+            Review review = reply.getReview();
+            review.updateNumReply(review.getNumReply() - 1);
+        }
         replyRepository.deleteAll(replyByUser);
 
         // soft delete를 통한 별점 변동 x
