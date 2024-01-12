@@ -65,7 +65,7 @@ public class AlarmService {
         User findUser = userService.validateUserByToken(userPrincipal);
         List<AlarmType> types = Arrays.asList(AlarmType.RATING, AlarmType.REVIEW, AlarmType.REPLY, AlarmType.FOLLOW);
 
-        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "modifiedDate"));
+        PageRequest pageRequest = PageRequest.of(page, 20, Sort.by(Sort.Direction.DESC, "createdDate"));
         Slice<Alarm> alarmPage = alarmRepository.findSliceByUserIdAndAlarmTypeIn(pageRequest, findUser.getId(), types);
         List<Alarm> alarmList = alarmPage.getContent();
 

@@ -135,17 +135,23 @@ public class UserService {
         Long userId = findUser.getId();
 
         // 즐겨찾기, 별점, 감상평, 댓글 DELETE 처리
-        List<Review> reviews = reviewRepository.findAllByUserId(userId);
+        List<Review> reviews = reviewRepository.findAllReviewsByUserId(userId);
         List<Rating> ratings = ratingRepository.findAllByUserId(userId);
         List<Interest> interests = interestRepository.findAllByUserId(userId);
 
         // review의 replies도
         for (Review review : reviews) {
-            List<Reply> replyByReview = replyRepository.findByReview(review);
+            List<Reply> replyByReview = replyRepository.findAllRepliesByReviewId(review.getId());
+            review.updateNumReply(review.getNumReply() - replyByReview.size());
             replyRepository.deleteAll(replyByReview);
         }
+
         // 얘만 여기 있는 이유 : 바로 위에서 지운 reply와 겹치지 않도록 하기 위함
-        List<Reply> replyByUser = replyRepository.findAllByUserId(userId);
+        List<Reply> replyByUser = replyRepository.findAllRepliesByUserId(userId);
+        for (Reply reply : replyByUser) {
+            Review review = reply.getReview();
+            review.updateNumReply(review.getNumReply() - 1);
+        }
         replyRepository.deleteAll(replyByUser);
 
         // soft delete를 통한 별점 변동 x
