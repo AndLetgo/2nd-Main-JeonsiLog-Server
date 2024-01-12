@@ -12,7 +12,6 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -20,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,7 +35,7 @@ public class FollowService {
 
     // 팔로우하기
     @Transactional
-    public ResponseEntity<?> follow(UserPrincipal userPrincipal, Long userId) {
+    public ResponseEntity<?> follow(UserPrincipal userPrincipal, Long userId) throws IOException {
 
         User findUser = userService.validateUserByToken(userPrincipal);
         User followUser = userService.validateUserById(userId);

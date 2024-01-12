@@ -23,7 +23,7 @@ public class AuthConverter {
                 .provider(Provider.KAKAO)
                 .role(Role.USER)
                 .isOpen(true)
-                .isRecvFollowing(true)
+                .isRecvExhibition(true)
                 .isRecvActive(true)
                 .build();
     }

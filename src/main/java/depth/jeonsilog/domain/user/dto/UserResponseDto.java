@@ -1,7 +1,6 @@
 package depth.jeonsilog.domain.user.dto;
 
 
-import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -67,13 +66,13 @@ public class UserResponseDto {
 
     @Data
     @Builder
-    public static class SwitchIsRecvFollowingRes {
+    public static class SwitchIsRecvExhibitionRes {
 
         @Schema(type = "long", example = "1", description = "유저의 ID를 출력합니다.")
         private Long userId;
 
-        @Schema(type = "boolean", example = "true", description = "유저의 팔로잉 알림 수신 여부를 출력합니다.")
-        private Boolean isRecvFollowing;
+        @Schema(type = "boolean", example = "true", description = "유저의 전시 알림 수신 여부를 출력합니다.")
+        private Boolean isRecvExhbition;
     }
 
     @Data
@@ -83,7 +82,7 @@ public class UserResponseDto {
         @Schema(type = "long", example = "1", description = "유저의 ID를 출력합니다.")
         private Long userId;
 
-        @Schema(type = "boolean", example = "true", description = "유저의 나의 활동 알림 수신 여부를 출력합니다.")
+        @Schema(type = "boolean", example = "true", description = "유저의 활동 알림 수신 여부를 출력합니다.")
         private Boolean isRecvActive;
     }
 

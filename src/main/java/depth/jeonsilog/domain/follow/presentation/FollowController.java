@@ -19,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @Tag(name = "Follow API", description = "Follow 관련 API입니다.")
 @RequiredArgsConstructor
 @RestController
@@ -36,7 +38,7 @@ public class FollowController {
     public ResponseEntity<?> follow(
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @Parameter(description = "팔로우할 유저의 ID를 입력해주세요.", required = true) @PathVariable(value = "userId") Long userId
-    ) {
+    ) throws IOException {
         return followService.follow(userPrincipal, userId);
     }
 

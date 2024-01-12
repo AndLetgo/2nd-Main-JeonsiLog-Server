@@ -17,7 +17,6 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -25,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +59,7 @@ public class ReplyService {
 
     // Description : 댓글 작성
     @Transactional
-    public ResponseEntity<?> createReply(UserPrincipal userPrincipal, ReplyRequestDto.CreateReplyReq createReplyReq) {
+    public ResponseEntity<?> createReply(UserPrincipal userPrincipal, ReplyRequestDto.CreateReplyReq createReplyReq) throws IOException {
 
         Review review = reviewService.validateReviewById(createReplyReq.getReviewId());
         User user = userService.validateUserByToken(userPrincipal);

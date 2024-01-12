@@ -8,7 +8,6 @@ import depth.jeonsilog.domain.rating.domain.Rating;
 import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
 import depth.jeonsilog.domain.rating.dto.RatingRequestDto;
 import depth.jeonsilog.domain.rating.dto.RatingResponseDto;
-import depth.jeonsilog.domain.review.domain.Review;
 import depth.jeonsilog.domain.user.application.UserService;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.global.DefaultAssert;
@@ -23,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +39,7 @@ public class RatingService {
 
     // 별점 등록
     @Transactional
-    public ResponseEntity<?> registerRating(UserPrincipal userPrincipal, RatingRequestDto.RatingReq ratingReq) {
+    public ResponseEntity<?> registerRating(UserPrincipal userPrincipal, RatingRequestDto.RatingReq ratingReq) throws IOException {
         User findUser = userService.validateUserByToken(userPrincipal);
         Exhibition exhibition = exhibitionService.validateExhibitionById(ratingReq.getExhibitionId());
 

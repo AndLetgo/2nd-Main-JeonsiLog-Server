@@ -1,6 +1,5 @@
 package depth.jeonsilog.domain.rating.presentation;
 
-import depth.jeonsilog.domain.place.dto.PlaceResponseDto;
 import depth.jeonsilog.domain.rating.application.RatingService;
 import depth.jeonsilog.domain.rating.dto.RatingRequestDto;
 import depth.jeonsilog.domain.rating.dto.RatingResponseDto;
@@ -10,7 +9,6 @@ import depth.jeonsilog.global.payload.ErrorResponse;
 import depth.jeonsilog.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,6 +18,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Tag(name = "Rating API", description = "Rating 관련 API입니다.")
 @RestController
@@ -38,7 +38,7 @@ public class RatingController {
     public ResponseEntity<?> registerInterest(
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @Parameter(description = "Schemas의 RatingReq를 참고해주세요.", required = true) @Valid @RequestBody RatingRequestDto.RatingReq ratingReq
-            ) {
+            ) throws IOException {
         return ratingService.registerRating(userPrincipal, ratingReq);
     }
 

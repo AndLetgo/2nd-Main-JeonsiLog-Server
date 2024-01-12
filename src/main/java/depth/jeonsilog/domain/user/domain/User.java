@@ -5,6 +5,7 @@ import depth.jeonsilog.domain.calendar.domain.Calendar;
 import depth.jeonsilog.domain.common.BaseEntity;
 import depth.jeonsilog.domain.follow.domain.Follow;
 import depth.jeonsilog.domain.report.domain.Report;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
@@ -38,7 +39,7 @@ public class User extends BaseEntity {
     // 포토 캘린더 공개 여부
     private Boolean isOpen;
 
-    private Boolean isRecvFollowing;
+    private Boolean isRecvExhibition;
 
     private Boolean isRecvActive;
 
@@ -49,6 +50,9 @@ public class User extends BaseEntity {
     private Provider provider;
     // 카카오 고유 ID
     private String providerId;
+
+    @Nullable
+    private String fcmToken;
 
     // CASCADE 추가
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
@@ -79,16 +83,20 @@ public class User extends BaseEntity {
         this.isOpen = isOpen;
     }
 
-    public void updateIsRecvFollowing(boolean isRecvFollowing) {
-        this.isRecvFollowing = isRecvFollowing;
+    public void updateIsRecvExhibition(boolean isRecvFollowing) {
+        this.isRecvExhibition = isRecvFollowing;
     }
 
     public void updateIsRecvActive(boolean isRecvActive) {
         this.isRecvActive = isRecvActive;
     }
 
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
     @Builder
-    public User(Long id, String password, String nickname, String email, String providerId, String profileImg, boolean isOpen, boolean isRecvFollowing, boolean isRecvActive, Role role, Provider provider) {
+    public User(Long id, String password, String nickname, String email, String providerId, String profileImg, boolean isOpen, boolean isRecvExhibition, boolean isRecvActive, Role role, Provider provider, @Nullable String fcmToken) {
         this.id = id;
         this.password = password;
         this.providerId = providerId;
@@ -96,9 +104,10 @@ public class User extends BaseEntity {
         this.email = email;
         this.profileImg = profileImg;
         this.isOpen = isOpen;
-        this.isRecvFollowing = isRecvFollowing;
+        this.isRecvExhibition = isRecvExhibition;
         this.isRecvActive = isRecvActive;
         this.role = role;
         this.provider = provider;
+        this.fcmToken = fcmToken;
     }
 }
