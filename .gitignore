@@ -43,3 +43,4 @@ out/
 /src/main/resources/application-auth.yml
 
 /src/main/resources/forbidden-words.txt
+/src/main/resources/services-account.json

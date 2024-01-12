@@ -1,6 +1,5 @@
 package depth.jeonsilog.domain.user.presentation;
 
-import depth.jeonsilog.domain.review.dto.ReviewResponseDto;
 import depth.jeonsilog.domain.user.application.UserService;
 import depth.jeonsilog.domain.user.dto.UserRequestDto;
 import depth.jeonsilog.domain.user.dto.UserResponseDto;
@@ -10,7 +9,6 @@ import depth.jeonsilog.global.payload.ErrorResponse;
 import depth.jeonsilog.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -109,19 +107,19 @@ public class UserController {
         return userService.switchIsOpen(userPrincipal);
     }
 
-    @Operation(summary = "팔로잉 알림 수신 여부 변경", description = "팔로잉 알림 수신 여부를 변경합니다.")
+    @Operation(summary = "전시 알림 수신 여부 변경", description = "전시 알림 수신 여부를 변경합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "변경 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.SwitchIsRecvFollowingRes.class))}),
+            @ApiResponse(responseCode = "200", description = "변경 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.SwitchIsRecvExhibitionRes.class))}),
             @ApiResponse(responseCode = "400", description = "변경 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
-    @PatchMapping("/alarm-following")
-    public ResponseEntity<?> switchIsRecvFollowing(
+    @PatchMapping("/alarm-exhibition")
+    public ResponseEntity<?> switchIsRecvExhibition(
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
     ) {
-        return userService.switchIsRecvFollowing(userPrincipal);
+        return userService.switchIsRecvExhibition(userPrincipal);
     }
 
-    @Operation(summary = "나의 활동 알림 수신 여부 변경", description = "나의 활동 알림 수신 여부를 변경합니다.")
+    @Operation(summary = "활동 알림 수신 여부 변경", description = "활동 알림 수신 여부를 변경합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "변경 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.SwitchIsRecvActiveRes.class))}),
             @ApiResponse(responseCode = "400", description = "변경 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
@@ -155,5 +153,18 @@ public class UserController {
             @Parameter(description = "조회할 유저의 ID를 입력해주세요", required = true) @PathVariable Long userId
     ) {
         return userService.getIsOpen(userId);
+    }
+
+    @Operation(summary = "Fcm Token 변경", description = "Fcm Token을 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "변경 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
+            @ApiResponse(responseCode = "400", description = "변경 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @PatchMapping("/fcm/token")
+    public ResponseEntity<?> updateFcmToken(
+            @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
+            @Parameter(description = "UpdateFcmToken 을 확인해주세요", required = true) @RequestBody UserRequestDto.UpdateFcmToken fcmToken
+            ) {
+        return userService.updateFcmToken(userPrincipal, fcmToken);
     }
 }

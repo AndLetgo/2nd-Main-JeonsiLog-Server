@@ -1,6 +1,5 @@
 package depth.jeonsilog.domain.review.presentation;
 
-import depth.jeonsilog.domain.rating.dto.RatingResponseDto;
 import depth.jeonsilog.domain.review.application.ReviewService;
 import depth.jeonsilog.domain.review.dto.ReviewRequestDto;
 import depth.jeonsilog.domain.review.dto.ReviewResponseDto;
@@ -10,7 +9,6 @@ import depth.jeonsilog.global.payload.ErrorResponse;
 import depth.jeonsilog.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,6 +18,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Tag(name = "Review API", description = "Review 관련 API입니다.")
 @RestController
@@ -38,7 +38,7 @@ public class ReviewController {
     public ResponseEntity<?> writeReview(
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @Parameter(description = "Schemas의 WriteReviewReq 를 참고해주세요.", required = true) @Valid @RequestBody ReviewRequestDto.WriteReviewReq writeReviewReq
-            ) {
+            ) throws IOException {
         return reviewService.writeReview(userPrincipal, writeReviewReq);
     }
 
