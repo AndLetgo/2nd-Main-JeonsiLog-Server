@@ -1,6 +1,5 @@
 package depth.jeonsilog.domain.user.application;
 
-import depth.jeonsilog.domain.alarm.domain.Alarm;
 import depth.jeonsilog.domain.auth.domain.Token;
 import depth.jeonsilog.domain.auth.domain.repository.TokenRepository;
 import depth.jeonsilog.domain.common.Status;
@@ -9,10 +8,8 @@ import depth.jeonsilog.domain.interest.domain.Interest;
 import depth.jeonsilog.domain.interest.domain.repository.InterestRepository;
 import depth.jeonsilog.domain.rating.domain.Rating;
 import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
-import depth.jeonsilog.domain.reply.converter.ReplyConverter;
 import depth.jeonsilog.domain.reply.domain.Reply;
 import depth.jeonsilog.domain.reply.domain.repository.ReplyRepository;
-import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import depth.jeonsilog.domain.review.domain.Review;
 import depth.jeonsilog.domain.review.domain.repository.ReviewRepository;
 import depth.jeonsilog.domain.s3.application.S3Uploader;
@@ -26,7 +23,6 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -100,7 +96,7 @@ public class UserService {
     public ResponseEntity<?> changeProfile(UserPrincipal userPrincipal, MultipartFile img) throws IOException {
         User findUser = validateUserByToken(userPrincipal);
 
-        if (!img.isEmpty()) {
+        if (img != null) {
             String storedFileName = s3Uploader.upload(img, DIRNAME);
             findUser.updateProfileImg(storedFileName);
         }
@@ -192,15 +188,15 @@ public class UserService {
 
     // 팔로잉 알림 수신 여부 변경
     @Transactional
-    public ResponseEntity<?> switchIsRecvFollowing(UserPrincipal userPrincipal) {
+    public ResponseEntity<?> switchIsRecvExhibition(UserPrincipal userPrincipal) {
 
         User findUser = validateUserByToken(userPrincipal);
 
-        findUser.updateIsRecvFollowing(!findUser.getIsRecvFollowing());
+        findUser.updateIsRecvExhibition(!findUser.getIsRecvExhibition());
 
-        UserResponseDto.SwitchIsRecvFollowingRes switchIsRecvFollowingRes = UserConverter.toSwitchIsRecvFollowingRes(findUser);
+        UserResponseDto.SwitchIsRecvExhibitionRes switchIsRecvExhbitionRes = UserConverter.toSwitchIsRecvExhibitionRes(findUser);
 
-        ApiResponse apiResponse = ApiResponse.toApiResponse(switchIsRecvFollowingRes);
+        ApiResponse apiResponse = ApiResponse.toApiResponse(switchIsRecvExhbitionRes);
 
         return ResponseEntity.ok(apiResponse);
     }
@@ -226,6 +222,17 @@ public class UserService {
         UserResponseDto.IsOpenRes responseDto = UserConverter.toIsOpenRes(findUser);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(responseDto);
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @Transactional
+    public ResponseEntity<?> updateFcmToken(UserPrincipal userPrincipal, UserRequestDto.UpdateFcmToken updateFcmToken) {
+        User findUser = validateUserByToken(userPrincipal);
+        findUser.updateFcmToken(updateFcmToken.getFcmToken());
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(
+                Message.builder().message("Fcm Token이 업데이트 되었습니다.").build());
+
         return ResponseEntity.ok(apiResponse);
     }
 

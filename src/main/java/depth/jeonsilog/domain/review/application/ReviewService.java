@@ -3,14 +3,8 @@ package depth.jeonsilog.domain.review.application;
 
 import depth.jeonsilog.domain.alarm.application.AlarmService;
 import depth.jeonsilog.domain.common.Status;
-import depth.jeonsilog.domain.exhibition.application.ExhibitionService;
-import depth.jeonsilog.domain.exhibition.converter.ExhibitionConverter;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
-import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
-import depth.jeonsilog.domain.place.converter.PlaceConverter;
-import depth.jeonsilog.domain.place.domain.Place;
-import depth.jeonsilog.domain.place.dto.PlaceResponseDto;
 import depth.jeonsilog.domain.rating.application.RatingService;
 import depth.jeonsilog.domain.rating.domain.Rating;
 import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
@@ -39,6 +33,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,13 +48,12 @@ public class ReviewService {
     private final ReplyRepository replyRepository;
 
     private final UserService userService;
-    private final ExhibitionService exhibitionService;
     private final AlarmService alarmService;
     private final RatingService ratingService;
 
     // 감상평 작성
     @Transactional
-    public ResponseEntity<?> writeReview(UserPrincipal userPrincipal, ReviewRequestDto.WriteReviewReq writeReviewReq) {
+    public ResponseEntity<?> writeReview(UserPrincipal userPrincipal, ReviewRequestDto.WriteReviewReq writeReviewReq) throws IOException {
         User findUser = userService.validateUserByToken(userPrincipal);
         Optional<Exhibition> exhibition = exhibitionRepository.findById(writeReviewReq.getExhibitionId());
         DefaultAssert.isTrue(exhibition.isPresent(), "전시회 id가 올바르지 않습니다.");

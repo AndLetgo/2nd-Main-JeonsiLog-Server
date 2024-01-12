@@ -53,10 +53,10 @@ public class UserConverter {
     }
 
     // USER -> SwitchIsRecvFollowingRes
-    public static UserResponseDto.SwitchIsRecvFollowingRes toSwitchIsRecvFollowingRes(User user) {
-        return UserResponseDto.SwitchIsRecvFollowingRes.builder()
+    public static UserResponseDto.SwitchIsRecvExhibitionRes toSwitchIsRecvExhibitionRes(User user) {
+        return UserResponseDto.SwitchIsRecvExhibitionRes.builder()
                 .userId(user.getId())
-                .isRecvFollowing(user.getIsRecvFollowing())
+                .isRecvExhbition(user.getIsRecvExhibition())
                 .build();
     }
 

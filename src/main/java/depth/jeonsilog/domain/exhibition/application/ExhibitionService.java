@@ -191,7 +191,7 @@ public class ExhibitionService {
         String storedFileName = null;
 
         if (updateExhibitionDetailReq.getIsImageChange()) { // 이미지를 변경하는 경우
-            if (!img.isEmpty()) { // 이미지 삭제가 아닌 이미지를 변경하거나 추가하는 경우
+            if (img != null) { // 이미지 삭제가 아닌 이미지를 변경하거나 추가하는 경우
                 storedFileName = s3Uploader.upload(img, DIRNAME);
             }
             // 기존 포스터 이미지가 s3에 있으면, 이미지 삭제 / 없으면(OPEN API 포스터 이미지 or NULL의 경우) 말고

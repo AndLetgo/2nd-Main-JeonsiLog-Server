@@ -1,7 +1,5 @@
 package depth.jeonsilog.domain.reply.presentation;
 
-import depth.jeonsilog.domain.exhibition.dto.ExhibitionRequestDto;
-import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
 import depth.jeonsilog.domain.reply.application.ReplyService;
 import depth.jeonsilog.domain.reply.dto.ReplyRequestDto;
 import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
@@ -11,7 +9,6 @@ import depth.jeonsilog.global.payload.ErrorResponse;
 import depth.jeonsilog.global.payload.Message;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,6 +17,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @Tag(name = "Reply API", description = "Reply 관련 API입니다.")
 @RequiredArgsConstructor
@@ -53,7 +52,7 @@ public class ReplyController {
     public ResponseEntity<?> createReply(
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
             @Parameter(description = "Schemas의 CreateReplyReq를 참고해주세요", required = true) @RequestBody ReplyRequestDto.CreateReplyReq createReplyReq
-            ) {
+            ) throws IOException {
         return replyService.createReply(userPrincipal, createReplyReq);
     }
 

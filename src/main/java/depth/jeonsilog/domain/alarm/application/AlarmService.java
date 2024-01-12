@@ -8,6 +8,7 @@ import depth.jeonsilog.domain.alarm.dto.AlarmResponseDto;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.exhibition.domain.OperatingKeyword;
 import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
+import depth.jeonsilog.domain.fcm.application.FcmService;
 import depth.jeonsilog.domain.follow.domain.Follow;
 import depth.jeonsilog.domain.follow.domain.repository.FollowRepository;
 import depth.jeonsilog.domain.interest.domain.Interest;
@@ -24,7 +25,6 @@ import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -33,6 +33,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -53,6 +54,7 @@ public class AlarmService {
     private final UserRepository userRepository;
     private final ExhibitionRepository exhibitionRepository;
     private final UserService userService;
+    private final FcmService fcmService;
 
     private static String BEFORE_7DAYS = "전시 시작까지 7일 남았어요";
     private static String BEFORE_3DAYS = "전시 시작까지 3일 남았어요";
@@ -156,11 +158,12 @@ public class AlarmService {
 
     // TODO: 팔로잉한 사람의 new 감상평 -> 알림 생성
     @Transactional
-    public void makeReviewAlarm(Review review) {
+    public void makeReviewAlarm(Review review) throws IOException {
         List<Follow> follows = followRepository.findAllByFollow(review.getUser());
         for (Follow follow : follows) {
+            User receiver = follow.getUser();
             Alarm alarm = Alarm.builder()
-                    .user(follow.getUser())
+                    .user(receiver)
                     .senderId(follow.getFollow().getId())
                     .alarmType(AlarmType.REVIEW)
                     .targetId(review.getId())
@@ -168,16 +171,20 @@ public class AlarmService {
                     .isChecked(false)
                     .build();
             alarmRepository.save(alarm);
+
+            if (!receiver.getIsRecvActive() || receiver.getFcmToken() == null) return;
+            fcmService.send(receiver.getFcmToken(), "전시로그", follow.getFollow().getNickname() + " 님이 감상평 남겼어요");
         }
     }
 
-    // 팔로잉한 사람의 new 별점 -> 알림 생성
+    // TODO: 팔로잉한 사람의 new 별점 -> 알림 생성
     @Transactional
-    public void makeRatingAlarm(Rating rating) {
+    public void makeRatingAlarm(Rating rating) throws IOException {
         List<Follow> follows = followRepository.findAllByFollow(rating.getUser());
         for (Follow follow : follows) {
+            User receiver = follow.getUser();
             Alarm alarm = Alarm.builder()
-                    .user(follow.getUser())
+                    .user(receiver)
                     .senderId(follow.getFollow().getId())
                     .alarmType(AlarmType.RATING)
                     .targetId(rating.getId())
@@ -185,14 +192,18 @@ public class AlarmService {
                     .isChecked(false)
                     .build();
             alarmRepository.save(alarm);
+
+            if (!receiver.getIsRecvActive() || receiver.getFcmToken() == null) return;
+            fcmService.send(receiver.getFcmToken(), "전시로그", follow.getFollow().getNickname() + " 님이 별점을 남겼어요");
         }
     }
 
-    // 나의 감상평에 달린 댓글 -> 알림 생성
+    // TODO: 나의 감상평에 달린 댓글 -> 알림 생성
     @Transactional
-    public void makeReplyAlarm(Reply reply) {
+    public void makeReplyAlarm(Reply reply) throws IOException {
+        User receiver = reply.getReview().getUser();
         Alarm alarm = Alarm.builder()
-                .user(reply.getReview().getUser())
+                .user(receiver)
                 .senderId(reply.getUser().getId())
                 .alarmType(AlarmType.REPLY)
                 .targetId(reply.getId())
@@ -200,13 +211,17 @@ public class AlarmService {
                 .isChecked(false)
                 .build();
         alarmRepository.save(alarm);
+
+        if (!receiver.getIsRecvActive() || receiver.getFcmToken() == null) return;
+        fcmService.send(receiver.getFcmToken(), "전시로그", reply.getUser().getNickname() + " 님이 댓글을 남겼어요");
     }
 
-    // 나를 팔로우 -> 알림 생성
+    // TODO: 나를 팔로우 -> 알림 생성
     @Transactional
-    public void makeFollowAlarm(Follow follow) {
+    public void makeFollowAlarm(Follow follow) throws IOException {
+        User receiver = follow.getFollow();
         Alarm alarm = Alarm.builder()
-                .user(follow.getFollow())
+                .user(receiver)
                 .senderId(follow.getUser().getId())
                 .alarmType(AlarmType.FOLLOW)
                 .targetId(follow.getId())
@@ -214,9 +229,12 @@ public class AlarmService {
                 .isChecked(false)
                 .build();
         alarmRepository.save(alarm);
+
+        if (!receiver.getIsRecvActive() || receiver.getFcmToken() == null) return;
+        fcmService.send(receiver.getFcmToken(), "전시로그", follow.getUser().getNickname() + " 님이 나를 팔로우해요");
     }
 
-    // 관심 전시회 시작 전 -> 알림 생성
+    // TODO: 관심 전시회 시작 전 -> 알림 생성
     @Transactional
     @Scheduled(cron = "0 0 9 * * *") // 오전 9시에 실행
     public void makeExhibitionAlarm() {
@@ -226,6 +244,7 @@ public class AlarmService {
         log.info("현재 날짜: " + currentDate);
         for (Interest interest : interests) {
             Exhibition exhibition = interest.getExhibition();
+            User receiver = interest.getUser();
 
             LocalDate targetDate = LocalDate.parse(exhibition.getStartDate(), DateTimeFormatter.ofPattern("yyyyMMdd"));
             log.info("전시회 시작 날짜: " + targetDate);
@@ -233,17 +252,20 @@ public class AlarmService {
             Alarm alarm = null;
             long daysDifference = ChronoUnit.DAYS.between(currentDate, targetDate);
             if (daysDifference == 7) {
-                if (checkDuplicateAlarm(interest.getUser().getId(), interest.getExhibition().getId(), BEFORE_7DAYS)) continue;
+                if (checkDuplicateAlarm(receiver.getId(), exhibition.getId(), BEFORE_7DAYS)) continue;
                 alarm = AlarmConverter.toExhibitionAlarm(interest, BEFORE_7DAYS);
             } else if (daysDifference == 3) {
-                if (checkDuplicateAlarm(interest.getUser().getId(), interest.getExhibition().getId(), BEFORE_3DAYS)) continue;
+                if (checkDuplicateAlarm(receiver.getId(), exhibition.getId(), BEFORE_3DAYS)) continue;
                 alarm = AlarmConverter.toExhibitionAlarm(interest, BEFORE_3DAYS);
             } else if (daysDifference == 1) {
-                if (checkDuplicateAlarm(interest.getUser().getId(), interest.getExhibition().getId(), BEFORE_1DAYS)) continue;
+                if (checkDuplicateAlarm(receiver.getId(), exhibition.getId(), BEFORE_1DAYS)) continue;
                 alarm = AlarmConverter.toExhibitionAlarm(interest, BEFORE_1DAYS);
             }
             assert alarm != null;
             alarmRepository.save(alarm);
+
+            if (!receiver.getIsRecvExhibition() || receiver.getFcmToken() == null) return;
+            fcmService.send(receiver.getFcmToken(), "전시로그", "[" + exhibition.getName() + "]\n" + alarm.getContents());
         }
     }
 
