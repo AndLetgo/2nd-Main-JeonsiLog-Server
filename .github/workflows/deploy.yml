@@ -48,6 +48,9 @@ jobs:
         
         touch ./src/main/resources/forbidden-words.txt
         echo "${{ secrets.FORBIDDEN_TXT }}" | base64 --decode > src/main/resources/forbidden-words.txt
+        
+        touch ./src/main/resources/services-account.json
+        echo "${{ secrets.SERVICES_ACCOUNT_JSON }}" | base64 --decode > src/main/resources/services-account.json
 
     #추가
     - name: Make Gradle Wrapper script executable
