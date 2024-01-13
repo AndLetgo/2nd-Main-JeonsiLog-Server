@@ -23,6 +23,7 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -37,6 +38,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 @Service
 public class UserService {
 
@@ -96,10 +98,11 @@ public class UserService {
     public ResponseEntity<?> changeProfile(UserPrincipal userPrincipal, MultipartFile img) throws IOException {
         User findUser = validateUserByToken(userPrincipal);
 
+        String storedFileName = null;
         if (img != null) {
-            String storedFileName = s3Uploader.upload(img, DIRNAME);
-            findUser.updateProfileImg(storedFileName);
+            storedFileName = s3Uploader.upload(img, DIRNAME);
         }
+        findUser.updateProfileImg(storedFileName);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(
                 Message.builder().message("프로필 사진을 변경했습니다.").build());
