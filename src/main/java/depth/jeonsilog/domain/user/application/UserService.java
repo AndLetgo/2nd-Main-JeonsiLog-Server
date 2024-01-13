@@ -234,6 +234,15 @@ public class UserService {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // Description : 활동 및 전시 알림 수신 여부 조회
+    public ResponseEntity<?> getRecvOrNot(UserPrincipal userPrincipal) {
+        User findUser = validateUserByToken(userPrincipal);
+        UserResponseDto.IsRecvOrNotRes isRecvOrNotRes = UserConverter.toIsRecvOrNotRes(findUser);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(isRecvOrNotRes);
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @Transactional
     public ResponseEntity<?> updateFcmToken(UserPrincipal userPrincipal, UserRequestDto.UpdateFcmToken updateFcmToken) {
         User findUser = validateUserByToken(userPrincipal);
@@ -256,4 +265,5 @@ public class UserService {
         DefaultAssert.isTrue(user.isPresent(), "유저 정보가 올바르지 않습니다.");
         return user.get();
     }
+
 }
