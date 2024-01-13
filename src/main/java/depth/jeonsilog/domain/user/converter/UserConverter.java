@@ -74,6 +74,14 @@ public class UserConverter {
                 .build();
     }
 
+    public static UserResponseDto.IsRecvOrNotRes toIsRecvOrNotRes(User user) {
+        return UserResponseDto.IsRecvOrNotRes.builder()
+                .userId(user.getId())
+                .isRecvExhibition(user.getIsRecvExhibition())
+                .isRecvActive(user.getIsRecvActive())
+                .build();
+    }
+
     // Review에서 사용
     public static UserResponseDto.SearchUsersRes toSearchUserRes (User user) {
         return UserResponseDto.SearchUsersRes.builder()

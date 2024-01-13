@@ -24,4 +24,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findByUserId(PageRequest pageRequest, Long userId);
 
     Slice<Review> findSliceByExhibitionId(PageRequest pageRequest, Long exhibitionId);
+
+    Optional<Review> findByIdAndUserId(Long reviewId, Long userId);
 }

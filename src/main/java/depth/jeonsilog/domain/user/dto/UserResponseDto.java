@@ -93,4 +93,18 @@ public class UserResponseDto {
         @Schema(type = "boolean", example = "true", description = "유저의 포토캘린더 공개/비공개 여부를 출력합니다.")
         private Boolean isOpen;
     }
+
+    @Data
+    @Builder
+    public static class IsRecvOrNotRes {
+
+        @Schema(type = "long", example = "1", description = "유저의 ID를 출력합니다.")
+        private Long userId;
+
+        @Schema(type = "boolean", example = "true", description = "유저의 전시 알림 수신 여부를 출력합니다.")
+        private Boolean isRecvExhibition;
+
+        @Schema(type = "boolean", example = "true", description = "유저의 활동 알림 수신 여부를 출력합니다.")
+        private Boolean isRecvActive;
+    }
 }

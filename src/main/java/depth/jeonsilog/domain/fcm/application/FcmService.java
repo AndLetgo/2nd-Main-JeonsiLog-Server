@@ -30,7 +30,8 @@ public class FcmService {
     private static String getAccessToken() throws IOException {
         ClassPathResource resource = new ClassPathResource("services-account.json");
         GoogleCredential googleCredential = GoogleCredential
-                .fromStream(new FileInputStream(resource.getFile()))
+//                .fromStream(new FileInputStream(resource.getFile()))
+                .fromStream(resource.getInputStream())
                 .createScoped(Arrays.asList(SCOPES));
         googleCredential.refreshToken();
         log.info("액세스 토큰 발급: " + googleCredential.getAccessToken());

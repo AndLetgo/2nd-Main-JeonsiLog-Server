@@ -89,4 +89,24 @@ public class ReviewConverter {
                 .createdDate(review.getCreatedDate())
                 .build();
     }
+
+    public static ReviewResponseDto.CheckIsWriteRes toCheckIsWriteRes(Optional<Review> findReview) {
+        Boolean isWrite = false;
+        Long reviewId = null;
+        String contents = "";
+        if (findReview.isPresent()) {
+            Review review = findReview.get();
+            isWrite = true;
+            reviewId = review.getId();
+            contents = review.getContents();
+        } else {
+            contents = null;
+        }
+
+        return ReviewResponseDto.CheckIsWriteRes.builder()
+                .isWrite(isWrite)
+                .reviewId(reviewId)
+                .contents(contents)
+                .build();
+    }
 }

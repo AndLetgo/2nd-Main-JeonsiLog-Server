@@ -93,7 +93,10 @@ public class ReviewResponseDto {
         @Schema(type = "boolean", example = "true", description = "해당 전시회 - 감상평 작성 여부를 출력합니다.")
         private Boolean isWrite;
 
-        @Schema(type = "string", example = "멋진 전시였다.", description = "감상평을 출력합니다. isWrite = false 시 contents = null.")
+        @Schema(type = "long", example = "1", description = "감상평 id를 출력합니다. isWrite = false 시 reviewId = null입니다.")
+        private Long reviewId;
+
+        @Schema(type = "string", example = "멋진 전시였다.", description = "감상평을 출력합니다. isWrite = false 시 contents = null입니다.")
         private String contents;
     }
 
