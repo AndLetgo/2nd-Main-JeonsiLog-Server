@@ -157,19 +157,9 @@ public class ReviewService {
         DefaultAssert.isTrue(findExhibition.isPresent(), "전시회 정보가 올바르지 않습니다.");
 
         Optional<Review> findReview = reviewRepository.findByUserIdAndExhibitionId(findUser.getId(), exhibitionId);
-        Boolean isWrite = false;
-        String contents = "";
-        if (findReview.isPresent()) {
-            isWrite = true;
-            contents = findReview.get().getContents();
-        } else {
-            contents = null;
-        }
-        ReviewResponseDto.CheckIsWriteRes responseDto = ReviewResponseDto.CheckIsWriteRes.builder()
-                .isWrite(isWrite)
-                .contents(contents)
-                .build();
-        ApiResponse apiResponse = ApiResponse.toApiResponse(responseDto);
+        ReviewResponseDto.CheckIsWriteRes checkIsWriteRes = ReviewConverter.toCheckIsWriteRes(findReview);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(checkIsWriteRes);
         return ResponseEntity.ok(apiResponse);
     }
 
@@ -194,8 +184,30 @@ public class ReviewService {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // Description : Review contents 수정
+    @Transactional
+    public ResponseEntity<?> updateReview(UserPrincipal userPrincipal, ReviewRequestDto.UpdateReviewReq updateReviewReq) {
+
+        User user = userService.validateUserByToken(userPrincipal);
+        Review review = validateReviewByIdAndUserId(updateReviewReq.getReviewId(), user.getId());
+
+        review.updateContents(updateReviewReq.getContents());
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(
+                Message.builder()
+                       .message("감상평을 수정했습니다.")
+                       .build());
+        return ResponseEntity.ok(apiResponse);
+    }
+
     public Review validateReviewById(Long reviewId) {
         Optional<Review> review = reviewRepository.findById(reviewId);
+        DefaultAssert.isTrue(review.isPresent(), "감상평 정보가 올바르지 않습니다.");
+        return review.get();
+    }
+
+    public Review validateReviewByIdAndUserId(Long reviewId, Long userId) {
+        Optional<Review> review = reviewRepository.findByIdAndUserId(reviewId, userId);
         DefaultAssert.isTrue(review.isPresent(), "감상평 정보가 올바르지 않습니다.");
         return review.get();
     }

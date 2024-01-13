@@ -33,8 +33,13 @@ public class Review extends BaseEntity {
 
     private Integer numReply;
 
+    // update 메소드
     public void updateNumReply(Integer numReply) {
         this.numReply = numReply;
+    }
+
+    public void updateContents(String contents) {
+        this.contents = contents;
     }
 
     @Builder

@@ -155,6 +155,19 @@ public class UserController {
         return userService.getIsOpen(userId);
     }
 
+    @Operation(summary = "전시 및 활동 알림 수신 여부 조회", description = "AccessToken을 이용하여 전시 및 활동 알림 수신 여부를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.IsRecvOrNotRes.class))}),
+            @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/reception")
+    public ResponseEntity<?> getRecvOrNot(
+            @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal
+    ) {
+        return userService.getRecvOrNot(userPrincipal);
+    }
+
+
     @Operation(summary = "Fcm Token 변경", description = "Fcm Token을 변경합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "변경 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),

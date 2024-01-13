@@ -23,6 +23,7 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -37,6 +38,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 @Service
 public class UserService {
 
@@ -96,10 +98,11 @@ public class UserService {
     public ResponseEntity<?> changeProfile(UserPrincipal userPrincipal, MultipartFile img) throws IOException {
         User findUser = validateUserByToken(userPrincipal);
 
+        String storedFileName = null;
         if (img != null) {
-            String storedFileName = s3Uploader.upload(img, DIRNAME);
-            findUser.updateProfileImg(storedFileName);
+            storedFileName = s3Uploader.upload(img, DIRNAME);
         }
+        findUser.updateProfileImg(storedFileName);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(
                 Message.builder().message("프로필 사진을 변경했습니다.").build());
@@ -231,6 +234,15 @@ public class UserService {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // Description : 활동 및 전시 알림 수신 여부 조회
+    public ResponseEntity<?> getRecvOrNot(UserPrincipal userPrincipal) {
+        User findUser = validateUserByToken(userPrincipal);
+        UserResponseDto.IsRecvOrNotRes isRecvOrNotRes = UserConverter.toIsRecvOrNotRes(findUser);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(isRecvOrNotRes);
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @Transactional
     public ResponseEntity<?> updateFcmToken(UserPrincipal userPrincipal, UserRequestDto.UpdateFcmToken updateFcmToken) {
         User findUser = validateUserByToken(userPrincipal);
@@ -253,4 +265,5 @@ public class UserService {
         DefaultAssert.isTrue(user.isPresent(), "유저 정보가 올바르지 않습니다.");
         return user.get();
     }
+
 }
