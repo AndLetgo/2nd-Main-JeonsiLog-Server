@@ -157,19 +157,9 @@ public class ReviewService {
         DefaultAssert.isTrue(findExhibition.isPresent(), "전시회 정보가 올바르지 않습니다.");
 
         Optional<Review> findReview = reviewRepository.findByUserIdAndExhibitionId(findUser.getId(), exhibitionId);
-        Boolean isWrite = false;
-        String contents = "";
-        if (findReview.isPresent()) {
-            isWrite = true;
-            contents = findReview.get().getContents();
-        } else {
-            contents = null;
-        }
-        ReviewResponseDto.CheckIsWriteRes responseDto = ReviewResponseDto.CheckIsWriteRes.builder()
-                .isWrite(isWrite)
-                .contents(contents)
-                .build();
-        ApiResponse apiResponse = ApiResponse.toApiResponse(responseDto);
+        ReviewResponseDto.CheckIsWriteRes checkIsWriteRes = ReviewConverter.toCheckIsWriteRes(findReview);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(checkIsWriteRes);
         return ResponseEntity.ok(apiResponse);
     }
 
