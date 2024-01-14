@@ -1,6 +1,7 @@
 package depth.jeonsilog.domain.user.converter;
 
 import depth.jeonsilog.domain.follow.domain.repository.FollowRepository;
+import depth.jeonsilog.domain.user.domain.Role;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.domain.user.dto.UserResponseDto;
 
@@ -11,8 +12,13 @@ public class UserConverter {
 
     // USER -> UserResDTO
     public static UserResponseDto.UserRes toUserRes(User user, FollowRepository followRepository) {
+        Boolean isAdmin = false;
+        if (user.getRole().equals(Role.ADMIN))
+            isAdmin = true;
+
         return UserResponseDto.UserRes.builder()
                 .userId(user.getId())
+                .isAdmin(isAdmin)
                 .nickname(user.getNickname())
                 .profileImgUrl(user.getProfileImg())
                 .numFollowing(followRepository.countByUser(user))
