@@ -1,6 +1,7 @@
 package depth.jeonsilog.domain.user.dto;
 
 
+import depth.jeonsilog.domain.user.domain.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,9 @@ public class UserResponseDto {
 
         @Schema(type = "long", example = "1", description = "유저의 ID를 출력합니다.")
         private Long userId;
+
+        @Schema(type = "boolean", example = "true", description = "해당 유저가 관리자인지 출력합니다. ADMIN : isAdmin = true")
+        private Boolean isAdmin;
 
         @Schema(type = "string", example = "루피", description = "닉네임을 출력합니다.")
         private String nickname;
