@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -26,7 +25,7 @@ public class FcmService {
     private static final String MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
     private static final String[] SCOPES = { MESSAGING_SCOPE };
 
-    //AccessToken 발급 받기. -> Header에 포함하여 푸시 알림 요청
+    // TODO: AccessToken 발급 받기. -> Header에 포함하여 푸시 알림 요청
     private static String getAccessToken() throws IOException {
         ClassPathResource resource = new ClassPathResource("services-account.json");
         GoogleCredential googleCredential = GoogleCredential
@@ -38,9 +37,25 @@ public class FcmService {
         return googleCredential.getAccessToken();
     }
 
-    public void send(String fcmToken, String title, String body) {
+    // TODO: 활동 알림 만들기
+    public void makeActiveAlarm(String fcmToken, String title) {
 
-        // 1. create message body
+        JSONObject jsonValue = new JSONObject();
+        jsonValue.put("title", title);
+
+        JSONObject jsonData = new JSONObject();
+        jsonData.put("token", fcmToken);
+        jsonData.put("data", jsonValue);
+
+        JSONObject jsonMessage = new JSONObject();
+        jsonMessage.put("message", jsonData);
+
+        pushAlarm(jsonMessage);
+    }
+
+    // TODO: 전시 알림 만들기
+    public void makeExhibitionAlarm(String fcmToken, String title, String body) {
+
         JSONObject jsonValue = new JSONObject();
         jsonValue.put("title", title);
         jsonValue.put("body", body);
@@ -52,7 +67,11 @@ public class FcmService {
         JSONObject jsonMessage = new JSONObject();
         jsonMessage.put("message", jsonData);
 
-        // 2. create token & send push
+        pushAlarm(jsonMessage);
+    }
+
+    // TODO: 만들어진 알림을 받아서 푸시한다.
+    private void pushAlarm(JSONObject jsonMessage) {
         try {
             OkHttpClient okHttpClient = new OkHttpClient();
             Request request = new Request.Builder()
@@ -63,7 +82,7 @@ public class FcmService {
                     .build();
             Response response = okHttpClient.newCall(request).execute();
 
-            log.info("### response str : " + response.toString());
+            log.info("### response str : " + response);
             log.info("### response result : " + response.isSuccessful());
         } catch (Exception e) {
             e.printStackTrace();

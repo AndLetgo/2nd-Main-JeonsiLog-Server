@@ -14,9 +14,11 @@ import depth.jeonsilog.domain.place.domain.Place;
 import depth.jeonsilog.domain.place.domain.repository.PlaceRepository;
 import depth.jeonsilog.global.payload.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 @Service
 public class AddService {
 
@@ -34,8 +37,10 @@ public class AddService {
     private final PlaceRepository placeRepository;
 
     private final SaveService saveService;
+    private final ModifyService modifyService;
 
     @Transactional
+//    @Scheduled(cron = "0 0 19 * * *") // 오후 7시에 실행
     public ResponseEntity<?> addExhibitionAndPlace() {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -232,12 +237,20 @@ public class AddService {
             Integer totalCount = exhibitionList.getResponse().getMsgBody().getTotalCount();
             Integer rows = exhibitionList.getResponse().getMsgBody().getRows();
             Integer numOfPages = (totalCount / rows) + 1;
+            log.info("numOfPages: " + numOfPages);
 
-            if (page == numOfPages) { // 페이지 조절
+            if (page == 5) { // 페이지 조절
                 ApiResponse apiResponse = ApiResponse.builder()
                         .check(true)
                         .information(exhibitionList)
                         .build();
+
+                modifyService.modifyExhibitionName();
+                log.info("modifyExhibitionName 호출");
+                modifyService.modifyPlaceTel();
+                log.info("modifyPlaceTel 호출");
+                modifyService.modifyPlaceHomepage();
+                log.info("modifyPlaceHomepage 호출");
 
                 return ResponseEntity.ok(apiResponse);
             }

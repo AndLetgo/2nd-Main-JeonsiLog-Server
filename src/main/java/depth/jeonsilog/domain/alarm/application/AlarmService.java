@@ -173,7 +173,7 @@ public class AlarmService {
             alarmRepository.save(alarm);
 
             if (!receiver.getIsRecvActive() || receiver.getFcmToken() == null) return;
-            fcmService.send(receiver.getFcmToken(), "전시로그", follow.getFollow().getNickname() + " 님이 감상평 남겼어요");
+            fcmService.makeActiveAlarm(receiver.getFcmToken(), follow.getFollow().getNickname() + " 님이 감상평을 남겼어요");
         }
     }
 
@@ -194,7 +194,7 @@ public class AlarmService {
             alarmRepository.save(alarm);
 
             if (!receiver.getIsRecvActive() || receiver.getFcmToken() == null) return;
-            fcmService.send(receiver.getFcmToken(), "전시로그", follow.getFollow().getNickname() + " 님이 별점을 남겼어요");
+            fcmService.makeActiveAlarm(receiver.getFcmToken(), follow.getFollow().getNickname() + " 님이 별점을 남겼어요");
         }
     }
 
@@ -213,7 +213,7 @@ public class AlarmService {
         alarmRepository.save(alarm);
 
         if (!receiver.getIsRecvActive() || receiver.getFcmToken() == null) return;
-        fcmService.send(receiver.getFcmToken(), "전시로그", reply.getUser().getNickname() + " 님이 댓글을 남겼어요");
+        fcmService.makeActiveAlarm(receiver.getFcmToken(), reply.getUser().getNickname() + " 님이 댓글을 남겼어요");
     }
 
     // TODO: 나를 팔로우 -> 알림 생성
@@ -231,7 +231,7 @@ public class AlarmService {
         alarmRepository.save(alarm);
 
         if (!receiver.getIsRecvActive() || receiver.getFcmToken() == null) return;
-        fcmService.send(receiver.getFcmToken(), "전시로그", follow.getUser().getNickname() + " 님이 나를 팔로우해요");
+        fcmService.makeActiveAlarm(receiver.getFcmToken(), follow.getUser().getNickname() + " 님이 나를 팔로우해요");
     }
 
     // TODO: 관심 전시회 시작 전 -> 알림 생성
@@ -265,7 +265,7 @@ public class AlarmService {
             alarmRepository.save(alarm);
 
             if (!receiver.getIsRecvExhibition() || receiver.getFcmToken() == null) return;
-            fcmService.send(receiver.getFcmToken(), "전시로그", "[" + exhibition.getName() + "]\n" + alarm.getContents());
+            fcmService.makeExhibitionAlarm(receiver.getFcmToken(), exhibition.getName(), alarm.getContents());
         }
     }
 

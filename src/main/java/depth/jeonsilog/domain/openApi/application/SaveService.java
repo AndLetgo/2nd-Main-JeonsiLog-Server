@@ -283,7 +283,7 @@ public class SaveService {
         urlBuilder.append("&" + URLEncoder.encode("to","UTF-8") + "=" + URLEncoder.encode(to, "UTF-8")); /**/
 
         urlBuilder.append("&" + URLEncoder.encode("cPage","UTF-8") + "=" + URLEncoder.encode(cPage.toString(), "UTF-8")); // 요청 페이지
-        urlBuilder.append("&" + URLEncoder.encode("rows","UTF-8") + "=" + URLEncoder.encode("100", "UTF-8")); // 페이지 당 가져올 개수
+        urlBuilder.append("&" + URLEncoder.encode("rows","UTF-8") + "=" + URLEncoder.encode("20", "UTF-8")); // 페이지 당 가져올 개수
 
         // URL 생성 후 연결
         URL url = new URL(urlBuilder.toString());
