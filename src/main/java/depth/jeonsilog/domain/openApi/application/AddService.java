@@ -153,9 +153,14 @@ public class AddService {
                     // Description : place 있는 지 확인
                     String placeName = placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulName();
                     String placeAddr = placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulAddr();
-
-                    Optional<Place> placeByName = placeRepository.findByName(placeName);
-                    Optional<Place> placeByAddr = placeRepository.findByAddress(placeAddr);
+                    Optional<Place> placeByName = Optional.empty();
+                    Optional<Place> placeByAddr = Optional.empty();
+                    if (placeName != null) {
+                        placeByName = placeRepository.findByName(placeName);
+                    }
+                    if (placeAddr != null) {
+                        placeByAddr = placeRepository.findByAddress(placeAddr);
+                    }
 
                     Place place = null;
 
@@ -167,15 +172,26 @@ public class AddService {
                         place = placeByAddr.get();
 
                     } else {
-                        // Description : Place 최초 저장
-                        place = Place.builder()
-                                .name(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulName())
-                                .address(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulAddr())
-                                .homePage(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulHomeUrl())
-                                .tel(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulTel())
-                                .build();
+                        if (placeName == null || placeAddr == null) {
+                            place = Place.builder()
+                                    .name(null)
+                                    .address(null)
+                                    .homePage(null)
+                                    .tel(null)
+                                    .build();
 
-                        placeRepository.save(place);
+                            placeRepository.save(place);
+                        }else {
+                            // Description : Place 최초 저장
+                            place = Place.builder()
+                                    .name(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulName())
+                                    .address(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulAddr())
+                                    .homePage(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulHomeUrl())
+                                    .tel(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulTel())
+                                    .build();
+
+                            placeRepository.save(place);
+                        }
                     }
 
                     PriceKeyword priceKeyword = null;
