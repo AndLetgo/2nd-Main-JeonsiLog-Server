@@ -1,5 +1,6 @@
 package depth.jeonsilog.domain.report.converter;
 
+import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.reply.domain.Reply;
 import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
@@ -33,28 +34,35 @@ public class ReportConverter {
             String name = "";
             Report report = reports.get(i);
             Object target = targetList.get(i);
+            Long clickId = null;
 
             if (target instanceof Review) {
                 Review review = (Review) target;
+                if (review.getStatus().equals(Status.DELETE))
+                    continue;
                 User user = review.getUser();
                 name = user.getNickname();
+                clickId = review.getId();
 
             } else if (target instanceof Reply) {
                 Reply reply = (Reply) target;
+                if (reply.getStatus().equals(Status.DELETE))
+                    continue;
                 User user = reply.getUser();
                 name = user.getNickname();
-
+                clickId = reply.getReview().getId();
 
             } else if (target instanceof Exhibition) {
                 Exhibition exhibition = (Exhibition) target;
                 name = exhibition.getName();
-
+                clickId = exhibition.getId();
             }
             ReportResponseDto.ReportRes reportRes = ReportResponseDto.ReportRes.builder()
                     .reportId(report.getId())
                     .name(name) // 신고된 유저 혹은 전시회 이름
                     .reportType(report.getReportType())
                     .reportedId(report.getReportedId())
+                    .clickId(clickId)
                     .isChecked(report.getIsChecked())
                     .build();
 

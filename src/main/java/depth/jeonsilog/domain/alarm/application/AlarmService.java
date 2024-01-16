@@ -162,9 +162,11 @@ public class AlarmService {
         List<Follow> follows = followRepository.findAllByFollow(review.getUser());
         for (Follow follow : follows) {
             User receiver = follow.getUser();
+            User sender = follow.getFollow();
+
             Alarm alarm = Alarm.builder()
                     .user(receiver)
-                    .senderId(follow.getFollow().getId())
+                    .senderId(sender.getId())
                     .alarmType(AlarmType.REVIEW)
                     .targetId(review.getId())
                     .clickId(review.getId())
@@ -173,7 +175,7 @@ public class AlarmService {
             alarmRepository.save(alarm);
 
             if (!receiver.getIsRecvActive() || receiver.getFcmToken() == null) return;
-            fcmService.makeActiveAlarm(receiver.getFcmToken(), follow.getFollow().getNickname() + " 님이 감상평을 남겼어요");
+            fcmService.makeActiveAlarm(receiver.getFcmToken(), sender.getNickname() + " 님이 감상평을 남겼어요");
         }
     }
 
@@ -183,9 +185,11 @@ public class AlarmService {
         List<Follow> follows = followRepository.findAllByFollow(rating.getUser());
         for (Follow follow : follows) {
             User receiver = follow.getUser();
+            User sender = follow.getFollow();
+
             Alarm alarm = Alarm.builder()
                     .user(receiver)
-                    .senderId(follow.getFollow().getId())
+                    .senderId(sender.getId())
                     .alarmType(AlarmType.RATING)
                     .targetId(rating.getId())
                     .clickId(rating.getExhibition().getId())
@@ -194,7 +198,7 @@ public class AlarmService {
             alarmRepository.save(alarm);
 
             if (!receiver.getIsRecvActive() || receiver.getFcmToken() == null) return;
-            fcmService.makeActiveAlarm(receiver.getFcmToken(), follow.getFollow().getNickname() + " 님이 별점을 남겼어요");
+            fcmService.makeActiveAlarm(receiver.getFcmToken(), sender.getNickname() + " 님이 별점을 남겼어요");
         }
     }
 
@@ -202,9 +206,15 @@ public class AlarmService {
     @Transactional
     public void makeReplyAlarm(Reply reply) throws IOException {
         User receiver = reply.getReview().getUser();
+        User sender = reply.getUser();
+        if (receiver.equals(sender)) {
+            log.info("알림의 sender와 receiver가 동일 인물입니다.");
+            return;
+        }
+
         Alarm alarm = Alarm.builder()
                 .user(receiver)
-                .senderId(reply.getUser().getId())
+                .senderId(sender.getId())
                 .alarmType(AlarmType.REPLY)
                 .targetId(reply.getId())
                 .clickId(reply.getReview().getId())
@@ -213,16 +223,18 @@ public class AlarmService {
         alarmRepository.save(alarm);
 
         if (!receiver.getIsRecvActive() || receiver.getFcmToken() == null) return;
-        fcmService.makeActiveAlarm(receiver.getFcmToken(), reply.getUser().getNickname() + " 님이 댓글을 남겼어요");
+        fcmService.makeActiveAlarm(receiver.getFcmToken(), sender.getNickname() + " 님이 댓글을 남겼어요");
     }
 
     // TODO: 나를 팔로우 -> 알림 생성
     @Transactional
     public void makeFollowAlarm(Follow follow) throws IOException {
         User receiver = follow.getFollow();
+        User sender = follow.getUser();
+
         Alarm alarm = Alarm.builder()
                 .user(receiver)
-                .senderId(follow.getUser().getId())
+                .senderId(sender.getId())
                 .alarmType(AlarmType.FOLLOW)
                 .targetId(follow.getId())
                 .clickId(follow.getUser().getId())
@@ -231,7 +243,7 @@ public class AlarmService {
         alarmRepository.save(alarm);
 
         if (!receiver.getIsRecvActive() || receiver.getFcmToken() == null) return;
-        fcmService.makeActiveAlarm(receiver.getFcmToken(), follow.getUser().getNickname() + " 님이 나를 팔로우해요");
+        fcmService.makeActiveAlarm(receiver.getFcmToken(), sender.getNickname() + " 님이 나를 팔로우해요");
     }
 
     // TODO: 관심 전시회 시작 전 -> 알림 생성
