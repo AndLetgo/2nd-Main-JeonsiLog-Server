@@ -96,11 +96,7 @@ public class ReplyService {
     // Description : 댓글 존재 여부 조회
     public ResponseEntity<?> existReply(Long replyId) {
 
-        Optional<Reply> findReply = replyRepository.findById(replyId);
-        Boolean isExist = false;
-        if (findReply.isPresent()) {
-            isExist = true;
-        }
+        Boolean isExist = replyRepository.existsById(replyId);
 
         ReplyResponseDto.ExistReplyRes existReplyRes = ReplyConverter.toExistReplyRes(replyId, isExist);
         ApiResponse apiResponse = ApiResponse.toApiResponse(existReplyRes);
