@@ -25,4 +25,8 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
     @Query(value = "SELECT * FROM reply WHERE user_id = :userId", nativeQuery = true)
     List<Reply> findAllRepliesByUserId(@Param("userId") Long userId);
 
+    @Query(value = "SELECT * FROM reply WHERE id = :replyId", nativeQuery = true)
+    Reply findReplyByReplyId(@Param("replyId") Long replyId);
+
+
 }

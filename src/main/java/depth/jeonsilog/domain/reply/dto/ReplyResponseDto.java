@@ -15,8 +15,10 @@ public class ReplyResponseDto {
     @Builder
     public static class ReplyRes {
 
+        @Schema(type = "long", example = "1", description = "댓글 ID를 출력합니다.")
         private Long replyId;
 
+        @Schema(type = "string", example = "앵무는 앵무의 말을 하고", description = "댓글 내용을 출력합니다.")
         private String contents;
 
         // 수정 없으므로 생성 시간
@@ -34,6 +36,17 @@ public class ReplyResponseDto {
         private boolean hasNextPage;
 
         private List<ReplyResponseDto.ReplyRes> data;
+    }
+
+    @Data
+    @Builder
+    public static class ExistReplyRes {
+
+        @Schema(type = "long", example = "1", description = "댓글 ID를 출력합니다.")
+        private Long replyId;
+
+        @Schema(type = "boolean", example = "true", description = "댓글이 존재하는지 출력합니다. 삭제되었으면 false.")
+        private Boolean isExist;
     }
 
 }
