@@ -40,7 +40,7 @@ public class AddService {
     private final ModifyService modifyService;
 
     @Transactional
-//    @Scheduled(cron = "0 0 19 * * *") // 오후 7시에 실행
+    @Scheduled(cron = "0 0 19 * * *") // 오후 7시에 실행
     public ResponseEntity<?> addExhibitionAndPlace() {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
