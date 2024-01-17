@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -153,7 +154,8 @@ public class UserService {
         List<Reply> replyByUser = replyRepository.findAllRepliesByUserId(userId);
         for (Reply reply : replyByUser) {
             Review review = reply.getReview();
-            review.updateNumReply(review.getNumReply() - 1);
+            if (reviewRepository.findReviewByReviewId(review.getId()) != null)
+                review.updateNumReply(review.getNumReply() - 1);
         }
         replyRepository.deleteAll(replyByUser);
 
@@ -164,6 +166,7 @@ public class UserService {
         }
 
         reviewRepository.deleteAll(reviews);
+//        reviewRepository.deleteAllInBatch(reviews);
         interestRepository.deleteAll(interests);
 
         // s3에서 프로필 이미지 삭제
