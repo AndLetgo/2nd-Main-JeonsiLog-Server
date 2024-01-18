@@ -116,8 +116,28 @@ public class ExhibitionService {
         while (randomId1 == randomId2)
             randomId2 = (int) (Math.random() * size + 1);
 
-        Exhibition randomExhibition1 = validateExhibitionById(Long.parseLong(Integer.toString(randomId1)));
-        Exhibition randomExhibition2 = validateExhibitionById(Long.parseLong(Integer.toString(randomId2)));
+//        Exhibition randomExhibition1 = validateExhibitionById(Long.parseLong(Integer.toString(randomId1)));
+//        Exhibition randomExhibition2 = validateExhibitionById(Long.parseLong(Integer.toString(randomId2)));
+
+        Optional<Exhibition> exhibition1 = exhibitionRepository.findById(Long.parseLong(Integer.toString(randomId1)));
+        Optional<Exhibition> exhibition2 = exhibitionRepository.findById(Long.parseLong(Integer.toString(randomId2)));
+
+        while (exhibition1.isEmpty()) {
+            randomId1 = (int) (Math.random() * size + 1);
+            while (randomId1 == randomId2)
+                randomId1 = (int) (Math.random() * size + 1);
+            exhibition1 = exhibitionRepository.findById(Long.parseLong(Integer.toString(randomId1)));
+        }
+
+        while (exhibition2.isEmpty()) {
+            randomId2 = (int) (Math.random() * size + 1);
+            while (randomId1 == randomId2)
+                randomId2 = (int) (Math.random() * size + 1);
+            exhibition2 = exhibitionRepository.findById(Long.parseLong(Integer.toString(randomId2)));
+        }
+
+        Exhibition randomExhibition1 = exhibition1.get();
+        Exhibition randomExhibition2 = exhibition2.get();
 
         List<ExhibitionResponseDto.RandomExhibitionRes> randomExhibitionResList = new ArrayList<>();
 
