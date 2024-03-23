@@ -40,7 +40,7 @@ public class AddService {
     private final ModifyService modifyService;
 
     @Transactional
-//    @Scheduled(cron = "0 0 19 * * *") // 오후 7시에 실행
+//    @Scheduled(cron = "0 0 3 * * *") // 오전 3시에 실행
     public ResponseEntity<?> addExhibitionAndPlace() {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -255,7 +255,7 @@ public class AddService {
             Integer numOfPages = (totalCount / rows) + 1;
             log.info("numOfPages: " + numOfPages);
 
-            if (page == 5) { // 페이지 조절
+            if (page == 10) { // 페이지 조절
                 ApiResponse apiResponse = ApiResponse.builder()
                         .check(true)
                         .information(exhibitionList)
