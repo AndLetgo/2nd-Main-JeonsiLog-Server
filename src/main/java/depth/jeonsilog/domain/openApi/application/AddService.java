@@ -255,7 +255,7 @@ public class AddService {
             Integer numOfPages = (totalCount / rows) + 1;
             log.info("numOfPages: " + numOfPages);
 
-            if (page == 10) { // 페이지 조절
+            if (page == numOfPages) { // 페이지 조절
                 ApiResponse apiResponse = ApiResponse.builder()
                         .check(true)
                         .information(exhibitionList)
