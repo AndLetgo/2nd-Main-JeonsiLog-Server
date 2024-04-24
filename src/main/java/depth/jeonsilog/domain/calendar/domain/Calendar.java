@@ -28,15 +28,18 @@ public class Calendar extends BaseEntity {
     @Column(length = 2048)
     private String imageUrl;
 
+    private String caption;
+
     public void updateImage(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 
     @Builder
-    public Calendar(Long id, User user, LocalDate photoDate, String imageUrl) {
+    public Calendar(Long id, User user, LocalDate photoDate, String imageUrl, String caption) {
         this.id = id;
         this.user = user;
         this.photoDate = photoDate;
         this.imageUrl = imageUrl;
+        this.caption = caption;
     }
 }
