@@ -48,11 +48,15 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Provider provider;
+
     // 카카오 고유 ID
     private String providerId;
 
     @Nullable
     private String fcmToken;
+
+    @Enumerated(EnumType.STRING)
+    private UserLevel userLevel;
 
     // CASCADE 추가
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
@@ -96,10 +100,9 @@ public class User extends BaseEntity {
     }
 
     @Builder
-    public User(Long id, String password, String nickname, String email, String providerId, String profileImg, boolean isOpen, boolean isRecvExhibition, boolean isRecvActive, Role role, Provider provider, @Nullable String fcmToken) {
+    public User(Long id, String password, String nickname, String email, String profileImg, Boolean isOpen, Boolean isRecvExhibition, Boolean isRecvActive, Role role, Provider provider, String providerId, @Nullable String fcmToken, UserLevel userLevel) {
         this.id = id;
         this.password = password;
-        this.providerId = providerId;
         this.nickname = nickname;
         this.email = email;
         this.profileImg = profileImg;
@@ -108,6 +111,8 @@ public class User extends BaseEntity {
         this.isRecvActive = isRecvActive;
         this.role = role;
         this.provider = provider;
+        this.providerId = providerId;
         this.fcmToken = fcmToken;
+        this.userLevel = userLevel;
     }
 }
