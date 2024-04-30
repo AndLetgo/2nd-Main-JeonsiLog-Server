@@ -55,4 +55,11 @@ public class ReplyConverter {
                 .contents(createReplyReq.getContents())
                 .build();
     }
+
+    public static ReplyResponseDto.ExistReplyRes toExistReplyRes(Long replyId, Boolean isExist) {
+        return ReplyResponseDto.ExistReplyRes.builder()
+                .replyId(replyId)
+                .isExist(isExist)
+                .build();
+    }
 }

@@ -77,24 +77,17 @@ public class SaveService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             // XML To JSON
             JSONObject jsonObject = XML.toJSONObject(listXml);
-
             // JSON To String
             String listJsonStr = jsonObject.toString();
-
-            // Jackson Objectmapper 객체 생성
             ObjectMapper objectMapper = new ObjectMapper();
-
             // JSON의 모든 데이터를 파싱하는 것이 아닌 내가 필요로 하는 데이터만, 즉, 내가 필드로 선언한 데이터들만 파싱할 수 있다
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
             ExhibitionListDTO exhibitionList = null;
             try {
                 // Description :  JSON String -> ExhibitionListDTO (Object)
                 exhibitionList = objectMapper.readValue(listJsonStr, ExhibitionListDTO.class);
-
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
 
@@ -169,9 +162,14 @@ public class SaveService {
                 // Description : place 있는 지 확인
                 String placeName = placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulName();
                 String placeAddr = placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulAddr();
-
-                Optional<Place> placeByName = placeRepository.findByName(placeName);
-                Optional<Place> placeByAddr = placeRepository.findByAddress(placeAddr);
+                Optional<Place> placeByName = Optional.empty();
+                Optional<Place> placeByAddr = Optional.empty();
+                if (placeName != null) {
+                    placeByName = placeRepository.findByName(placeName);
+                }
+                if (placeAddr != null) {
+                    placeByAddr = placeRepository.findByAddress(placeAddr);
+                }
 
                 Place place = null;
 
@@ -183,15 +181,26 @@ public class SaveService {
                     place = placeByAddr.get();
 
                 } else {
-                    // Description : Place 최초 저장
-                    place = Place.builder()
-                            .name(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulName())
-                            .address(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulAddr())
-                            .homePage(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulHomeUrl())
-                            .tel(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulTel())
-                            .build();
+                    if (placeName == null || placeAddr == null) {
+                        place = Place.builder()
+                                .name(null)
+                                .address(null)
+                                .homePage(null)
+                                .tel(null)
+                                .build();
 
-                    placeRepository.save(place);
+                        placeRepository.save(place);
+                    } else {
+                        // Description : Place 최초 저장
+                        place = Place.builder()
+                                .name(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulName())
+                                .address(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulAddr())
+                                .homePage(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulHomeUrl())
+                                .tel(placeDetail.getResponse().getMsgBody().getPlaceInfo().getCulTel())
+                                .build();
+
+                        placeRepository.save(place);
+                    }
                 }
 
                 PriceKeyword priceKeyword = null;
@@ -210,7 +219,7 @@ public class SaveService {
                  *  - 시작 전 : startDate가 now보다 더 미래
                  *  - 전시 중 : now가 startDate보다 더 미래 && endDate가 now보다 더 미래
                  */
-                
+
                 LocalDate now = LocalDate.now();
                 LocalDate startDate = LocalDate.parse(exhibitionDetail.getResponse().getMsgBody().getPerforInfo().getStartDate(), formatter);
                 LocalDate endDate = LocalDate.parse(exhibitionDetail.getResponse().getMsgBody().getPerforInfo().getEndDate(), formatter);
@@ -275,15 +284,15 @@ public class SaveService {
         StringBuilder urlBuilder = new StringBuilder("http://www.culture.go.kr/openapi/rest/publicperformancedisplays/period");
 
         // 파라미터 추가 : 서비스 키, 날짜 범위 (from, to), 현재 페이지, 페이지 당 가져올 개수
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
-//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
+//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
 //        urlBuilder.append("&" + URLEncoder.encode("from","UTF-8") + "=" + URLEncoder.encode("20231008", "UTF-8")); /**/
         urlBuilder.append("&" + URLEncoder.encode("from","UTF-8") + "=" + URLEncoder.encode(from, "UTF-8")); /**/
 //        urlBuilder.append("&" + URLEncoder.encode("to","UTF-8") + "=" + URLEncoder.encode("20240208", "UTF-8")); /**/
         urlBuilder.append("&" + URLEncoder.encode("to","UTF-8") + "=" + URLEncoder.encode(to, "UTF-8")); /**/
 
         urlBuilder.append("&" + URLEncoder.encode("cPage","UTF-8") + "=" + URLEncoder.encode(cPage.toString(), "UTF-8")); // 요청 페이지
-        urlBuilder.append("&" + URLEncoder.encode("rows","UTF-8") + "=" + URLEncoder.encode("20", "UTF-8")); // 페이지 당 가져올 개수
+        urlBuilder.append("&" + URLEncoder.encode("rows","UTF-8") + "=" + URLEncoder.encode("100", "UTF-8")); // 페이지 당 가져올 개수
 
         // URL 생성 후 연결
         URL url = new URL(urlBuilder.toString());
@@ -321,8 +330,8 @@ public class SaveService {
     // Description : 전시회 상세 정보 조회 OPEN API  /  파라미터로 seq
     public String callExhibitionDetailApi(Integer seq) throws IOException {
         StringBuilder urlBuilder = new StringBuilder("http://www.culture.go.kr/openapi/rest/publicperformancedisplays/d/"); /*URL*/
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
-//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
+//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("seq","UTF-8") + "=" + URLEncoder.encode(seq.toString(), "UTF-8")); // 전시회 번호 261752, 246264 ...
 
         // URL 생성 후 연결
@@ -362,8 +371,8 @@ public class SaveService {
 
         StringBuilder urlBuilder = new StringBuilder("http://www.culture.go.kr/openapi/rest/cultureartspaces/d/"); /*URL*/
 
-        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
-//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
+//        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=6Ga8a1AdpULm31JfcyXxuDvpbDNvSy7AkVUa%2FjvlCpzW%2FtrLitTBq%2FAlbWFJ8YDsZpBeZcdnMdhJzLBl%2ByTxmQ%3D%3D"); /*Service Key*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=vpM9dG1gBFa1nJ%2FSaFhLRPJyOkMEW8GFDsEeAnNnOoeO2EvHhEBS1zzV7KLLRGD2oMOjj8VOmedb1buxQTUUuA%3D%3D"); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("seq","UTF-8") + "=" + URLEncoder.encode(seq.toString(), "UTF-8")); // 전시공간 seq
 
         // URL 생성 후 연결

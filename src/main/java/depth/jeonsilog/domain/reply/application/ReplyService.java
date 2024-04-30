@@ -93,9 +93,21 @@ public class ReplyService {
         return ResponseEntity.ok(apiResponse);
     }
 
+    // Description : 댓글 존재 여부 조회
+    public ResponseEntity<?> existReply(Long replyId) {
+
+        Boolean isExist = replyRepository.existsById(replyId);
+
+        ReplyResponseDto.ExistReplyRes existReplyRes = ReplyConverter.toExistReplyRes(replyId, isExist);
+        ApiResponse apiResponse = ApiResponse.toApiResponse(existReplyRes);
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
     public Reply validateReplyById(Long replyId) {
         Optional<Reply> reply = replyRepository.findById(replyId);
         DefaultAssert.isTrue(reply.isPresent(), "댓글 정보가 올바르지 않습니다.");
         return reply.get();
     }
+
 }

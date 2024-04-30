@@ -122,8 +122,8 @@ public class ReportService {
             Object target = new Object();
 
             switch (report.getReportType()) {
-                case REVIEW -> target = reviewService.validateReviewById(report.getReportedId());
-                case REPLY -> target = replyService.validateReplyById(report.getReportedId());
+                case REVIEW -> target = reviewRepository.findReviewByReviewId(report.getReportedId());
+                case REPLY -> target = replyRepository.findReplyByReplyId(report.getReportedId());
                 case EXHIBITION -> target = exhibitionService.validateExhibitionById(report.getReportedId());
             }
             targetList.add(target);

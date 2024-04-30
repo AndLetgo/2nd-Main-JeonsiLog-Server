@@ -34,7 +34,7 @@ public class ReplyController {
             @ApiResponse(responseCode = "200", description = "댓글 목록 조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReplyResponseDto.ReplyResListWithPaging.class))}),
             @ApiResponse(responseCode = "400", description = "댓글 목록 조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
-    @GetMapping("/{reviewId}")
+    @GetMapping("/reviews/{reviewId}")
     public ResponseEntity<?> findReplyList(
             @Parameter(description = "댓글 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page,
             @Parameter(description = "감상평 Id를 입력해주세요.", required = true) @PathVariable(value = "reviewId") Long reviewId
@@ -68,5 +68,18 @@ public class ReplyController {
             @Parameter(description = "댓글 Id를 입력해주세요.", required = true) @PathVariable(value = "replyId") Long replyId
     ) {
         return replyService.deleteReply(userPrincipal, replyId);
+    }
+
+    // Description : 댓글 존재 여부 조회
+    @Operation(summary = "댓글 존재 여부 조회", description = "댓글 존재 여부를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ReplyResponseDto.ExistReplyRes.class))}),
+            @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/{replyId}")
+    public ResponseEntity<?> existReply(
+            @Parameter(description = "댓글 Id를 입력해주세요.", required = true) @PathVariable(value = "replyId") Long replyId
+    ) {
+        return replyService.existReply(replyId);
     }
 }
