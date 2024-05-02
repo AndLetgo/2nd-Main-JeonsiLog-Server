@@ -1,6 +1,6 @@
 package depth.jeonsilog.domain.rating.application;
 
-import depth.jeonsilog.domain.alarm.application.AlarmService;
+import depth.jeonsilog.domain.alarm.application.AlarmCreateService;
 import depth.jeonsilog.domain.exhibition.application.ExhibitionService;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.rating.converter.RatingConverter;
@@ -35,7 +35,7 @@ public class RatingService {
 
     private final ExhibitionService exhibitionService;
     private final UserService userService;
-    private final AlarmService alarmService;
+    private final AlarmCreateService alarmService;
 
     // 별점 등록
     @Transactional

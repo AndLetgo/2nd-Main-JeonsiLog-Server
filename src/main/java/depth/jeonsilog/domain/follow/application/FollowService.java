@@ -1,6 +1,6 @@
 package depth.jeonsilog.domain.follow.application;
 
-import depth.jeonsilog.domain.alarm.application.AlarmService;
+import depth.jeonsilog.domain.alarm.application.AlarmCreateService;
 import depth.jeonsilog.domain.follow.converter.FollowConverter;
 import depth.jeonsilog.domain.follow.domain.Follow;
 import depth.jeonsilog.domain.follow.domain.repository.FollowRepository;
@@ -31,7 +31,7 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final UserService userService;
-    private final AlarmService alarmService;
+    private final AlarmCreateService alarmService;
 
     // 팔로우하기
     @Transactional
