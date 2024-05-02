@@ -30,18 +30,55 @@ public class ExhibitionController {
 
     private final ExhibitionService exhibitionService;
 
-    // Description : 전시회 목록 조회
-    @Operation(summary = "전시회 목록 조회", description = "전시회 목록을 조회합니다. 관리자가 미리 설정해 둔 10개의 전시회와 그 뒤로 저장 순서대로 전시회 목록을 조회합니다.")
+    //-------------------------------------------------------------
+
+    // Description : 전시회 목록 조회 - 요즘 뜨는 전시
+    @Operation(summary = "요즘 뜨는 전시 목록 조회", description = "요즘 뜨는 전시 목록을 조회합니다. 관리자가 미리 설정해 둔 10개의 전시회 목록을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExhibitionResponseDto.ExhibitionResListWithPaging.class))}),
             @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
-    @GetMapping
-    public ResponseEntity<?> findExhibitionList(
-            @Parameter(description = "전시회 목록을 페이지별로 조회합니다. **Page는 0부터 시작합니다!**", required = true) @RequestParam(value = "page") Integer page
+    @GetMapping("/recently")
+    public ResponseEntity<?> findRecentlyExhibitionList(
+            @Parameter(description = "전시회 목록을 조회합니다. 페이지 값 안주셔도 됩니다!! 조회되는 전시회 개수는 10개입니다.", required = false) @RequestParam(value = "page", defaultValue = "0") Integer page
     ) {
-        return exhibitionService.findExhibitionList(page);
+        return exhibitionService.findRecentlyExhibitionList(page);
     }
+
+    // Description : 전시회 목록 조회 - 다채로운 예술의 향연
+    @Operation(summary = "다채로운 예술의 향연 전시 목록 조회", description = "다채로운 예술의 향연 전시 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExhibitionResponseDto.ExhibitionResListWithPaging.class))}),
+            @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/colorful")
+    public ResponseEntity<?> findColorfulExhibitionList() {
+        return exhibitionService.findColorfulExhibitionList();
+    }
+
+    // Description : 전시회 목록 조회 - 곧 종료되는 전시
+    @Operation(summary = "곧 종료되는 전시 목록 조회", description = "곧 종료되는 전시 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExhibitionResponseDto.ExhibitionResListWithPaging.class))}),
+            @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/endingSoon")
+    public ResponseEntity<?> findEndingSoonExhibitionList() {
+        return exhibitionService.findEndingSoonExhibitionList();
+    }
+
+    // Description : 전시회 목록 조회 - 새로 시작한 전시
+    @Operation(summary = "새로 시작한 전시 목록 조회", description = "새로 시작한 전시 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExhibitionResponseDto.ExhibitionResListWithPaging.class))}),
+            @ApiResponse(responseCode = "400", description = "조회 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
+    })
+    @GetMapping("/new")
+    public ResponseEntity<?> findNewExhibitionList() {
+        return exhibitionService.findNewExhibitionList();
+    }
+
+    //-------------------------------------------------------------
 
     // Description : 전시회 상세 정보 조회
     @Operation(summary = "전시회 상세 정보 조회", description = "전시회 상세 정보를 조회합니다.")

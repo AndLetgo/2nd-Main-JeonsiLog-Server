@@ -32,6 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -49,10 +51,10 @@ public class ExhibitionService {
 
     private static final String DIRNAME = "exhibition_img";
 
-    // Description : 전시회 목록 조회
-    public ResponseEntity<?> findExhibitionList(Integer page) {
+    // Description : 전시회 목록 조회 - 요즘 뜨는 전시
+    public ResponseEntity<?> findRecentlyExhibitionList(Integer page) {
 
-        PageRequest pageRequest = PageRequest.of(page, 15, Sort.by(
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(
                 Sort.Order.asc("sequence"),
                 Sort.Order.asc("createdDate")
         ));
@@ -74,6 +76,138 @@ public class ExhibitionService {
         ExhibitionResponseDto.ExhibitionResListWithPaging exhibitionResListWithPaging = ExhibitionConverter.toExhibitionResListWithPaging(hasNextPage, exhibitionResList);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionResListWithPaging);
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // Description : 전시회 목록 조회 - 다채로운 예술의 향연
+    public ResponseEntity<?> findColorfulExhibitionList() {
+
+        List<Exhibition> exhibitions = exhibitionRepository.findExhibitionsByAddressContainingKeyword("서울특별시 종로구");
+        List<Exhibition> exhibitionsInSeoul = exhibitionRepository.findExhibitionsByNameContainingKeyword("국립현대미술관 서울관");
+        Exhibition exhibitionInSeoul;
+        List<Exhibition> exhibitionsInDaelim = exhibitionRepository.findExhibitionsByNameContainingKeyword("대림미술관");
+        Exhibition exhibitionInDaelim;
+        List<Exhibition> exhibitionsInIlmin = exhibitionRepository.findExhibitionsByNameContainingKeyword("일민미술관");
+        Exhibition exhibitionInIlmin;
+
+        List<Exhibition> exhibitionList = new ArrayList<>();
+
+        int count = 10;
+        if (!exhibitionsInSeoul.isEmpty()) {
+            exhibitionInSeoul = exhibitionsInSeoul.get((int)(Math.random() * exhibitionsInSeoul.size()));
+            exhibitionList.add(exhibitionInSeoul);
+            count--;
+        }
+        if (!exhibitionsInDaelim.isEmpty()) {
+            exhibitionInDaelim = exhibitionsInDaelim.get((int)(Math.random() * exhibitionsInDaelim.size()));
+            exhibitionList.add(exhibitionInDaelim);
+            count--;
+        }
+        if (!exhibitionsInIlmin.isEmpty()) {
+            exhibitionInIlmin = exhibitionsInIlmin.get((int)(Math.random() * exhibitionsInIlmin.size()));
+            exhibitionList.add(exhibitionInIlmin);
+            count--;
+        }
+
+        if (!exhibitions.isEmpty()) {
+            // 랜덤 수 10개 추리기
+            Set<Integer> randomNum = new HashSet<>();
+            while(randomNum.size() < count){
+                randomNum.add((int)(Math.random() * exhibitions.size()));
+            }
+
+            Iterator<Integer> iter = randomNum.iterator();
+            while(iter.hasNext()){
+                int num = iter.next();
+                exhibitionList.add(exhibitions.get(num));
+            }
+        }
+
+        List<Place> places = new ArrayList<>();
+
+        for (Exhibition exhibition : exhibitionList) {
+            Place place = exhibition.getPlace();
+            places.add(place);
+        }
+
+        List<PlaceResponseDto.PlaceInfoRes> placeInfoResList = PlaceConverter.toPlaceInfoListRes(places);
+
+        List<ExhibitionResponseDto.ExhibitionRes> exhibitionResList = ExhibitionConverter.toExhibitionListRes(exhibitionList, placeInfoResList);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionResList);
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // Description : 전시회 목록 조회 - 곧 종료되는 전시
+    public ResponseEntity<?> findEndingSoonExhibitionList() {
+
+        List<Exhibition> exhibitions = exhibitionRepository.findExhibitionsWithinTwoWeeks();
+        List<Exhibition> exhibitionList = new ArrayList<>();
+
+        if (!exhibitions.isEmpty()) {
+            // 랜덤 수 10개 추리기
+            Set<Integer> randomNum = new HashSet<>();
+            while(randomNum.size() < 10){
+                randomNum.add((int)(Math.random() * exhibitions.size()));
+            }
+
+            Iterator<Integer> iter = randomNum.iterator();
+            while(iter.hasNext()){
+                int num = iter.next();
+                exhibitionList.add(exhibitions.get(num));
+            }
+        }
+
+        List<Place> places = new ArrayList<>();
+
+        for (Exhibition exhibition : exhibitionList) {
+            Place place = exhibition.getPlace();
+            places.add(place);
+        }
+
+        List<PlaceResponseDto.PlaceInfoRes> placeInfoResList = PlaceConverter.toPlaceInfoListRes(places);
+
+        List<ExhibitionResponseDto.ExhibitionRes> exhibitionResList = ExhibitionConverter.toExhibitionListRes(exhibitionList, placeInfoResList);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionResList);
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    // Description : 전시회 목록 조회 - 새로 시작한 전시
+    public ResponseEntity<?> findNewExhibitionList() {
+
+        List<Exhibition> exhibitions = exhibitionRepository.findRecentExhibitions();
+        List<Exhibition> exhibitionList = new ArrayList<>();
+
+        if (!exhibitions.isEmpty()) {
+            // 랜덤 수 10개 추리기
+            Set<Integer> randomNum = new HashSet<>();
+            while(randomNum.size() < 10){
+                randomNum.add((int)(Math.random() * exhibitions.size()));
+            }
+
+            Iterator<Integer> iter = randomNum.iterator();
+            while(iter.hasNext()){
+                int num = iter.next();
+                exhibitionList.add(exhibitions.get(num));
+            }
+        }
+
+        List<Place> places = new ArrayList<>();
+
+        for (Exhibition exhibition : exhibitionList) {
+            Place place = exhibition.getPlace();
+            places.add(place);
+        }
+
+        List<PlaceResponseDto.PlaceInfoRes> placeInfoResList = PlaceConverter.toPlaceInfoListRes(places);
+
+        List<ExhibitionResponseDto.ExhibitionRes> exhibitionResList = ExhibitionConverter.toExhibitionListRes(exhibitionList, placeInfoResList);
+
+        ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionResList);
 
         return ResponseEntity.ok(apiResponse);
     }
