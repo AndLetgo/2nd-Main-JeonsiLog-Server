@@ -3,7 +3,6 @@ package depth.jeonsilog.domain.report.converter;
 import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.reply.domain.Reply;
-import depth.jeonsilog.domain.reply.dto.ReplyResponseDto;
 import depth.jeonsilog.domain.report.domain.Report;
 import depth.jeonsilog.domain.report.domain.ReportType;
 import depth.jeonsilog.domain.report.dto.ReportResponseDto;
@@ -52,19 +51,18 @@ public class ReportConverter {
                 name = user.getNickname();
                 clickId = reply.getReview().getId();
 
-            } else if (target instanceof Exhibition) {
+            } else {
                 Exhibition exhibition = (Exhibition) target;
                 name = exhibition.getName();
                 clickId = exhibition.getId();
             }
             ReportResponseDto.ReportRes reportRes = ReportResponseDto.ReportRes.builder()
-                    .reportId(report.getId())
                     .name(name) // 신고된 유저 혹은 전시회 이름
                     .reportType(report.getReportType())
                     .reportedId(report.getReportedId())
                     .clickId(clickId)
                     .isChecked(report.getIsChecked())
-//                    .counting()
+                    .counting(report.getCounting())
                     .build();
 
             reportResList.add(reportRes);

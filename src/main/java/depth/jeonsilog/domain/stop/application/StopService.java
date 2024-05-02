@@ -5,6 +5,7 @@ import depth.jeonsilog.domain.stop.domain.repository.StopRepository;
 import depth.jeonsilog.domain.stop.dto.StopRequestDto;
 import depth.jeonsilog.domain.stop.dto.StopResponseDto;
 import depth.jeonsilog.domain.user.application.UserService;
+import depth.jeonsilog.domain.user.domain.Role;
 import depth.jeonsilog.domain.user.domain.User;
 import depth.jeonsilog.domain.user.domain.repository.UserRepository;
 import depth.jeonsilog.global.DefaultAssert;
@@ -36,7 +37,7 @@ public class StopService {
     @Transactional
     public ResponseEntity<?> stopUser(final UserPrincipal userPrincipal, final StopRequestDto.StopUserReq dto) {
         User admin = userService.validateUserByToken(userPrincipal);
-//        DefaultAssert.isTrue(admin.getRole().equals(Role.ADMIN), "관리자만 유저를 정지할 수 있습니다.");
+        DefaultAssert.isTrue(admin.getRole().equals(Role.ADMIN), "관리자만 유저를 정지할 수 있습니다.");
 
         Optional<User> targetUser = userRepository.findById(dto.getUserId());
         DefaultAssert.isTrue(targetUser.isPresent(), "정지시키려는 유저가 올바르지 않습니다.");

@@ -2,8 +2,6 @@ package depth.jeonsilog.domain.report.application;
 
 import depth.jeonsilog.domain.exhibition.application.ExhibitionService;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
-import depth.jeonsilog.domain.place.application.PlaceService;
-import depth.jeonsilog.domain.place.domain.Place;
 import depth.jeonsilog.domain.reply.application.ReplyService;
 import depth.jeonsilog.domain.reply.domain.repository.ReplyRepository;
 import depth.jeonsilog.domain.report.converter.ReportConverter;
@@ -22,9 +20,9 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +44,8 @@ public class ReportService {
     private final ReviewService reviewService;
     private final ReplyService replyService;
     private final ExhibitionService exhibitionService;
-    private final PlaceService placeService;
+
+    private static final int DEFAULT_PAGE_SIZE = 20; // 페이지당 기본 20개 항목
 
     // TODO Think : Report의 reportedId는 타입 별 해당 PK(ID)임 !
 
@@ -59,9 +58,17 @@ public class ReportService {
         ReportType reportType = reportReq.getReportType();
 
         validate(reportType, id);
-
         Report report = ReportConverter.toReport(user, id, reportType);
         reportRepository.save(report);
+
+        // 같은 신고 모두 찾아서 counting, isChecked 업데이트 해줘야 함.
+        List<Report> reports = reportRepository.findByReportedIdAndReportType(id, reportType);
+        if (reports.size() > 1) {
+            reports.forEach(r -> {
+                r.updateCounting(reports.get(0).getCounting() + 1);
+                r.updateChecked(false);
+            });
+        }
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(Message.builder().message("신고가 완료되었습니다.").build());
         return ResponseEntity.ok(apiResponse);
@@ -73,32 +80,33 @@ public class ReportService {
         User user = userService.validateUserByToken(userPrincipal);
         DefaultAssert.isTrue(user.getRole().equals(Role.ADMIN), "관리자만 조회할 수 있습니다.");
 
-        PageRequest pageRequest = PageRequest.of(page, 20, Sort.Direction.DESC, "createdDate");
-        Slice<Report> reportPage = reportRepository.findSliceBy(pageRequest);
-        List<Report> reports = reportPage.getContent();
+        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE);
+        Page<Report> response = reportRepository.findReportsWithSortingAndCounting(pageable);
+        List<Report> reports = response.getContent();
 
         DefaultAssert.isTrue(!reports.isEmpty(), "신고 내역이 존재하지 않습니다.");
 
         List<Object> targetList = createTargetList(reports);
 
         List<ReportResponseDto.ReportRes> reportResList = ReportConverter.toReportResList(reports, targetList);
-        boolean hasNextPage = reportPage.hasNext();
+        boolean hasNextPage = response.hasNext();
         ReportResponseDto.ReportResListWithPaging reportResListWithPaging = ReportConverter.toReportResListWithPaging(hasNextPage, reportResList);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(reportResListWithPaging);
         return ResponseEntity.ok(apiResponse);
-
     }
 
     // Description : 신고 확인
     @Transactional
-    public ResponseEntity<?> checkReport(UserPrincipal userPrincipal, Long reportId) {
+    public ResponseEntity<?> checkReport(UserPrincipal userPrincipal, ReportRequestDto.ReportReq dto) {
 
         User user = userService.validateUserByToken(userPrincipal);
         DefaultAssert.isTrue(user.getRole().equals(Role.ADMIN), "관리자만 확인할 수 있습니다.");
 
-        Report report = validateReportById(reportId);
-        report.updateChecked(true);
+        List<Report> reports = reportRepository.findByReportedIdAndReportType(dto.getReportedId(), dto.getReportType());
+        reports.forEach(r -> {
+            r.updateChecked(true);
+        });
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(Message.builder().message("신고가 확인되었습니다.").build());
         return ResponseEntity.ok(apiResponse);
@@ -113,16 +121,16 @@ public class ReportService {
                 DefaultAssert.isTrue(exhibition.getImageUrl() == null, "이미 등록된 포스터가 존재합니다.");
             }
             case LINK -> {
-                Place place = placeService.validatePlaceById(id);
-                DefaultAssert.isTrue(place.getHomePage() == null, "이미 등록된 홈페이지 링크가 존재합니다.");
+                Exhibition exhibition = exhibitionService.validateExhibitionById(id);
+                DefaultAssert.isTrue(exhibition.getPlace().getHomePage() == null, "이미 등록된 홈페이지 링크가 존재합니다.");
             }
             case ADDRESS -> {
-                Place place = placeService.validatePlaceById(id);
-                DefaultAssert.isTrue(place.getAddress() == null, "이미 등록된 주소가 존재합니다.");
+                Exhibition exhibition = exhibitionService.validateExhibitionById(id);
+                DefaultAssert.isTrue(exhibition.getPlace().getAddress() == null, "이미 등록된 주소가 존재합니다.");
             }
             case PHONE_NUMBER -> {
-                Place place = placeService.validatePlaceById(id);
-                DefaultAssert.isTrue(place.getTel() == null, "이미 등록된 전화번호가 존재합니다.");
+                Exhibition exhibition = exhibitionService.validateExhibitionById(id);
+                DefaultAssert.isTrue(exhibition.getPlace().getTel() == null, "이미 등록된 전화번호가 존재합니다.");
             }
         }
     }
@@ -136,8 +144,7 @@ public class ReportService {
             switch (report.getReportType()) {
                 case REVIEW -> target = reviewRepository.findReviewByReviewId(report.getReportedId());
                 case REPLY -> target = replyRepository.findReplyByReplyId(report.getReportedId());
-                case EXHIBITION -> target = exhibitionService.validateExhibitionById(report.getReportedId());
-                default -> target = placeService.validatePlaceById(report.getReportedId()); // LINK, ADDRESS, PHONE_NUMBER
+                default -> target = exhibitionService.validateExhibitionById(report.getReportedId());
             }
             targetList.add(target);
         }
