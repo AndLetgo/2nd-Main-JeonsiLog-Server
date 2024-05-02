@@ -31,6 +31,9 @@ public class ReportResponseDto {
 
         @Schema(type = "boolean", example = "true", description = "신고를 확인했는지 출력합니다.")
         private Boolean isChecked;
+
+        @Schema(type = "Integer", example = "7", description = "알림 카운팅입니다.")
+        private Integer counting;
     }
 
     @Data

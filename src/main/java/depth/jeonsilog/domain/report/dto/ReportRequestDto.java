@@ -9,10 +9,10 @@ public class ReportRequestDto {
     @Data
     public static class ReportReq {
 
-        @Schema(type = "ReportType", example = "REVIEW", description = "신고 타입입니다. EXHIBITION, REVIEW, REPLY 中 1")
+        @Schema(type = "ReportType", example = "REVIEW", description = "신고 타입입니다. EXHIBITION, REVIEW, REPLY, LINK, ADDRESS, PHONE_NUMBER 中 1")
         private ReportType reportType;
 
-        @Schema(type = "Long", example = "1", description = "신고된 감상평, 댓글 혹은 전시회의 id입니다.")
+        @Schema(type = "Long", example = "1", description = "신고된 감상평, 댓글, 전시회, 전시공간의 ID 입니다.")
         private Long reportedId;
 
     }

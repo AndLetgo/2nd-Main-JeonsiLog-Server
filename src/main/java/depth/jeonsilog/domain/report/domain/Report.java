@@ -41,5 +41,4 @@ public class Report extends BaseEntity {
         this.reportedId = reportedId;
         this.isChecked = isChecked;
     }
-
 }

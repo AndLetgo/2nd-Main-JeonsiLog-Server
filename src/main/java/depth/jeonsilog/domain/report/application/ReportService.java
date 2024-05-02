@@ -2,7 +2,8 @@ package depth.jeonsilog.domain.report.application;
 
 import depth.jeonsilog.domain.exhibition.application.ExhibitionService;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
-import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
+import depth.jeonsilog.domain.place.application.PlaceService;
+import depth.jeonsilog.domain.place.domain.Place;
 import depth.jeonsilog.domain.reply.application.ReplyService;
 import depth.jeonsilog.domain.reply.domain.repository.ReplyRepository;
 import depth.jeonsilog.domain.report.converter.ReportConverter;
@@ -21,7 +22,6 @@ import depth.jeonsilog.global.config.security.token.UserPrincipal;
 import depth.jeonsilog.global.payload.ApiResponse;
 import depth.jeonsilog.global.payload.Message;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -41,12 +41,12 @@ public class ReportService {
     private final ReportRepository reportRepository;
     private final ReviewRepository reviewRepository;
     private final ReplyRepository replyRepository;
-    private final ExhibitionRepository exhibitionRepository;
 
     private final UserService userService;
     private final ReviewService reviewService;
     private final ReplyService replyService;
     private final ExhibitionService exhibitionService;
+    private final PlaceService placeService;
 
     // TODO Think : Report의 reportedId는 타입 별 해당 PK(ID)임 !
 
@@ -112,6 +112,18 @@ public class ReportService {
                 Exhibition exhibition = exhibitionService.validateExhibitionById(id);
                 DefaultAssert.isTrue(exhibition.getImageUrl() == null, "이미 등록된 포스터가 존재합니다.");
             }
+            case LINK -> {
+                Place place = placeService.validatePlaceById(id);
+                DefaultAssert.isTrue(place.getHomePage() == null, "이미 등록된 홈페이지 링크가 존재합니다.");
+            }
+            case ADDRESS -> {
+                Place place = placeService.validatePlaceById(id);
+                DefaultAssert.isTrue(place.getAddress() == null, "이미 등록된 주소가 존재합니다.");
+            }
+            case PHONE_NUMBER -> {
+                Place place = placeService.validatePlaceById(id);
+                DefaultAssert.isTrue(place.getTel() == null, "이미 등록된 전화번호가 존재합니다.");
+            }
         }
     }
 
@@ -125,6 +137,7 @@ public class ReportService {
                 case REVIEW -> target = reviewRepository.findReviewByReviewId(report.getReportedId());
                 case REPLY -> target = replyRepository.findReplyByReplyId(report.getReportedId());
                 case EXHIBITION -> target = exhibitionService.validateExhibitionById(report.getReportedId());
+                default -> target = placeService.validatePlaceById(report.getReportedId()); // LINK, ADDRESS, PHONE_NUMBER
             }
             targetList.add(target);
         }

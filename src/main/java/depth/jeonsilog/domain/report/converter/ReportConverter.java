@@ -64,6 +64,7 @@ public class ReportConverter {
                     .reportedId(report.getReportedId())
                     .clickId(clickId)
                     .isChecked(report.getIsChecked())
+//                    .counting()
                     .build();
 
             reportResList.add(reportRes);
