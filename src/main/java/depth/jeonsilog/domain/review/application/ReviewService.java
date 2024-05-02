@@ -1,11 +1,10 @@
 package depth.jeonsilog.domain.review.application;
 
 
-import depth.jeonsilog.domain.alarm.application.AlarmService;
+import depth.jeonsilog.domain.alarm.application.AlarmCreateService;
 import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
-import depth.jeonsilog.domain.rating.application.RatingService;
 import depth.jeonsilog.domain.rating.domain.Rating;
 import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
 import depth.jeonsilog.domain.reply.domain.Reply;
@@ -48,8 +47,7 @@ public class ReviewService {
     private final ReplyRepository replyRepository;
 
     private final UserService userService;
-    private final AlarmService alarmService;
-    private final RatingService ratingService;
+    private final AlarmCreateService alarmService;
 
     // 감상평 작성
     @Transactional

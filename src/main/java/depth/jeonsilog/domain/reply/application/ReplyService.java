@@ -1,6 +1,6 @@
 package depth.jeonsilog.domain.reply.application;
 
-import depth.jeonsilog.domain.alarm.application.AlarmService;
+import depth.jeonsilog.domain.alarm.application.AlarmCreateService;
 import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.reply.converter.ReplyConverter;
 import depth.jeonsilog.domain.reply.domain.Reply;
@@ -36,7 +36,7 @@ public class ReplyService {
     private final ReplyRepository replyRepository;
     private final UserService userService;
     private final ReviewService reviewService;
-    private final AlarmService alarmService;
+    private final AlarmCreateService alarmService;
 
     // Description : 댓글 목록 조회
     public ResponseEntity<?> findReplyList(Integer page, Long reviewId) {
