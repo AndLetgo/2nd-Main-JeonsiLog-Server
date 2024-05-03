@@ -2,6 +2,7 @@ package depth.jeonsilog.domain.user.dto;
 
 
 import depth.jeonsilog.domain.user.domain.Role;
+import depth.jeonsilog.domain.user.domain.UserLevel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +32,12 @@ public class UserResponseDto {
 
         @Schema(type = "int", example = "20", description = "유저의 팔로워 숫자를 출력합니다.")
         private Integer numFollower;
+
+        @Schema(type = "int", example = "5", description = "유저의 감상평 개수를 출력합니다.")
+        private Integer reviewCount;
+
+        @Schema(type = "UserLevel", example = "BEGINNER", description = "유저의 레벨을 출력합니다. NON(0), DONE(1 ~ 2), BEGINNER(3 ~ 9), INTERMEDIATE(10 ~ 19), ADVANCED(20 ~ 29), MASTER(30 ~)")
+        private UserLevel userLevel;
     }
 
     @Data

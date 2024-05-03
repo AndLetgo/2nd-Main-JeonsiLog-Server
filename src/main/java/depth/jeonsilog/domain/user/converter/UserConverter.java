@@ -23,6 +23,8 @@ public class UserConverter {
                 .profileImgUrl(user.getProfileImg())
                 .numFollowing(followRepository.countByUser(user))
                 .numFollower(followRepository.countByFollow(user))
+                .reviewCount(user.getReviews().size())
+                .userLevel(user.getUserLevel())
                 .build();
     }
 
