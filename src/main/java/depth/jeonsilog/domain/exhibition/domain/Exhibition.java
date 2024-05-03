@@ -75,6 +75,10 @@ public class Exhibition extends BaseEntity {
         this.sequence = sequence;
     }
 
+    public void updateOperatingKeyword(OperatingKeyword operatingKeyword) {
+        this.operatingKeyword = operatingKeyword;
+    }
+
     @Builder
     public Exhibition(Long id, Place place, String name, String imageUrl, OperatingKeyword operatingKeyword, PriceKeyword priceKeyword, String price, String startDate, String endDate, String information, Double rate, Integer exhibitionSeq) {
         this.id = id;
