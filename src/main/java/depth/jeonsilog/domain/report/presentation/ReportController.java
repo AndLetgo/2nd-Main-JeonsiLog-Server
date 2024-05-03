@@ -61,12 +61,11 @@ public class ReportController {
             @ApiResponse(responseCode = "200", description = "확인 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "확인 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
     })
-    @PatchMapping("/check/{reportId}")
+    @PatchMapping("/check")
     public ResponseEntity<?> checkReport(
             @Parameter(description = "Access Token을 입력해주세요.", required = true) @CurrentUser UserPrincipal userPrincipal,
-            @Parameter(description = "신고 Id를 입력해주세요.", required = true) @PathVariable(value = "reportId") Long reportId
+            @Parameter(description = "Schemas의 ReportReq를 참고해주세요", required = true) @RequestBody ReportRequestDto.ReportReq reportReq
     ) {
-        return reportService.checkReport(userPrincipal, reportId);
+        return reportService.checkReport(userPrincipal, reportReq);
     }
-
 }
