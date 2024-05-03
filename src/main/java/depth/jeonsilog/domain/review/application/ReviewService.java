@@ -18,6 +18,7 @@ import depth.jeonsilog.domain.user.application.UserService;
 import depth.jeonsilog.domain.user.converter.UserConverter;
 import depth.jeonsilog.domain.user.domain.Role;
 import depth.jeonsilog.domain.user.domain.User;
+import depth.jeonsilog.domain.user.domain.UserLevel;
 import depth.jeonsilog.domain.user.dto.UserResponseDto;
 import depth.jeonsilog.global.DefaultAssert;
 import depth.jeonsilog.global.config.security.token.UserPrincipal;
@@ -58,6 +59,14 @@ public class ReviewService {
 
         Review review = ReviewConverter.toReview(findUser, exhibition.get(), writeReviewReq.getContents());
         reviewRepository.save(review);
+
+        switch (findUser.getReviews().size()) {
+            case 1 -> findUser.updateUserLevel(UserLevel.DONE);
+            case 3 -> findUser.updateUserLevel(UserLevel.BEGINNER);
+            case 10 -> findUser.updateUserLevel(UserLevel.INTERMEDIATE);
+            case 20 -> findUser.updateUserLevel(UserLevel.ADVANCED);
+            case 30 -> findUser.updateUserLevel(UserLevel.MASTER);
+        }
 
         alarmService.makeReviewAlarm(review);
 

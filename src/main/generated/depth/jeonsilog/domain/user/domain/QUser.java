@@ -60,6 +60,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final ListPath<depth.jeonsilog.domain.report.domain.Report, depth.jeonsilog.domain.report.domain.QReport> reports = this.<depth.jeonsilog.domain.report.domain.Report, depth.jeonsilog.domain.report.domain.QReport>createList("reports", depth.jeonsilog.domain.report.domain.Report.class, depth.jeonsilog.domain.report.domain.QReport.class, PathInits.DIRECT2);
 
+    public final ListPath<depth.jeonsilog.domain.review.domain.Review, depth.jeonsilog.domain.review.domain.QReview> reviews = this.<depth.jeonsilog.domain.review.domain.Review, depth.jeonsilog.domain.review.domain.QReview>createList("reviews", depth.jeonsilog.domain.review.domain.Review.class, depth.jeonsilog.domain.review.domain.QReview.class, PathInits.DIRECT2);
+
     public final EnumPath<Role> role = createEnum("role", Role.class);
 
     //inherited

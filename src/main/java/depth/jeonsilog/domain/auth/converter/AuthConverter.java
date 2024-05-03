@@ -7,6 +7,7 @@ import depth.jeonsilog.domain.auth.dto.TokenMapping;
 import depth.jeonsilog.domain.user.domain.Provider;
 import depth.jeonsilog.domain.user.domain.Role;
 import depth.jeonsilog.domain.user.domain.User;
+import depth.jeonsilog.domain.user.domain.UserLevel;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class AuthConverter {
@@ -25,6 +26,7 @@ public class AuthConverter {
                 .isOpen(true)
                 .isRecvExhibition(true)
                 .isRecvActive(true)
+                .userLevel(UserLevel.NON)
                 .build();
     }
 
