@@ -56,7 +56,7 @@ public class ReportService {
         User user = userService.validateUserByToken(userPrincipal);
         Long id = reportReq.getReportedId();
         ReportType reportType = reportReq.getReportType();
-
+        validateReportOnce(user.getId(), reportReq);
         validate(reportType, id);
         Report report = ReportConverter.toReport(user, id, reportType);
         reportRepository.save(report);
@@ -157,4 +157,9 @@ public class ReportService {
         return report.get();
     }
 
+    // TODO: 같은 사용자가 같은 신고 여러 번 하면 한 번으로 처리
+    public void validateReportOnce(Long userId, ReportRequestDto.ReportReq dto) {
+        Optional<Report> report = reportRepository.findByUserIdAndReportTypeAndReportedId(userId, dto.getReportType(), dto.getReportedId());
+        DefaultAssert.isTrue(report.isEmpty(), "이미 신고하였습니다.");
+    }
 }

@@ -28,7 +28,7 @@ public class ReportController {
     private final ReportService reportService;
 
     // Description : 신고
-    @Operation(summary = "감상평, 댓글 혹은 포스터 등록 알림 신고", description = "감상평, 댓글 혹은 포스터 등록 알림 신고입니다.")
+    @Operation(summary = "감상평, 댓글 혹은 전시회 신고", description = "감상평, 댓글 혹은 포스터 등록 알림 신고입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "신고 성공", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))}),
             @ApiResponse(responseCode = "400", description = "신고 실패", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))}),
