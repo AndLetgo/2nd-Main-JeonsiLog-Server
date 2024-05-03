@@ -29,8 +29,14 @@ public class Report extends BaseEntity {
 
     private Boolean isChecked = false;
 
+    private Integer counting;
+
     public void updateChecked (boolean isChecked) {
         this.isChecked = isChecked;
+    }
+
+    public void updateCounting(int counting) {
+        this.counting = counting;
     }
 
     @Builder
@@ -40,6 +46,6 @@ public class Report extends BaseEntity {
         this.reportType = reportType;
         this.reportedId = reportedId;
         this.isChecked = isChecked;
+        this.counting = 1;
     }
-
 }

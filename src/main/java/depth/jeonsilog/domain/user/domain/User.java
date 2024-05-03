@@ -5,6 +5,7 @@ import depth.jeonsilog.domain.calendar.domain.Calendar;
 import depth.jeonsilog.domain.common.BaseEntity;
 import depth.jeonsilog.domain.follow.domain.Follow;
 import depth.jeonsilog.domain.report.domain.Report;
+import depth.jeonsilog.domain.review.domain.Review;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -58,6 +59,9 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserLevel userLevel;
 
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviews = new ArrayList<>();
+
     // CASCADE 추가
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Follow> followers = new ArrayList<>();
@@ -97,6 +101,10 @@ public class User extends BaseEntity {
 
     public void updateFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
+    }
+
+    public void updateUserLevel(UserLevel userLevel) {
+        this.userLevel = userLevel;
     }
 
     @Builder

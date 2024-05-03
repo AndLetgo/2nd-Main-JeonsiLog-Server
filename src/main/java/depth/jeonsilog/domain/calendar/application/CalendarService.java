@@ -50,7 +50,7 @@ public class CalendarService {
                 s3Uploader.deleteImage(DIRNAME, calendar.getImageUrl());
                 calendar.updateImage(storedFileName);
             } else {
-                Calendar calendar = CalendarConverter.toCalendar(findUser, uploadImageReq.getDate(), storedFileName);
+                Calendar calendar = CalendarConverter.toCalendar(findUser, uploadImageReq.getDate(), storedFileName, uploadImageReq.getCaption());
                 calendarRepository.save(calendar);
             }
         }
@@ -70,7 +70,7 @@ public class CalendarService {
         if (checkCalendar.isPresent()) {
             checkCalendar.get().updateImage(uploadPosterReq.getImgUrl());
         } else {
-            Calendar calendar = CalendarConverter.toCalendar(findUser, uploadPosterReq.getDate(), uploadPosterReq.getImgUrl());
+            Calendar calendar = CalendarConverter.toCalendar(findUser, uploadPosterReq.getDate(), uploadPosterReq.getImgUrl(), uploadPosterReq.getCaption());
             calendarRepository.save(calendar);
         }
 

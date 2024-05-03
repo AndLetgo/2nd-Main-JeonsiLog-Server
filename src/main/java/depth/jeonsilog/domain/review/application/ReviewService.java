@@ -1,11 +1,10 @@
 package depth.jeonsilog.domain.review.application;
 
 
-import depth.jeonsilog.domain.alarm.application.AlarmService;
+import depth.jeonsilog.domain.alarm.application.AlarmCreateService;
 import depth.jeonsilog.domain.common.Status;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
 import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
-import depth.jeonsilog.domain.rating.application.RatingService;
 import depth.jeonsilog.domain.rating.domain.Rating;
 import depth.jeonsilog.domain.rating.domain.repository.RatingRepository;
 import depth.jeonsilog.domain.reply.domain.Reply;
@@ -19,6 +18,7 @@ import depth.jeonsilog.domain.user.application.UserService;
 import depth.jeonsilog.domain.user.converter.UserConverter;
 import depth.jeonsilog.domain.user.domain.Role;
 import depth.jeonsilog.domain.user.domain.User;
+import depth.jeonsilog.domain.user.domain.UserLevel;
 import depth.jeonsilog.domain.user.dto.UserResponseDto;
 import depth.jeonsilog.global.DefaultAssert;
 import depth.jeonsilog.global.config.security.token.UserPrincipal;
@@ -48,8 +48,7 @@ public class ReviewService {
     private final ReplyRepository replyRepository;
 
     private final UserService userService;
-    private final AlarmService alarmService;
-    private final RatingService ratingService;
+    private final AlarmCreateService alarmService;
 
     // 감상평 작성
     @Transactional
@@ -60,6 +59,14 @@ public class ReviewService {
 
         Review review = ReviewConverter.toReview(findUser, exhibition.get(), writeReviewReq.getContents());
         reviewRepository.save(review);
+
+        switch (findUser.getReviews().size()) {
+            case 1 -> findUser.updateUserLevel(UserLevel.DONE);
+            case 3 -> findUser.updateUserLevel(UserLevel.BEGINNER);
+            case 10 -> findUser.updateUserLevel(UserLevel.INTERMEDIATE);
+            case 20 -> findUser.updateUserLevel(UserLevel.ADVANCED);
+            case 30 -> findUser.updateUserLevel(UserLevel.MASTER);
+        }
 
         alarmService.makeReviewAlarm(review);
 
