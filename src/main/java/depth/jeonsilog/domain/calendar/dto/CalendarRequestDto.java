@@ -16,6 +16,9 @@ public class CalendarRequestDto
         @NotNull
         @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
         private LocalDate date;
+
+        @Schema(type = "string", example = "캡션내용캡션내용", description = "캡션")
+        private String caption;
     }
 
     @Data
@@ -29,5 +32,8 @@ public class CalendarRequestDto
         @Schema(type = "string", example = "https://jeonsi-s3", description = "전시회 포스터 이미지 url")
         @NotNull
         private String imgUrl;
+
+        @Schema(type = "string", example = "캡션내용캡션내용", description = "캡션")
+        private String caption;
     }
 }

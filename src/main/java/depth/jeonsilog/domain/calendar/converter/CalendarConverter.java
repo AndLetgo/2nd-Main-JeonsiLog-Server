@@ -10,11 +10,12 @@ import java.util.List;
 
 public class CalendarConverter {
 
-    public static Calendar toCalendar(User user, LocalDate date, String imgUrl) {
+    public static Calendar toCalendar(User user, LocalDate date, String imgUrl, String caption) {
         return Calendar.builder()
                 .user(user)
                 .photoDate(date)
                 .imageUrl(imgUrl)
+                .caption(caption)
                 .build();
     }
 
@@ -26,6 +27,7 @@ public class CalendarConverter {
                     .calendarId(calendar.getId())
                     .date(calendar.getPhotoDate())
                     .imgUrl(calendar.getImageUrl())
+                    .caption(calendar.getCaption())
                     .build();
 
             imageResList.add(imageRes);

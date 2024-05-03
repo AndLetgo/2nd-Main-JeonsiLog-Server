@@ -20,5 +20,8 @@ public class CalendarResponseDto {
 
         @Schema(type = "string", example = "https://jeonsi-s3", description = "이미지 url")
         private String imgUrl;
+
+        @Schema(type = "string", example = "캡션내용캡션내용", description = "캡션")
+        private String caption;
     }
 }
