@@ -76,6 +76,7 @@ public class StopService {
         StopResponseDto.StopUserRes dto = StopResponseDto.StopUserRes.builder()
                 .reason(stop.get().getReason())
                 .remainingDays(between)
+                .isFirstAccess(stop.get().getIsFirstAccess())
                 .build();
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(dto);
