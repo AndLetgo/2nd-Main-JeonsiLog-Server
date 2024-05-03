@@ -3,6 +3,7 @@ package depth.jeonsilog.domain.openApi.application;
 import depth.jeonsilog.domain.exhibition.application.ExhibitionService;
 import depth.jeonsilog.domain.exhibition.converter.ExhibitionConverter;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
+import depth.jeonsilog.domain.exhibition.domain.OperatingKeyword;
 import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
 import depth.jeonsilog.domain.place.converter.PlaceConverter;
@@ -13,9 +14,12 @@ import depth.jeonsilog.global.payload.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,6 +147,36 @@ public class ModifyService {
         }
         ApiResponse apiResponse = ApiResponse.toApiResponse(placeResList);
         return ResponseEntity.ok(apiResponse);
+    }
+
+    // Description : 매일 Operating Keyword 검사 후 변경
+    @Transactional
+    @Scheduled(cron = "0 1 0 * * *") // 매일 오전 0시 1분에 실행
+    public void updateOperationKeyword() {
+
+        // 종료된 전시회는 검사 x
+        List<Exhibition> beforeExhibitionList = exhibitionRepository.findByOperatingKeyword(OperatingKeyword.BEFORE_DISPLAY);
+        List<Exhibition> onExhibitionList = exhibitionRepository.findByOperatingKeyword(OperatingKeyword.ON_DISPLAY);
+
+        // DateTimeFormatter를 사용하여 String을 LocalDate로 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate now = LocalDate.now();
+        LocalDate localDate;
+
+        for (Exhibition exhibition : beforeExhibitionList) {
+            localDate = LocalDate.parse(exhibition.getStartDate(), formatter);
+            if (!localDate.isAfter(now)) { // 지금보다 이후가 아니면 (시작했다면)
+                exhibition.updateOperatingKeyword(OperatingKeyword.ON_DISPLAY);
+            }
+        }
+
+        for (Exhibition exhibition : onExhibitionList) {
+            localDate = LocalDate.parse(exhibition.getEndDate(), formatter);
+            if (localDate.isBefore(now)) {
+                exhibition.updateOperatingKeyword(OperatingKeyword.AFTER_DISPLAY);
+            }
+        }
+
     }
 
     private boolean containsSpecialCharacters(String name) {

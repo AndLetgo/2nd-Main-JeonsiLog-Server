@@ -1,6 +1,7 @@
 package depth.jeonsilog.domain.exhibition.domain.repository;
 
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
+import depth.jeonsilog.domain.exhibition.domain.OperatingKeyword;
 import depth.jeonsilog.domain.place.domain.Place;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,4 +48,6 @@ public interface ExhibitionRepository extends JpaRepository<Exhibition, Long> {
 
     @Query(value = "SELECT e FROM Exhibition e JOIN e.place p WHERE p.name LIKE %:keyword%")
     List<Exhibition> findExhibitionsByNameContainingKeyword(@Param("keyword") String keyword);
+
+    List<Exhibition> findByOperatingKeyword(OperatingKeyword operatingKeyword);
 }
