@@ -1,6 +1,7 @@
 package depth.jeonsilog.domain.review.dto;
 
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
+import depth.jeonsilog.domain.user.domain.UserLevel;
 import depth.jeonsilog.domain.user.dto.UserResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -38,6 +39,9 @@ public class ReviewResponseDto {
 
         @Schema(type = "LocalDateTime", example = "2023-12-22 23:51:45.848882", description = " 감상평이 작성된 날짜/시간을 출력합니다.")
         private LocalDateTime createdDate;
+
+        @Schema(type = "UserLevel", example = "BEGINNER", description = "유저의 레벨을 출력합니다. NON(0), DONE(1 ~ 2), BEGINNER(3 ~ 9), INTERMEDIATE(10 ~ 19), ADVANCED(20 ~ 29), MASTER(30 ~)")
+        private UserLevel userLevel;
     }
 
     @Data

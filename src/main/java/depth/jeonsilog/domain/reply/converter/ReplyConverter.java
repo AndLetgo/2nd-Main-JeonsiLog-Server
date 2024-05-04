@@ -25,6 +25,7 @@ public class ReplyConverter {
                     .userId(user.getId())
                     .nickname(user.getNickname())
                     .profileImgUrl(user.getProfileImg())
+                    .userLevel(user.getUserLevel())
                     .build();
 
             ReplyResponseDto.ReplyRes replyRes = ReplyResponseDto.ReplyRes.builder()

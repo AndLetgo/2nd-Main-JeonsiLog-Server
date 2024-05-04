@@ -38,6 +38,7 @@ public class ReviewConverter {
                     .contents(review.getContents())
                     .numReply(review.getNumReply())
                     .createdDate(review.getCreatedDate())
+                    .userLevel(user.getUserLevel())
                     .build();
             reviewListRes.add(reviewRes);
         }
@@ -87,6 +88,7 @@ public class ReviewConverter {
                 .rate(rate)
                 .numReply(review.getNumReply())
                 .createdDate(review.getCreatedDate())
+                .userLevel(userRes.getUserLevel())
                 .build();
     }
 

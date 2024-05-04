@@ -23,6 +23,8 @@ public class UserConverter {
                 .profileImgUrl(user.getProfileImg())
                 .numFollowing(followRepository.countByUser(user))
                 .numFollower(followRepository.countByFollow(user))
+                .reviewCount(user.getReviews().size())
+                .userLevel(user.getUserLevel())
                 .build();
     }
 
@@ -36,6 +38,7 @@ public class UserConverter {
                     .userId(user.getId())
                     .nickname(user.getNickname())
                     .profileImgUrl(user.getProfileImg())
+                    .userLevel(user.getUserLevel())
                     .build();
 
             usersResList.add(usersRes);
@@ -94,6 +97,7 @@ public class UserConverter {
                 .userId(user.getId())
                 .nickname(user.getNickname())
                 .profileImgUrl(user.getProfileImg())
+                .userLevel(user.getUserLevel())
                 .build();
     }
 }

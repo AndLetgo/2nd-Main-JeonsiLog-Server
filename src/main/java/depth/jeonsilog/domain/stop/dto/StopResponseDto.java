@@ -15,5 +15,8 @@ public class StopResponseDto {
 
         @Schema(type = "Integer", example = "6", description = "남은 정지 일수를 출력합니다..")
         private Integer remainingDays;
+
+        @Schema(type = "Boolean", example = "true", description = "최초 접속 여부를 출력합니다.")
+        private Boolean isFirstAccess;
     }
 }
