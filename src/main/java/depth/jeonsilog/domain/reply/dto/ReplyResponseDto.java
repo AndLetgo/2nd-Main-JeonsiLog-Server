@@ -22,9 +22,11 @@ public class ReplyResponseDto {
         private String contents;
 
         // 수정 없으므로 생성 시간
+        @Schema(type = "LocalDateTime", example = "2023-12-22 23:51:45.848882", description = "알림이 생성된 DateTime을 출력합니다.")
         private LocalDateTime createdDate;
 
         // 필요한 User의 요소가 여기 다 있음
+        @Schema(type = "SearchUsersRes", example = "user 정보", description = "필요한 user의 정보가 들어있습니다.")
         private UserResponseDto.SearchUsersRes user;
     }
 

@@ -38,6 +38,7 @@ public class UserConverter {
                     .userId(user.getId())
                     .nickname(user.getNickname())
                     .profileImgUrl(user.getProfileImg())
+                    .userLevel(user.getUserLevel())
                     .build();
 
             usersResList.add(usersRes);
@@ -96,6 +97,7 @@ public class UserConverter {
                 .userId(user.getId())
                 .nickname(user.getNickname())
                 .profileImgUrl(user.getProfileImg())
+                .userLevel(user.getUserLevel())
                 .build();
     }
 }

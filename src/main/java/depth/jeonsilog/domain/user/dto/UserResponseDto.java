@@ -52,6 +52,9 @@ public class UserResponseDto {
 
         @Schema(type = "string", example = "http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg", description = "프로필 이미지 url을 출력합니다.")
         private String profileImgUrl;
+
+        @Schema(type = "UserLevel", example = "BEGINNER", description = "유저의 레벨을 출력합니다. NON(0), DONE(1 ~ 2), BEGINNER(3 ~ 9), INTERMEDIATE(10 ~ 19), ADVANCED(20 ~ 29), MASTER(30 ~)")
+        private UserLevel userLevel;
     }
 
     @Data
