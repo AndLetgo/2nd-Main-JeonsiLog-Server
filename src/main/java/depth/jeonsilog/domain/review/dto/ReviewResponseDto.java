@@ -19,6 +19,9 @@ public class ReviewResponseDto {
         @Schema(type = "long", example = "1", description = "감상평 id를 출력합니다.")
         private Long reviewId;
 
+        @Schema(type = "long", example = "1", description = "전시회 id를 출력합니다.")
+        private Long exhibitionId;
+
         @Schema(type = "long", example = "1", description = "유저 id를 출력합니다.")
         private Long userId;
 
