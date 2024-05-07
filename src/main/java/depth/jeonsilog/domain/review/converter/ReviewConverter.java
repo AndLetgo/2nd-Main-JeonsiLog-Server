@@ -81,6 +81,7 @@ public class ReviewConverter {
     public static ReviewResponseDto.ReviewListRes toReviewListRes(Review review, UserResponseDto.SearchUsersRes userRes, Double rate) {
         return ReviewResponseDto.ReviewListRes.builder()
                 .reviewId(review.getId())
+                .exhibitionId(review.getExhibition().getId())
                 .userId(userRes.getUserId())
                 .imgUrl(userRes.getProfileImgUrl())
                 .nickname(userRes.getNickname())
