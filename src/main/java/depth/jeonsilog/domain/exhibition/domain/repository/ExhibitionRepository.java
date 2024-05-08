@@ -40,8 +40,9 @@ public interface ExhibitionRepository extends JpaRepository<Exhibition, Long> {
     List<Exhibition> findExhibitionsWithinTwoWeeks();
 
     // 8일 미만
-    @Query(value = "SELECT * FROM exhibition e WHERE DATEDIFF(CURDATE(), STR_TO_DATE(e.start_date, '%Y%m%d')) < 8 AND CURDATE() >= STR_TO_DATE(e.start_date, '%Y%m%d')", nativeQuery = true)
+    @Query(value = "SELECT * FROM exhibition e WHERE e.operating_keyword = 'ON_DISPLAY' AND DATEDIFF(STR_TO_DATE(e.start_date, '%Y%m%d'), CURDATE()) >= 0 AND DATEDIFF(STR_TO_DATE(e.start_date, '%Y%m%d'), CURDATE()) < 8", nativeQuery = true)
     List<Exhibition> findRecentExhibitions();
+
 
     @Query(value = "SELECT e FROM Exhibition e JOIN e.place p WHERE p.address LIKE %:keyword%")
     List<Exhibition> findExhibitionsByAddressContainingKeyword(@Param("keyword") String keyword);
