@@ -24,6 +24,8 @@ public class QReport extends EntityPathBase<Report> {
 
     public final depth.jeonsilog.domain.common.QBaseEntity _super = new depth.jeonsilog.domain.common.QBaseEntity(this);
 
+    public final NumberPath<Integer> counting = createNumber("counting", Integer.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
 
