@@ -2,6 +2,7 @@ package depth.jeonsilog.domain.exhibition.application;
 
 import depth.jeonsilog.domain.exhibition.converter.ExhibitionConverter;
 import depth.jeonsilog.domain.exhibition.domain.Exhibition;
+import depth.jeonsilog.domain.exhibition.domain.OperatingKeyword;
 import depth.jeonsilog.domain.exhibition.domain.repository.ExhibitionRepository;
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionRequestDto;
 import depth.jeonsilog.domain.exhibition.dto.ExhibitionResponseDto;
@@ -35,6 +36,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -110,18 +113,15 @@ public class ExhibitionService {
             count--;
         }
 
-        if (!exhibitions.isEmpty()) {
-            // 랜덤 수 10개 추리기
-            Set<Integer> randomNum = new HashSet<>();
-            while(randomNum.size() < count){
-                randomNum.add((int)(Math.random() * exhibitions.size()));
+        if (exhibitions.size() > count) {
+            List<Integer> randomNum = pickRandomIndices(exhibitions, count);
+            for (Integer i : randomNum) {
+                exhibitionList.add(exhibitions.get(i));
             }
 
-            Iterator<Integer> iter = randomNum.iterator();
-            while(iter.hasNext()){
-                int num = iter.next();
-                exhibitionList.add(exhibitions.get(num));
-            }
+        } else {
+            for (Exhibition exhibition : exhibitions)
+                exhibitionList.add(exhibition);
         }
 
         List<Place> places = new ArrayList<>();
@@ -143,33 +143,43 @@ public class ExhibitionService {
     // Description : 전시회 목록 조회 - 곧 종료되는 전시
     public ResponseEntity<?> findEndingSoonExhibitionList() {
 
-        List<Exhibition> exhibitions = exhibitionRepository.findExhibitionsWithinTwoWeeks();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        List<Exhibition> findExhibitions = exhibitionRepository.findByOperatingKeyword(OperatingKeyword.ON_DISPLAY);
+
+        LocalDate now = LocalDate.now();
+        LocalDate endDate;
         List<Exhibition> exhibitionList = new ArrayList<>();
+        List<Exhibition> exhibitions = new ArrayList<>();
 
-        if (!exhibitions.isEmpty()) {
-            // 랜덤 수 10개 추리기
-            Set<Integer> randomNum = new HashSet<>();
-            while(randomNum.size() < 10){
-                randomNum.add((int)(Math.random() * exhibitions.size()));
+        for (Exhibition exhibition : findExhibitions) {
+            endDate = LocalDate.parse(exhibition.getStartDate(), formatter);
+            LocalDate date = endDate.minusDays(14);
+
+            if (!now.isBefore(date))
+                exhibitionList.add(exhibition);
+        }
+
+        if (exhibitionList.size() > 10) {
+            List<Integer> randomNum = pickRandomIndices(exhibitionList, 10);
+            for (Integer i : randomNum) {
+                exhibitions.add(exhibitionList.get(i));
             }
 
-            Iterator<Integer> iter = randomNum.iterator();
-            while(iter.hasNext()){
-                int num = iter.next();
-                exhibitionList.add(exhibitions.get(num));
-            }
+        } else {
+            for (Exhibition exhibition : exhibitionList)
+                exhibitions.add(exhibition);
         }
 
         List<Place> places = new ArrayList<>();
 
-        for (Exhibition exhibition : exhibitionList) {
+        for (Exhibition exhibition : exhibitions) {
             Place place = exhibition.getPlace();
             places.add(place);
         }
 
         List<PlaceResponseDto.PlaceInfoRes> placeInfoResList = PlaceConverter.toPlaceInfoListRes(places);
 
-        List<ExhibitionResponseDto.ExhibitionRes> exhibitionResList = ExhibitionConverter.toExhibitionListRes(exhibitionList, placeInfoResList);
+        List<ExhibitionResponseDto.ExhibitionRes> exhibitionResList = ExhibitionConverter.toExhibitionListRes(exhibitions, placeInfoResList);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionResList);
 
@@ -179,33 +189,43 @@ public class ExhibitionService {
     // Description : 전시회 목록 조회 - 새로 시작한 전시
     public ResponseEntity<?> findNewExhibitionList() {
 
-        List<Exhibition> exhibitions = exhibitionRepository.findRecentExhibitions();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        List<Exhibition> findExhibitions = exhibitionRepository.findByOperatingKeyword(OperatingKeyword.ON_DISPLAY);
+
+        LocalDate now = LocalDate.now();
+        LocalDate startDate;
         List<Exhibition> exhibitionList = new ArrayList<>();
+        List<Exhibition> exhibitions = new ArrayList<>();
 
-        if (!exhibitions.isEmpty()) {
-            // 랜덤 수 10개 추리기
-            Set<Integer> randomNum = new HashSet<>();
-            while(randomNum.size() < 10){
-                randomNum.add((int)(Math.random() * exhibitions.size()));
+        for (Exhibition exhibition : findExhibitions) {
+            startDate = LocalDate.parse(exhibition.getStartDate(), formatter);
+            LocalDate date = startDate.plusDays(7);
+
+            if (!now.isAfter(date))
+                exhibitionList.add(exhibition);
+        }
+
+        if (exhibitionList.size() > 10) {
+            List<Integer> randomNum = pickRandomIndices(exhibitionList, 10);
+            for (Integer i : randomNum) {
+                exhibitions.add(exhibitionList.get(i));
             }
 
-            Iterator<Integer> iter = randomNum.iterator();
-            while(iter.hasNext()){
-                int num = iter.next();
-                exhibitionList.add(exhibitions.get(num));
-            }
+        } else {
+            for (Exhibition exhibition : exhibitionList)
+                exhibitions.add(exhibition);
         }
 
         List<Place> places = new ArrayList<>();
 
-        for (Exhibition exhibition : exhibitionList) {
+        for (Exhibition exhibition : exhibitions) {
             Place place = exhibition.getPlace();
             places.add(place);
         }
 
         List<PlaceResponseDto.PlaceInfoRes> placeInfoResList = PlaceConverter.toPlaceInfoListRes(places);
 
-        List<ExhibitionResponseDto.ExhibitionRes> exhibitionResList = ExhibitionConverter.toExhibitionListRes(exhibitionList, placeInfoResList);
+        List<ExhibitionResponseDto.ExhibitionRes> exhibitionResList = ExhibitionConverter.toExhibitionListRes(exhibitions, placeInfoResList);
 
         ApiResponse apiResponse = ApiResponse.toApiResponse(exhibitionResList);
 
@@ -416,6 +436,21 @@ public class ExhibitionService {
         Optional<Exhibition> exhibition = exhibitionRepository.findById(exhibitionId);
         DefaultAssert.isTrue(exhibition.isPresent(), "전시회 정보가 올바르지 않습니다.");
         return exhibition.get();
+    }
+
+    // Description : 랜덤 뽑기
+    public List<Integer> pickRandomIndices(List<Exhibition> exhibitionList, int count) {
+        Random random = new Random();
+        int exhibitionSize = exhibitionList.size();
+
+        // 10개의 무작위 인덱스를 생성하고, 중복을 피하기 위해 distinct()를 사용
+        List<Integer> randomIndices = IntStream.generate(() -> random.nextInt(exhibitionSize))
+                .distinct()
+                .limit(count)
+                .boxed()
+                .collect(Collectors.toList());
+
+        return randomIndices;
     }
 
 }
