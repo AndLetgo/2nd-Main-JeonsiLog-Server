@@ -2,3 +2,8 @@ spring:
   profiles:
     # 로컬 : "h2"  ||  RDS : "rds"로 사용
     active: ["rds", "s3", "auth", "swagger"]
+
+logging:
+  level:
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE
